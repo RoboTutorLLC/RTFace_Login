@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_gallery"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="horizontal"
+    tools:context="com.example.iris.login1.GalleryActivity">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <SurfaceView
+                android:id="@+id/id_content"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:scaleType="centerCrop" />
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:id = "@+id/capture"
+                android:src="@drawable/redbutton"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom|center" />
+        </FrameLayout>
+    </RelativeLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_container"
+        android:layout_width="150dp"
+        android:layout_height="fill_parent">
+
+        <com.example.iris.login1.MyScrollView
+            android:id="@+id/id_horizontalScrollView"
+            android:layout_width="150dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right"
+            android:background="@android:color/white"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/id_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+        </com.example.iris.login1.MyScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>
