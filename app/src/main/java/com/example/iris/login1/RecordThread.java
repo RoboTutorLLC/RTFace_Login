@@ -28,9 +28,9 @@ import java.util.TimerTask;
  */
 
 public class RecordThread extends Thread{
-    private MediaRecorder mediarecorder;// 录制视频的类
+    public MediaRecorder mediarecorder;// 录制视频的类
     private SurfaceHolder surfaceHolder;
-    private MediaPlayer mPlayer;
+    public MediaPlayer mPlayer;
     private long recordTime;
     private SurfaceView surfaceview;// 显示视频的控件
     public Camera mCamera;
@@ -197,7 +197,6 @@ public class RecordThread extends Thread{
             stopRecord();
             saveFirstFrame();
             newReplay(vPath);
-
             //this.cancel();
         }
     }

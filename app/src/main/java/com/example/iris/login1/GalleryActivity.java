@@ -78,14 +78,14 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_gallery);
         relativeLayout = (RelativeLayout) findViewById(R.id.swipe_container);
-        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        /*soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         thisisrobotutor=soundPool.load(this, R.raw.thisisrobotutor, 1);
         pleaseSayYourName=soundPool.load(this, R.raw.pleasesayyourname, 1);
         ifYouLikeHowYouSaid=soundPool.load(this, R.raw.ifyoulikehowyousaidyourname, 1);
         pleaseTapHere=soundPool.load(this, R.raw.pleasetaphere, 1);
-        otherwiseTapHere=soundPool.load(this, R.raw.otherwisetaphere, 1);
+        otherwiseTapHere=soundPool.load(this, R.raw.otherwisetaphere, 1);*/
 
-        soundPool.play(thisisrobotutor, 1.0f, 1.0f, 1, 0, 1.0f);       //play the sound "this is roboTutor"
+        //soundPool.play(thisisrobotutor, 1.0f, 1.0f, 1, 0, 1.0f);       //play the sound "this is roboTutor"
 
         surfaceview = (SurfaceView) findViewById(R.id.id_content);
         capture=(ImageView) findViewById(R.id.capture);
@@ -109,6 +109,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 if(needConfirm)
                     needConfirm=false;
                 if(thread!=null) {     //if it is recoding or replaying, now stop it
+                    System.out.println("stop the recoding processing");
                     thread.stopRecord();
                     thread.videostop();
                     thread.interrupt();
@@ -155,8 +156,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     System.out.println("thread accountnumber: "+ accountsNumber);
                     thread.start();
                 }else {
-                    thread.videostop();
-                    thread.stopRecord();
+                    if(thread.mPlayer != null)
+                        thread.videostop();
+                    if(thread.mediarecorder!=null)
+                        thread.stopRecord();
                     thread.interrupt();
                     thread = new RecordThread(3*1000, surfaceview,surfaceHolder,accountsNumber,dbHelper,mDatas,mHandler);
                     thread.start();
@@ -212,21 +215,16 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     System.out.println("go to menu");
                     break;
                 case 2:     //plat back end: new id
+                    //if you like how you said your name,please tap here
+                    //otherwise tap here and say your name
                     needConfirm=true;
+
                     break;
                 default:
                     break;
             }
         }
     };
-
-    private void showMessage(String title, String context){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(context);
-        builder.show();
-    }
 
     public void dialog()
     {
