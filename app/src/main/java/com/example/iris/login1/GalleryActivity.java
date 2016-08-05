@@ -46,7 +46,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private int accountsNumber;
     private playVideo pv;
     private int chosenId;      //chosen position
-    private RelativeLayout relativeLayout;
     private boolean needConfirm=false;
 
     private void initUserInfo(){
@@ -77,7 +76,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_gallery);
-        relativeLayout = (RelativeLayout) findViewById(R.id.swipe_container);
         /*soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         thisisrobotutor=soundPool.load(this, R.raw.thisisrobotutor, 1);
         pleaseSayYourName=soundPool.load(this, R.raw.pleasesayyourname, 1);

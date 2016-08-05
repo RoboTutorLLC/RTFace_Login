@@ -35,15 +35,10 @@
         </FrameLayout>
     </RelativeLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swipe_container"
-        android:layout_width="150dp"
-        android:layout_height="fill_parent">
-
         <com.example.iris.login1.MyScrollView
             android:id="@+id/id_horizontalScrollView"
             android:layout_width="150dp"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:background="@android:color/white"
             android:scrollbars="none">
@@ -57,7 +52,5 @@
             </LinearLayout>
 
         </com.example.iris.login1.MyScrollView>
-
-    </RelativeLayout>
 
 </LinearLayout>
