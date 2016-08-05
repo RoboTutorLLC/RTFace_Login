@@ -54,6 +54,7 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
         DisplayMetrics outMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(outMetrics);
         mScreenHeight = outMetrics.heightPixels;
+        System.out.println(mScreenHeight+"");
     }
 
     @Override

@@ -42,6 +42,9 @@ public class RecordThread extends Thread{
     private DataHelper dbHelper;
     private List<Bitmap> mDatas;
     private Handler mHandler;
+    private int chosenCamera;
+    public boolean isRecording=false;
+    public boolean isPlaying=false;
 
     public RecordThread(long recordTime, SurfaceView surfaceview,
                         SurfaceHolder surfaceHolder, int accountsNumber_, DataHelper dbHelper_, List<Bitmap> mDatas_, Handler mhandler_) {
@@ -77,7 +80,7 @@ public class RecordThread extends Thread{
     }
 
     public void startRecord() {
-
+        isRecording=true;
         mCamera = getCameraInstance();
         //切换前后摄像头
         int cameraCount = 0;
@@ -95,6 +98,7 @@ public class RecordThread extends Thread{
                         mCamera = null;             //取消原来摄像头
                     }
                     mCamera = Camera.open(i);       //打开当前选中的摄像头,1代表前置摄像头
+                    chosenCamera=i;
                     try {
                         mCamera.setPreviewDisplay(surfaceHolder);   //通过surfaceview显示取景画面
                     } catch (IOException e) {
@@ -169,6 +173,7 @@ public class RecordThread extends Thread{
     }
 
     public void stopRecord() {
+        isRecording=false;
         System.out.print("stopRecord()");
         //surfaceview = null;
         //surfaceHolder = null;
@@ -191,8 +196,8 @@ public class RecordThread extends Thread{
         public void run() {
             stopRecord();
             saveFirstFrame();
-            replay(vPath);
-            mHandler.sendEmptyMessage(1);
+            newReplay(vPath);
+
             //this.cancel();
         }
     }
@@ -218,10 +223,6 @@ public class RecordThread extends Thread{
                     bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos);
                     fos.flush();
                     fos.close();
-                    curUser.setID(accountsNumber);
-                    curUser.setUserIcon(pPath);
-                    curUser.setUserVideo(vPath);
-                    dbHelper.saveUserInfo(curUser);
                     System.out.println("savedb"+curUser.getID());
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -231,8 +232,10 @@ public class RecordThread extends Thread{
             }
         }
     }
-    public void replay(String vp)
+
+    public void newReplay(String vp)
     {
+        isPlaying=true;
         mPlayer = new MediaPlayer();
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mPlayer.setDisplay(surfaceHolder);
@@ -240,8 +243,10 @@ public class RecordThread extends Thread{
             @Override
             public void onCompletion(MediaPlayer arg0) {
                 videostop();
+                mHandler.sendEmptyMessage(2);
             }
-        });
+        }
+        );
         try {
             mPlayer.setDataSource(vp);
             mPlayer.prepare();
@@ -252,7 +257,9 @@ public class RecordThread extends Thread{
         }
         mPlayer.start();
     }
+
     public void videostop() {
+        isPlaying=false;
         if (mPlayer != null) {
             mPlayer.release();
             mPlayer = null;

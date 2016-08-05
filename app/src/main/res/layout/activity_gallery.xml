@@ -35,7 +35,7 @@
         </FrameLayout>
     </RelativeLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_container"
         android:layout_width="150dp"
         android:layout_height="fill_parent">
@@ -58,6 +58,6 @@
 
         </com.example.iris.login1.MyScrollView>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </RelativeLayout>
 
 </LinearLayout>

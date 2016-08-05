@@ -2,6 +2,7 @@ package com.example.iris.login1;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -17,12 +18,14 @@ public class playVideo extends Thread {
     public String vPath="";
     public String pPath="";
     private MediaPlayer mPlayer;
+    private Handler mHandler;
     public playVideo(SurfaceView surfaceview,
-                        SurfaceHolder surfaceHolder, String vPath_,String pPath_) {
+                        SurfaceHolder surfaceHolder, String vPath_,String pPath_,Handler mhandler_) {
         this.surfaceview = surfaceview;
         this.surfaceHolder = surfaceHolder;
         this.vPath=vPath_;
         this.pPath=pPath_;
+        this.mHandler=mhandler_;
     }
     public void run() {
         mPlayer = new MediaPlayer();
@@ -32,6 +35,7 @@ public class playVideo extends Thread {
             @Override
             public void onCompletion(MediaPlayer arg0) {
                 videostop();
+                mHandler.sendEmptyMessage(1);      //after replay,login kids in
             }
         });
         try {

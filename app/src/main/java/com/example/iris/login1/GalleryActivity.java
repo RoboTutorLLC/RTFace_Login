@@ -11,6 +11,8 @@ import android.media.Image;
 import android.media.SoundPool;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
+import android.support.v4.util.Pools;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private SoundPool soundPool;
     private int thisisrobotutor,pleaseSayYourName,ifYouLikeHowYouSaid,pleaseTapHere,otherwiseTapHere;
+    //private int
     private MyScrollView mHorizontalScrollView;
     private ScrollViewAdapter mAdapter;
     private SurfaceView surfaceview;
@@ -41,8 +45,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private ImageView capture;
     private int accountsNumber;
     private playVideo pv;
-    private int chosenId;      //current user id
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private int chosenId;      //chosen position
+    private RelativeLayout relativeLayout;
+    private boolean needConfirm=false;
 
     private void initUserInfo(){
         dbHelper = new DataHelper(this);
@@ -72,13 +77,14 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_gallery);
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
+        relativeLayout = (RelativeLayout) findViewById(R.id.swipe_container);
         soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         thisisrobotutor=soundPool.load(this, R.raw.thisisrobotutor, 1);
         pleaseSayYourName=soundPool.load(this, R.raw.pleasesayyourname, 1);
         ifYouLikeHowYouSaid=soundPool.load(this, R.raw.ifyoulikehowyousaidyourname, 1);
         pleaseTapHere=soundPool.load(this, R.raw.pleasetaphere, 1);
         otherwiseTapHere=soundPool.load(this, R.raw.otherwisetaphere, 1);
+
         soundPool.play(thisisrobotutor, 1.0f, 1.0f, 1, 0, 1.0f);       //play the sound "this is roboTutor"
 
         surfaceview = (SurfaceView) findViewById(R.id.id_content);
@@ -100,6 +106,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             @Override
             public void onClick(View view, int position) {
                 //mImg.setImageBitmap(mDatas.get(position));
+                if(needConfirm)
+                    needConfirm=false;
+                if(thread!=null) {     //if it is recoding or replaying, now stop it
+                    thread.stopRecord();
+                    thread.videostop();
+                    thread.interrupt();
+                }
                 System.out.println("click scroll position: "+position);
                 String v=userInfo.get(position).getUserVideo();
                 String p=userInfo.get(position).getUserIcon();
@@ -108,7 +121,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 if(pv!=null){
                     pv.videostop();
                 }
-                pv= new playVideo(surfaceview, surfaceHolder,v,p);
+                pv= new playVideo(surfaceview, surfaceHolder,v,p,mHandler);
                 pv.start();
                 view.setBackgroundColor(Color.RED);
             }
@@ -120,27 +133,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             mHorizontalScrollView.initDatas(mAdapter);
         }
 
-        /*swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("swipeListener");
-                        mDatas.clear();
-                        initUserInfo();
-                        mAdapter.setMDatas(mDatas);
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        mHandler.sendEmptyMessage(1);
-                    }
-                }).start();
-            }
-        });*/
-
         SurfaceHolder holder = this.surfaceview.getHolder();// 取得holder
         holder.addCallback(this);    //holder加入回调接口
         // 设置setType
@@ -150,16 +142,23 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                soundPool.play(pleaseSayYourName, 1.0f, 1.0f, 1, 0, 1.0f);
+                //soundPool.play(pleaseSayYourName, 1.0f, 1.0f, 1, 0, 1.0f);
+                if(pv!=null){
+                    pv.videostop();
+                    pv.interrupt();
+                }
                 if (thread==null) {
+                    if(needConfirm){
+                        needConfirm=false;
+                    }
                     thread = new RecordThread(3*1000, surfaceview,surfaceHolder,accountsNumber,dbHelper,mDatas,mHandler);
                     System.out.println("thread accountnumber: "+ accountsNumber);
-                    accountsNumber++;
                     thread.start();
                 }else {
-                    thread=null;
+                    thread.videostop();
+                    thread.stopRecord();
+                    thread.interrupt();
                     thread = new RecordThread(3*1000, surfaceview,surfaceHolder,accountsNumber,dbHelper,mDatas,mHandler);
-                    accountsNumber++;
                     thread.start();
                     //Toast.makeText(nameVideo.this, "recording……", Toast.LENGTH_SHORT).show();
                 }
@@ -170,9 +169,31 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                dialog();
+                //dialog();
+                if(needConfirm){       //when plat back end, need touch the TV Screen to confirm, then saved in Database and log kid in
+                    saveUserInfo();     //else if not click TV screen instead touch capture,record new video
+                    needConfirm=false;
+                    System.out.println("go to activity");
+                    //then go to menu 1
+                }
+                needConfirm=false;
             }
         });
+    }
+
+    private void saveUserInfo(){      //save info and update UI Interface
+        UserInfo curUser=new UserInfo();
+        curUser.setID(accountsNumber);
+        curUser.setUserIcon(thread.pPath);
+        curUser.setUserVideo(thread.vPath);
+        dbHelper.saveUserInfo(curUser);      //save
+        accountsNumber++;
+        mDatas.clear();
+        initUserInfo();
+        setAdapter();
+        mAdapter.setMDatas(mDatas);
+        mHorizontalScrollView.initDatas(mAdapter);
+        System.out.println("refresh gallery");
     }
 
     private void setAdapter(){
@@ -186,20 +207,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                /*case 1:
-                    swipeRefreshLayout.setRefreshing(false);
-                    mHorizontalScrollView.initDatas(mAdapter);
-                    //mHorizontalScrollView.notifyCurrentImgChanged();
-                    System.out.println("swipeHandler");
-                    //swipeRefreshLayout.setEnabled(false);
-                    break;*/
-                case 1:
-                    mDatas.clear();
-                    initUserInfo();
-                    setAdapter();
-                    mAdapter.setMDatas(mDatas);
-                    mHorizontalScrollView.initDatas(mAdapter);
-                    System.out.println("refresh gallery");
+                case 1:    //play back end : enrolled id
+                    //go to the menu, curid=accountnumber-chosenid-1
+                    System.out.println("go to menu");
+                    break;
+                case 2:     //plat back end: new id
+                    needConfirm=true;
                     break;
                 default:
                     break;
