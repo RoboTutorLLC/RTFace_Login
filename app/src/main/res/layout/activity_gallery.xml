@@ -9,31 +9,42 @@
     android:orientation="horizontal"
     tools:context="com.example.iris.login1.GalleryActivity">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1">
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" >
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-            <SurfaceView
-                android:id="@+id/id_content"
+            <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:scaleType="centerCrop" />
-            <ImageView
+                android:layout_height="match_parent"
+                android:id="@+id/margin"
+                android:layout_weight="10"
+                android:layout_gravity="center">
+                <SurfaceView
+                    android:id="@+id/id_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:scaleType="centerCrop"
+                     />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:id = "@+id/capture"
-                android:src="@drawable/redbutton"
+                android:id="@+id/button_margin"
+                android:layout_weight="1"
                 android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom|center" />
-        </FrameLayout>
-    </RelativeLayout>
+                android:layout_gravity="bottom|center">
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:id = "@+id/capture"
+                    android:src="@drawable/redbutton"
+                    />
+            </RelativeLayout>
+    </LinearLayout>
 
         <com.example.iris.login1.MyScrollView
             android:id="@+id/id_horizontalScrollView"

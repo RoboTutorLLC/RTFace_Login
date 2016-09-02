@@ -41,7 +41,7 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
     public int mFristIndex;
     private View mFirstView;
     private ScrollViewAdapter mAdapter;
-    private int mCountOneScreen;
+    public int mCountOneScreen;
     private int mScreenHeight;
     private Map<View, Integer> mViewPos = new HashMap<View, Integer>();
 

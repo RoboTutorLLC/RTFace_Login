@@ -64,8 +64,6 @@ public class RecordThread extends Thread{
     @Override
     public void run() {
         startRecord();
-        Timer timer = new Timer();
-        timer.schedule(new TimerThread(), recordTime);    //启动定时器，到规定时间recordTime后执行停止录像任务
     }
 
     public Camera getCameraInstance() {     //获取摄像头实例
@@ -89,49 +87,36 @@ public class RecordThread extends Thread{
         int cameraPosition = 1;
         for (int i = 0; i < cameraCount; i++) {
             Camera.getCameraInfo(i, cameraInfo);         //得到每一个摄像头的信息
-            if (cameraPosition == 1) {                    //现在是后置，变更为前置
                 //代表摄像头的方位，CAMERA_FACING_FRONT前置,CAMERA_FACING_BACK后置
-                if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                    if (mCamera != null) {
-                        mCamera.stopPreview();      //停掉原来摄像头的预览
-                        mCamera.release();          //释放资源
-                        mCamera = null;             //取消原来摄像头
-                    }
-                    mCamera = Camera.open(i);       //打开当前选中的摄像头,1代表前置摄像头
-                    chosenCamera=i;
-                    try {
-                        mCamera.setPreviewDisplay(surfaceHolder);   //通过surfaceview显示取景画面
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    mCamera.startPreview();//开始预览
-                    cameraPosition = 0;
-                    break;
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                if (mCamera != null) {
+                    mCamera.stopPreview();      //停掉原来摄像头的预览
+                    mCamera.release();          //释放资源
+                    mCamera = null;             //取消原来摄像头
                 }
-            }
-            else {                         //现在是前置， 变更为后置
-                if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                    mCamera.stopPreview();//停掉原来摄像头的预览
-                    mCamera.release();//释放资源
-                    mCamera = null;//取消原来摄像头
-                    mCamera = Camera.open(i);//打开当前选中的摄像头
-                    try {
-                        mCamera.setPreviewDisplay(surfaceHolder);     //通过surfaceview显示取景画面
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    mCamera.startPreview();//开始预览
-                    cameraPosition = 1;
-                    break;
+                mCamera = Camera.open(i);       //打开当前选中的摄像头,1代表前置摄像头
+                chosenCamera=i;
+                try {
+                    mCamera.setPreviewDisplay(surfaceHolder);   //通过surfaceview显示取景画面
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
+                //mCamera.startPreview();//开始预览
+                cameraPosition = 0;
+                break;
             }
         }
+        String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
+        vPath = "VIDEO_" + timeStamp + "_" + ".3gp";
+        vPath = "/sdcard/"+ vPath;
+        System.out.println(vPath);
+
         mCamera.setDisplayOrientation(0);// 解决竖屏的时候，摄像头旋转90度的问题
         Camera.Parameters params=mCamera.getParameters();
         params.setPictureSize(640,480);// 640x480,320x240,176x144,160x120
         mCamera.setParameters(params);
+        mCamera.startPreview();//开始预览
         mCamera.unlock(); // 解锁camera
 
         // 第1步:解锁并将摄像头指向MediaRecorder
@@ -147,22 +132,15 @@ public class RecordThread extends Thread{
         mediarecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediarecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
         mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-        String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
-        vPath = "VIDEO_" + timeStamp + "_" + ".3gp";
-        vPath = "/sdcard/"+ vPath;
-        System.out.println(vPath);
         //vPath=getExternalFilesDir(null)+vPath;
         mediarecorder.setOutputFile(vPath);
         mediarecorder.setVideoSize(640,480);//设置视频分辨率，这里很重要，设置错start()报未知错误
         //mediarecorder.setVideoFrameRate(24);//设置视频帧率  这个我把它去掉了，感觉没什么用
         mediarecorder.setVideoEncodingBitRate(10*1024*1024);//在这里我提高了帧频率,然后就清晰了,解决了花屏、绿屏的问题
-
         mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());
         try {
             // 准备录制
             mediarecorder.prepare();
-            // 开始录制
-            mediarecorder.start();
         } catch (IllegalStateException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -170,6 +148,11 @@ public class RecordThread extends Thread{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerThread(), recordTime);    //启动定时器，到规定时间recordTime后执行停止录像任务
+        // 开始录制
+        mediarecorder.start();
     }
 
     public void stopRecord() {
@@ -195,8 +178,9 @@ public class RecordThread extends Thread{
         @Override
         public void run() {
             stopRecord();
-            saveFirstFrame();
-            newReplay(vPath);
+            saveFirstFrame(); //should play "you said"
+            mHandler.sendEmptyMessage(5);
+            //newReplay(vPath);
             //this.cancel();
         }
     }
@@ -216,7 +200,7 @@ public class RecordThread extends Thread{
                 createImageFile();
                 File pictureFile = new File(pPath);
                 FileOutputStream fos= null;
-                mDatas.add(bitmap);
+                //mDatas.add(bitmap);
                 try {
                     fos = new FileOutputStream(pictureFile);
                     bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos);

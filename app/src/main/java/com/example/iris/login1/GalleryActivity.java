@@ -8,8 +8,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.util.Pools;
@@ -28,12 +30,22 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.RunnableFuture;
 
 public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.Callback{
 
     private SoundPool soundPool;
-    private int thisisrobotutor,pleaseSayYourName,ifYouLikeHowYouSaid,pleaseTapHere,otherwiseTapHere;
-    //private int
+    private int pleaseSayYourName;
+    private int[] medialist1={R.raw.ifyoulikeyourpicture,R.raw.pleasetaphere,R.raw.otherwisetaphere};
+    private int[] medialist1_eng={R.raw.eng_ifyoulikeyourpicture,R.raw.eng_pleasetaphere,R.raw.eng_otherwisetaphere};
+    private int[] medialist2={R.raw.ifyouseeyourpicture,R.raw.pleasesayyourname};
+    private int[] medialist2_eng={R.raw.eng_ifyouseeyourpicturepleasetaponit,R.raw.eng_pleasesayyourname};
+    private int[] playlist1;
+    private int[] playlist2;
+    private MediaPlayer mp1,mp2,mp3;
+    private int index1=1;
+    private int index2=0;
+
     private MyScrollView mHorizontalScrollView;
     private ScrollViewAdapter mAdapter;
     private SurfaceView surfaceview;
@@ -48,6 +60,18 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private int chosenId;      //chosen position
     private boolean needConfirm=false;
 
+    private long lastFlashTime = System.nanoTime();
+    private long button_lastFlashTime = System.nanoTime();
+    private long startFlashTime = System.nanoTime();
+    private long button_startFlashTIme = System.nanoTime();
+    private boolean nowRed = false;
+    private boolean button_nowRed = false;
+    private RelativeLayout screenMargin;
+    private RelativeLayout buttonMargin;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+    private boolean englishVersion = true;
+
     private void initUserInfo(){
         dbHelper = new DataHelper(this);
         userInfo = dbHelper.getUserList();
@@ -57,37 +81,92 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             Bitmap bmp = BitmapFactory.decodeFile(tempUrl);
             mDatas.add(bmp);
         }
-        /*if(userInfo.size()==0)
-        {
-            //add default video and picture;
-            Resources res=getResources();
-            Bitmap bmp = BitmapFactory.decodeResource(res, R.mipmap.ic_launcher);
-            mDatas.add(bmp);
-            mAdapter.accountNumber = userInfo.size()+1;
-        }
-        else*/
-            mAdapter.accountNumber = userInfo.size();
+        mAdapter.accountNumber = userInfo.size();
         accountsNumber=userInfo.size();
         System.out.println("userInfo"+userInfo.size());
     }
 
+    private void playFile1(int file) {
+        mp1=MediaPlayer.create(this,playlist1[file]);
+    }
+
+    private void playFile2(int file) {
+        mp2=MediaPlayer.create(this,playlist2[file]);
+    }
+
+    private void playFile3(){
+        if(!englishVersion)
+            mp2=MediaPlayer.create(this,R.raw.pleasesayyourname);
+        else
+            mp2=MediaPlayer.create(this,R.raw.eng_pleasetaphereandsayyourname);
+        button_startFlashTIme = System.nanoTime();
+        button_lastFlashTime = System.nanoTime();
+        mainHandler.post(flashButton);
+        nowRed = false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        englishVersion = true;
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_gallery);
-        /*soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        thisisrobotutor=soundPool.load(this, R.raw.thisisrobotutor, 1);
-        pleaseSayYourName=soundPool.load(this, R.raw.pleasesayyourname, 1);
-        ifYouLikeHowYouSaid=soundPool.load(this, R.raw.ifyoulikehowyousaidyourname, 1);
-        pleaseTapHere=soundPool.load(this, R.raw.pleasetaphere, 1);
-        otherwiseTapHere=soundPool.load(this, R.raw.otherwisetaphere, 1);*/
-
-        //soundPool.play(thisisrobotutor, 1.0f, 1.0f, 1, 0, 1.0f);       //play the sound "this is roboTutor"
-
         surfaceview = (SurfaceView) findViewById(R.id.id_content);
         capture=(ImageView) findViewById(R.id.capture);
+        screenMargin = (RelativeLayout) findViewById(R.id.margin);
+        buttonMargin = (RelativeLayout) findViewById(R.id.button_margin);
         mHorizontalScrollView = (MyScrollView) findViewById(R.id.id_horizontalScrollView);
+
+        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        if(englishVersion==false) {     //not English version
+            pleaseSayYourName = soundPool.load(this, R.raw.pleasesayyourname, 1);
+            mp2=MediaPlayer.create(this,R.raw.thisisrobotutor);
+            mp3=MediaPlayer.create(this,R.raw.yousaid);
+            playlist1 = medialist1;
+            playlist2 = medialist2;
+        }
+        else{
+            pleaseSayYourName = soundPool.load(this, R.raw.eng_pleasesayyourname, 1);
+            mp2=MediaPlayer.create(this,R.raw.eng_thisisrobotutor);
+            mp3=MediaPlayer.create(this,R.raw.eng_yousaid);
+            playlist1 = medialist1_eng;
+            playlist2 = medialist2_eng;
+        }
+        mp3.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {    //replay the newly taken video
+                thread.newReplay(thread.vPath);
+            }
+        });
+        mp1=MediaPlayer.create(this,playlist1[0]);
+        mp1.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                if(index1<playlist1.length){
+                    mp1.release();
+                    playFile1(index1);
+                    mp1.start();
+                    index1++;
+                }
+            }
+        });
+        mp2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                if(userInfo.size()!=0&&index2==0){
+                    mp2.release();
+                    playFile2(index2);
+                    mp2.start();
+                    index2++;
+                    System.out.println("index2: "+index2);
+                }
+                else if(userInfo.size()==0||index2==playlist2.length-1){
+                    mp2.release();
+                    playFile3();
+                    mp2.start();
+                }
+            }
+        });
 
         //添加滚动回调
         mHorizontalScrollView.setCurrentImageChangeListener(new MyScrollView.CurrentImageChangeListener() {
@@ -104,25 +183,57 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             @Override
             public void onClick(View view, int position) {
                 //mImg.setImageBitmap(mDatas.get(position));
-                if(needConfirm)
-                    needConfirm=false;
-                if(thread!=null) {     //if it is recoding or replaying, now stop it
-                    System.out.println("stop the recoding processing");
-                    thread.stopRecord();
-                    thread.videostop();
-                    thread.interrupt();
+                capture.setVisibility(View.GONE);     //dismiss the capure button when record
+                if(needConfirm) {
+                    if(position!=0)
+                        needConfirm = false;
+                    System.out.println("click scroll position: " + position);
+                    String v,p;
+                    if(position!=0) {
+                         v = userInfo.get(position - 1).getUserVideo();
+                         p = userInfo.get(position - 1).getUserIcon();
+                    }
+                    else{
+                        v=thread.vPath;
+                        p=thread.pPath;
+                    }
+                    if (thread != null) {     //if it is recoding or replaying, now stop it
+                        System.out.println("stop the recoding processing");
+                        thread.stopRecord();
+                        thread.videostop();
+                        thread.interrupt();
+                    }
+                    chosenId = position-1;
+                        //System.out.println("dbhelper"+s);
+                    if (pv != null) {
+                        pv.videostop();
+                    }
+                    pv = new playVideo(surfaceview, surfaceHolder, v, p, mHandler);
+                    pv.start();
+                    if(position!=0)
+                        mHandler.sendEmptyMessage(3);    //refresh the gallery
+                    view.setBackgroundColor(Color.RED);
+
                 }
-                System.out.println("click scroll position: "+position);
-                String v=userInfo.get(position).getUserVideo();
-                String p=userInfo.get(position).getUserIcon();
-                chosenId=position;
-                //System.out.println("dbhelper"+s);
-                if(pv!=null){
-                    pv.videostop();
+                else {
+                    if (thread != null) {     //if it is recoding or replaying, now stop it
+                        System.out.println("stop the recoding processing");
+                        thread.stopRecord();
+                        thread.videostop();
+                        thread.interrupt();
+                    }
+                    System.out.println("click scroll position: " + position);
+                    String v = userInfo.get(position).getUserVideo();
+                    String p = userInfo.get(position).getUserIcon();
+                    chosenId = position;
+                    //System.out.println("dbhelper"+s);
+                    if (pv != null) {
+                        pv.videostop();
+                    }
+                    pv = new playVideo(surfaceview, surfaceHolder, v, p, mHandler);
+                    pv.start();
+                    view.setBackgroundColor(Color.RED);
                 }
-                pv= new playVideo(surfaceview, surfaceHolder,v,p,mHandler);
-                pv.start();
-                view.setBackgroundColor(Color.RED);
             }
         });
 
@@ -131,17 +242,16 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             mAdapter = new ScrollViewAdapter(this, mDatas);
             mHorizontalScrollView.initDatas(mAdapter);
         }
+        mp2.start();
 
         SurfaceHolder holder = this.surfaceview.getHolder();// 取得holder
         holder.addCallback(this);    //holder加入回调接口
-        // 设置setType
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);   // 设置setType
         capture.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                //soundPool.play(pleaseSayYourName, 1.0f, 1.0f, 1, 0, 1.0f);
+                capture.setVisibility(View.GONE);
                 if(pv!=null){
                     pv.videostop();
                     pv.interrupt();
@@ -149,10 +259,16 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 if (thread==null) {
                     if(needConfirm){
                         needConfirm=false;
+                        mDatas.clear();
+                        initUserInfo();
+                        setAdapter();
+                        mAdapter.setMDatas(mDatas);
+                        mHorizontalScrollView.initDatas(mAdapter);
                     }
                     thread = new RecordThread(3*1000, surfaceview,surfaceHolder,accountsNumber,dbHelper,mDatas,mHandler);
                     System.out.println("thread accountnumber: "+ accountsNumber);
                     thread.start();
+                    soundPool.play(pleaseSayYourName, 1.0f, 1.0f, 1, 0, 1.0f);
                 }else {
                     if(thread.mPlayer != null)
                         thread.videostop();
@@ -161,7 +277,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     thread.interrupt();
                     thread = new RecordThread(3*1000, surfaceview,surfaceHolder,accountsNumber,dbHelper,mDatas,mHandler);
                     thread.start();
-                    //Toast.makeText(nameVideo.this, "recording……", Toast.LENGTH_SHORT).show();
+                    soundPool.play(pleaseSayYourName, 1.0f, 1.0f, 1, 0, 1.0f);
                 }
             }
         });
@@ -169,8 +285,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
             @Override
             public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                //dialog();
                 if(needConfirm){       //when plat back end, need touch the TV Screen to confirm, then saved in Database and log kid in
                     saveUserInfo();     //else if not click TV screen instead touch capture,record new video
                     needConfirm=false;
@@ -203,6 +317,22 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     }
 
+    private void refreshGallery(){    //after took a new video, refresh the gallery before confirm
+        Bitmap bmp = BitmapFactory.decodeFile(thread.pPath);
+        System.out.println(thread.pPath);
+        mDatas.clear();
+        initUserInfo();
+        mDatas.add(0,bmp);
+        if(userInfo.size()==0){
+            mAdapter = new ScrollViewAdapter(this, mDatas);
+        }
+        mAdapter.setMDatas(mDatas);
+        mAdapter.accountNumber = mDatas.size();
+        System.out.println(mDatas.size());
+        mHorizontalScrollView.initDatas(mAdapter);
+        System.out.println("refresh gallery1");
+    }
+
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -210,13 +340,32 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             switch (msg.what) {
                 case 1:    //play back end : enrolled id
                     //go to the menu, curid=accountnumber-chosenid-1
+                    capture.setVisibility(View.VISIBLE);
                     System.out.println("go to menu");
                     break;
                 case 2:     //plat back end: new id
                     //if you like how you said your name,please tap here
-                    //otherwise tap here and say your name
+                    startFlashTime = System.nanoTime();
+                    lastFlashTime = System.nanoTime();
+                    mainHandler.post(flashScreen);
+                    nowRed = false;
+                    capture.setVisibility(View.VISIBLE);
+                    refreshGallery();      //the aim is to add newly taken photo to the gallery though not in the database
+                    mp1.start();
                     needConfirm=true;
-
+                    break;
+                case 3:
+                    mDatas.clear();
+                    initUserInfo();
+                    setAdapter();
+                    mAdapter.setMDatas(mDatas);
+                    mHorizontalScrollView.initDatas(mAdapter);
+                    break;
+                case 4:
+                    saveUserInfo();
+                    break;
+                case 5:     //record done, play "you said", then replay video
+                    mp3.start();
                     break;
                 default:
                     break;
@@ -224,33 +373,55 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
-    public void dialog()
-    {
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setMessage("");
-        builder.setTitle("");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //yes enroll
-                System.out.println("choose "+chosenId);
-                dialogInterface.dismiss();
+    private Runnable flashScreen = new Runnable() {
+        @Override
+        public void run() {
+            long timepass = (System.nanoTime() - lastFlashTime) / 1000000;
+            if(timepass >800)
+            {
+                if(!nowRed) {
+                    screenMargin.setBackgroundColor(Color.RED);
+                    nowRed = true;
+                }
+                else {
+                    screenMargin.setBackgroundColor(Color.WHITE);
+                    nowRed = false;
+                }
+                lastFlashTime = System.nanoTime();
             }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                thread = new RecordThread(3*1000, surfaceview,surfaceHolder,accountsNumber-chosenId-1,dbHelper,mDatas,mHandler);
-                System.out.println("thread accountnumber: "+ accountsNumber);
-                thread.start();
-                dialogInterface.dismiss();
+            if((System.nanoTime()-startFlashTime)/1000000 <= 5000)
+                mainHandler.postDelayed(flashScreen, 400);
+            else {
+                screenMargin.setBackgroundColor(Color.WHITE);
+                nowRed = false;
             }
-        });
-        builder.create().show();
-        soundPool.play(ifYouLikeHowYouSaid, 1.0f, 1.0f, 3, 0, 1.0f);
-        //soundPool.play(pleaseTapHere, 1.0f, 1.0f, 2, 0, 1.0f);
-        //soundPool.play(otherwiseTapHere, 1.0f, 1.0f, 1, 0, 1.0f);
-    }
+        }
+    };
+
+    private Runnable flashButton = new Runnable() {
+        @Override
+        public void run() {
+            long timepass = (System.nanoTime() - button_lastFlashTime) / 1000000;
+            if(timepass > 800)
+            {
+                if(!button_nowRed) {
+                    buttonMargin.setBackgroundColor(Color.RED);
+                    button_nowRed = true;
+                }
+                else {
+                    buttonMargin.setBackgroundColor(Color.WHITE);
+                    button_nowRed = false;
+                }
+                button_lastFlashTime = System.nanoTime();
+            }
+            if((System.nanoTime()-button_startFlashTIme)/1000000 <= 5000)
+                mainHandler.postDelayed(flashButton, 400);
+            else {
+                buttonMargin.setBackgroundColor(Color.WHITE);
+                button_nowRed = false;
+            }
+        }
+    };
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         // TODO Auto-generated method stub
