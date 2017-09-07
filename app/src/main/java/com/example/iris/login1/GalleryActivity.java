@@ -396,6 +396,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 if (launchIntent != null) {
                     startActivity(launchIntent);
                 }
+                // System.exit(0);
             }
         });
         mpAfterDeciding2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -1023,6 +1024,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
         if (launchIntent != null) {
             startActivity(launchIntent);
+        }
     }
 
     private void pauseAllAudios() {
