@@ -258,8 +258,10 @@ public class RecordThread extends Thread{
 
     public void backToFrame() {
         isPlaying = false;
-        if (mPlayer != null)
-            mPlayer.seekTo(realStartTime + Common.CAPTURE_FRAME_TIME_GAP);
+        if (mPlayer != null) {
+            mPlayer.seekTo(realStartTime + mPlayer.getDuration()); // set frame shown to last frame of video
+        }
+
 
     }
 

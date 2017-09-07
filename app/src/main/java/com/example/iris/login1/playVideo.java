@@ -101,7 +101,9 @@ public class playVideo extends Thread {
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer arg0) {
-                if (mPlayer != null) mPlayer.seekTo(realStartTime + Common.CAPTURE_FRAME_TIME_GAP);
+                if (mPlayer != null) {
+                    mPlayer.seekTo(realStartTime + mPlayer.getDuration()); // set frame shown to last frame of video
+                }
                 mHandler.sendEmptyMessage(Common.REPLAY_OLD_VIDEO_DONE);      //after replay,login kids in
             }
         });
