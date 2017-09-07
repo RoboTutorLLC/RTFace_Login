@@ -8,10 +8,12 @@ public class UserInfo {
     public static final String ID = "_id";
     public static final String USERICON = "userIcon";
     public static final String USERVIDEO = "userVideo";
+    public static final String RECORDTIME = "recordTime";
 
     private int id;
     private String userIcon;
     private String userVideo;
+    private String recordTime;
 
     public int getID(){
         return id;
@@ -29,6 +31,13 @@ public class UserInfo {
 
     public String getUserVideo(){return userVideo;}
 
-    public void setUserVideo(String userVideo) {this.userVideo=userVideo;}
+    public void setUserVideo(String userVideo) {this.userVideo = userVideo;}
 
+    public String getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(String recordTime) {
+        this.recordTime = recordTime;
+    }
 }

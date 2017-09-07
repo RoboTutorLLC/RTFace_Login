@@ -1,5 +1,7 @@
 package com.example.iris.login1;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
@@ -8,7 +10,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import java.util.HashMap;
@@ -20,20 +24,20 @@ import java.util.Map;
 
 public class MyScrollView extends ScrollView implements View.OnClickListener {
 
-    public interface CurrentImageChangeListener      //图片滚动时的回调接口
-    {
+    //invoked when user scrolls the pictures
+    public interface CurrentImageChangeListener {
         void onCurrentImgChanged(int position, View viewIndicator);
     }
 
-    public interface OnItemClickListener          //条目点击时的回调
-    {
+    //invoked when user tap on the pictures in gallery
+    public interface OnItemClickListener {
         void onClick(View view, int pos);
     }
 
     private CurrentImageChangeListener mListener;
     private OnItemClickListener mOnClickListener;
     private static final String TAG = "MyHorizontalScrollView";
-    private LinearLayout mContainer;     //ListView中的LinearLayout
+    private LinearLayout mContainer;     //LinearLayout in ListView
 
     private int mChildWidth;
     private int mChildHeight;
@@ -42,13 +46,11 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
     private View mFirstView;
     private ScrollViewAdapter mAdapter;
     public int mCountOneScreen;
-    private int mScreenHeight;
+    public int mScreenHeight;
     private Map<View, Integer> mViewPos = new HashMap<View, Integer>();
 
-    public MyScrollView(Context context, AttributeSet attrs)
-    {
+    public MyScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        // 获得屏幕高度
         WindowManager wm = (WindowManager) context
                 .getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -58,152 +60,114 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mContainer = (LinearLayout) getChildAt(0);
     }
 
-    protected void loadNextImg()      //加载下一张图片
-    {
-        // 数组边界值计算
-        if (mCurrentIndex == mAdapter.getCount() - 1)
-        {
-            return;
-        }
-        //移除第一张图片，且将水平滚动位置置0
+    protected void loadNextImg() {
+        if (mCurrentIndex == mAdapter.getCount() - 1) return;
+
         scrollTo(0, 0);
         mViewPos.remove(mContainer.getChildAt(0));
         mContainer.removeViewAt(0);
 
-        //获取下一张图片，并且设置onclick事件，且加入容器中
-        View view = mAdapter.getView(++mCurrentIndex, null, mContainer);
+        View view = mAdapter.getView(++mCurrentIndex, null, mContainer);   //get the next picture
         view.setOnClickListener(this);
         mContainer.addView(view);
         mViewPos.put(view, mCurrentIndex);
 
-        //当前第一张图片小标
         mFristIndex++;
-        //如果设置了滚动监听则触发
-        if (mListener != null)
-        {
-            notifyCurrentImgChanged();
-        }
+        if (mListener != null) notifyCurrentImgChanged();
+
     }
 
-    protected void loadPreImg()    //加载前一张图片
-    {
-        //如果当前已经是第一张，则返回
+    protected void loadPreImg() {
+        //already the first img
         if (mFristIndex == 0)
             return;
-        //获得当前应该显示为第一张图片的下标
         int index = mCurrentIndex - mCountOneScreen;
-        if (index >= 0)
-        {
+        if (index >= 0) {
 //			mContainer = (LinearLayout) getChildAt(0);
-            //移除最后一张
             int oldViewPos = mContainer.getChildCount() - 1;
             mViewPos.remove(mContainer.getChildAt(oldViewPos));
             mContainer.removeViewAt(oldViewPos);
 
-            //将此View放入第一个位置
             View view = mAdapter.getView(index, null, mContainer);
             mViewPos.put(view, index);
             mContainer.addView(view, 0);
             view.setOnClickListener(this);
-            //水平滚动位置向左移动view的宽度个像素
             scrollTo(0, mChildHeight);
-            //当前位置--，当前第一个显示的下标--
             mCurrentIndex--;
             mFristIndex--;
-            //回调
             if (mListener != null)
-            {
                 notifyCurrentImgChanged();
-            }
         }
     }
 
-    public void notifyCurrentImgChanged()     //滚动时的回调
-    {
-        //先清除所有的背景色，点击时会设置为蓝色
+    public void notifyCurrentImgChanged() {
         System.out.println("sizeall"+mContainer.getChildCount());
         for (int i = 0; i < mContainer.getChildCount(); i++)
-        {
             mContainer.getChildAt(i).setBackgroundColor(Color.WHITE);
-        }
+
         mListener.onCurrentImgChanged(mFristIndex, mContainer.getChildAt(0));
     }
 
-    public void initDatas(ScrollViewAdapter mAdapter)    //初始化数据，设置数据适配器
-    {
+    public void initDatas(ScrollViewAdapter mAdapter, Boolean needConfirm) {
         this.mAdapter = mAdapter;
         mContainer = (LinearLayout) getChildAt(0);
-        // 获得适配器中第一个View
-        final View view = mAdapter.getView(0, null, mContainer);
-        if(view==null)
-            System.out.println("view=null");
-        mContainer.addView(view);
+        final View view = mAdapter.getCount() > 0 ? mAdapter.getView(0, null, mContainer) : null;
+        if (view == null) {
+            mCountOneScreen = 0;
+            mChildHeight = 0;
+            mChildWidth = 0;
+        } else {
+            mContainer.addView(view);
+            if (mChildWidth == 0 && mChildHeight == 0) {
+                int w = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+                int h = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+                view.measure(w, h);
+                mChildHeight = view.getMeasuredHeight();
+                mChildWidth = view.getMeasuredWidth();
+                Log.e(TAG, view.getMeasuredWidth() + "," + view.getMeasuredHeight());
 
-        // 强制计算当前View的宽和高
-        if (mChildWidth == 0 && mChildHeight == 0)
-        {
-            int w = MeasureSpec.makeMeasureSpec(0,
-                    MeasureSpec.UNSPECIFIED);
-            int h = MeasureSpec.makeMeasureSpec(0,
-                    MeasureSpec.UNSPECIFIED);
-            view.measure(w, h);
-            mChildHeight = view.getMeasuredHeight();
-            mChildWidth = view.getMeasuredWidth();
-            Log.e(TAG, view.getMeasuredWidth() + "," + view.getMeasuredHeight());
-            mChildHeight = view.getMeasuredHeight();
-            // 计算每次加载多少个View
-            mCountOneScreen = (mScreenHeight / mChildHeight == 0)?mScreenHeight / mChildHeight+1:mScreenHeight / mChildHeight+2;
-
-            Log.e(TAG, "mCountOneScreen = " + mCountOneScreen
-                    + " ,mChildWidth = " + mChildWidth);
+                mCountOneScreen = (mScreenHeight / mChildHeight == 0) ? mScreenHeight / mChildHeight + 1 : mScreenHeight / mChildHeight + 2;
+                Log.e(TAG, "mCountOneScreen = " + mCountOneScreen + " ,mChildWidth = " + mChildWidth);
+            }
         }
-        //初始化第一屏幕的元素
-        initFirstScreenChildren(mCountOneScreen);
+        initFirstScreenChildren(mCountOneScreen, needConfirm);
     }
 
-    public void initFirstScreenChildren(int mCountOneScreen)  //加载第一屏的View
-    {
+    private void initFirstScreenChildren(int mCountOneScreen, Boolean needConfirm) {
         mContainer = (LinearLayout) getChildAt(0);
         mContainer.removeAllViews();
         mViewPos.clear();
 
-        for (int i = 0; i < mCountOneScreen; i++)
-        {
-            if(i >= mAdapter.accountNumber)
-                break;
+        for (int i = 0; i < mAdapter.accountNumber; i++) {
             View view = mAdapter.getView(i, null, mContainer);
             view.setOnClickListener(this);
             mContainer.addView(view);
             mViewPos.put(view, i);
             mCurrentIndex = i;
         }
+
         if (mListener != null)
-        {
-            notifyCurrentImgChanged();
-        }
+            if (mCountOneScreen > 0 || needConfirm)
+                notifyCurrentImgChanged();
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev)
-    {
+    public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction())
         {
             case MotionEvent.ACTION_MOVE:
 //			Log.e(TAG, getScrollX() + "");
 
                 int scrollY = getScrollY();
-                // 如果当前scrollX为view的宽度，加载下一张，移除第一张
                 if (scrollY >= mChildHeight)
                 {
                     loadNextImg();
                 }
-                // 如果当前scrollX = 0， 往前设置一张，移除最后一张
                 if (scrollY == 0)
                 {
                     loadPreImg();
@@ -212,27 +176,62 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
         }
         return super.onTouchEvent(ev);
     }
+
     @Override
-    public void onClick(View v)
-    {
-        if (mOnClickListener != null)
-        {
+    public void onClick(View v) {
+        if (mOnClickListener != null) {
             for (int i = 0; i < mContainer.getChildCount(); i++)
-            {
                 mContainer.getChildAt(i).setBackgroundColor(Color.WHITE);
-            }
+
             mOnClickListener.onClick(v, mViewPos.get(v));
             mAdapter.accountChosen = mViewPos.get(v);
         }
     }
 
-    public void setOnItemClickListener(OnItemClickListener mOnClickListener)
-    {
+    public void setOnItemClickListener(OnItemClickListener mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
     }
 
-    public void setCurrentImageChangeListener(CurrentImageChangeListener mListener)
-    {
+    public void setCurrentImageChangeListener(CurrentImageChangeListener mListener) {
         this.mListener = mListener;
+    }
+
+    public void shrinkPicture(ScrollViewAdapter mAdapter, int surfaceWidth, int surfaceHeight) {
+        View view = mContainer.getChildAt(0);
+        view.bringToFront();
+        int w = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        int h = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        view.measure(w, h);
+        mChildHeight = view.getMeasuredHeight();
+        mChildWidth = view.getMeasuredWidth();
+
+        ObjectAnimator scaleX, scaleY, animX, animY;
+
+        scaleX = ObjectAnimator.ofFloat(view, "scaleX", surfaceWidth / mChildWidth, 1);
+        scaleY = ObjectAnimator.ofFloat(view, "scaleY", surfaceHeight / mChildHeight, 1);
+        animX = ObjectAnimator.ofFloat(view, "translationX", view.getTranslationX() + surfaceWidth, view.getTranslationX());
+        animY = ObjectAnimator.ofFloat(view, "translationY", view.getTranslationY() + surfaceHeight, view.getTranslationY());
+
+        AnimatorSet animSet = new AnimatorSet();
+        animSet.playTogether(scaleX, scaleY, animX, animY);
+        animSet.setDuration(5000);
+        animSet.start();
+    }
+
+    public boolean exceedScreen(int numOfPictures) {
+        return (numOfPictures - 1) * mChildHeight > mScreenHeight? true : false;
+    }
+
+    public void clearAllBackground() {
+        for (int i = 0; i < mContainer.getChildCount(); i++)
+            mContainer.getChildAt(i).setBackgroundColor(Color.WHITE);
+    }
+
+    public void emphasizeNewPicture() {
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, 0, 0, 0);
+        RelativeLayout rl = (RelativeLayout)mContainer.getChildAt(0);
+        ImageView iv = (ImageView)rl.getChildAt(0);
+        iv.setLayoutParams(lp);
     }
 }

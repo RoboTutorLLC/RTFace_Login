@@ -11,29 +11,33 @@ import android.util.Log;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     public static final String TB_NAME = "users";
-    public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
+
+    public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
+
     @Override
-    public void onCreate(SQLiteDatabase db){
+    public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS "+
                         TB_NAME + "(" +
                         UserInfo.ID + " integer," +
                         UserInfo.USERICON + " varchar," +
-                        UserInfo.USERVIDEO + " varchar" +
+                        UserInfo.USERVIDEO + " varchar, " +
+                        UserInfo.RECORDTIME + " varchar" +
                         ")"
         );
         Log.e("database", "onCreate");
     }
+
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        db.execSQL("DROP TABLE IF EXISTS" + TB_NAME);
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TB_NAME);
         onCreate(db);
         Log.e("database", "onUpgrade");
     }
 
-    public void updateColumn(SQLiteDatabase db, String oldColumn, String newColumn, String typeColumn){
+    public void updateColumn(SQLiteDatabase db, String oldColumn, String newColumn, String typeColumn) {
         try {
             db.execSQL(
                     "ALTER TABLE" +

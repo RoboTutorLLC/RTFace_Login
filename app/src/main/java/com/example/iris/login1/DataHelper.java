@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DataHelper {
     private static String DB_NAME = "myXprizeProject.db";
-    private static int DB_VERSION = 2;
+    private static int DB_VERSION = 3;
     private SQLiteDatabase db;
     private SqliteHelper dbHelper;
 
@@ -38,6 +38,7 @@ public class DataHelper {
             user.setID(Integer.parseInt(cursor.getString(0)));
             user.setUserIcon(cursor.getString(1));
             user.setUserVideo(cursor.getString(2));
+            user.setRecordTime(cursor.getString(3));
             userList.add(user);
             cursor.moveToNext();
         }
@@ -50,6 +51,7 @@ public class DataHelper {
         values.put(UserInfo.ID, user.getID());
         values.put(UserInfo.USERICON, user.getUserIcon());
         values.put(UserInfo.USERVIDEO,user.getUserVideo());
+        values.put(UserInfo.RECORDTIME, user.getRecordTime());
         Long uid = db.insert(SqliteHelper.TB_NAME, null, values);
         Log.e("saveUserInfo", uid + "");
         return uid;
@@ -66,7 +68,7 @@ public class DataHelper {
 
     public int deletUserInfo(String ID){
         int id = db.delete(SqliteHelper.TB_NAME, UserInfo.ID + "=" + ID, null);
-        System.out.println("Delete UserInfo "+ID);
+        System.out.println("Delete UserInfo " + ID);
         return id;
     }
 }

@@ -20,37 +20,31 @@ public class ScrollViewAdapter {
     private LayoutInflater mInflater;
     private List<Bitmap> mDatas;
 
-    public ScrollViewAdapter(Context context, List<Bitmap> mDatas)
-    {
+    public ScrollViewAdapter(Context context, List<Bitmap> mDatas) {
         this.mContext = context;
         mInflater = LayoutInflater.from(context);
         this.mDatas = mDatas;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return mDatas.size();
     }
 
-    public Bitmap getItem(int position)
-    {
+    public Bitmap getItem(int position) {
         return mDatas.get(position);
     }
 
-    public long getItemId(int position)
-    {
+    public long getItemId(int position) {
         return position;
     }
 
-    public void setMDatas(List<Bitmap> mDatas_){
+    public void setMDatas(List<Bitmap> mDatas_) {
         this.mDatas=mDatas_;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
-        if (convertView == null)
-        {
+        if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = mInflater.inflate(
                     R.layout.activity_index_gallery_item, parent, false);
@@ -58,8 +52,7 @@ public class ScrollViewAdapter {
                     .findViewById(R.id.id_index_gallery_item_image);
 
             convertView.setTag(viewHolder);
-        } else
-        {
+        } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.mImg.setImageBitmap(mDatas.get(position));
@@ -67,8 +60,8 @@ public class ScrollViewAdapter {
         return convertView;
     }
 
-    private class ViewHolder
-    {
+    private class ViewHolder {
         ImageView mImg;
     }
+
 }
