@@ -36,4 +36,7 @@ public class Common {
 
     public static final String LANG_SW = "LANG_SW";
     public static final String LANG_EN = "LANG_EN";
+
+    // RoboTutor Package address
+    public static final String ROBOTUTOR_PACKAGE_ADDRESS = "cmu.xprize.robotutor";
 }

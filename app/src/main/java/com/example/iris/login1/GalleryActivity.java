@@ -2,6 +2,7 @@ package com.example.iris.login1;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -387,7 +388,14 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         mpAfterDeciding1.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                System.exit(0);
+
+                // when the Confirm button is tapped, launch RoboTutor
+                // TODO pass the unique student id
+                // TODO test more fervently
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(Common.ROBOTUTOR_PACKAGE_ADDRESS);
+                if (launchIntent != null) {
+                    startActivity(launchIntent);
+                }
             }
         });
         mpAfterDeciding2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -1009,6 +1017,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         super.onDestroy();
         pauseAllAudios();
         Log.i("RecordDemoActivity", "onDestroy()");
+
+        // TODO TEST will this pop up in front of RoboTutor?
+        // TODO TEST more fervently
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+        if (launchIntent != null) {
+            startActivity(launchIntent);
     }
 
     private void pauseAllAudios() {
