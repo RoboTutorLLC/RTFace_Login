@@ -258,7 +258,7 @@ public class RecordThread extends Thread{
 
         int seekToMe = (int) (relativeStartTime - trailingSilence);
         Log.i("DEBUG", "relativeStartTime=" + relativeStartTime + "; trailingSilence=" + trailingSilence + "; diff=" + seekToMe);
-        mPlayer.seekTo(seekToMe);
+        mPlayer.seekTo(2010);
         //mPlayer.seekTo(0);
 
         mPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {

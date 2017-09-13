@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FaceLogin.iml" filepath="$PROJECT_DIR$/FaceLogin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RTFace_Login.iml" filepath="$PROJECT_DIR$/RTFace_Login.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
