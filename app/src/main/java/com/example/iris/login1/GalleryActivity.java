@@ -95,8 +95,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean dislike_stopFlash = false;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    private String languge = LANG_EN;
+
     private STATE _audioPlaying;
+    private String languge = LANG_SW;
 
     private MediaPlayer playMediaInAccept(MediaPlayer mp, int file) {
         mp = MediaPlayer.create(this, playListAccept[file]);
@@ -227,10 +228,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // formerly mpStart3
                     case TO_SEE_MORE_PICTURES:
                         if (capture.getVisibility() == View.VISIBLE) {
-
                             _audioPlaying = SLIDE_THEM_LIKE_THIS;
                             releaseAndPlayAudioFile(playListStart[3]);
-
                             slideFinger.setVisibility(View.VISIBLE);
                             mainHandler.postDelayed(slideGallery, DELAY_TO_SHOW_CHANGE_OF_FINGER);
                         }
@@ -239,6 +238,29 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // formerly mpStart4
                     case SLIDE_THEM_LIKE_THIS:
                         // do nothing
+                        break;
+
+                    case PLEASE_SAY_YOUR_NAME:
+                        //prompt "please say your name", then set timer to stop recording
+                        Log.w("TIMING", "PLEASE SAY YOUR NAME " + System.currentTimeMillis());
+                        thread.setTimerToStopRecording(); // XXX 2
+                        Log.w("TIMING", "PLEASE SAY YOUR NAME " + System.currentTimeMillis());
+                        break;
+
+                    case YOU_SAID:
+                        //prompt "you said", then replay the newly taken video
+
+                        long silenceInMs = 0;
+                        switch(languge) {
+                            case LANG_EN:
+                                silenceInMs = TRAILING_SILENCE_EN;
+                                break;
+                            case LANG_SW:
+                                silenceInMs = TRAILING_SILENCE_SW;
+                                break;
+                        }
+                        Log.i("TIMING", "setting record at " + silenceInMs);
+                        thread.newReplay(thread.vPath, silenceInMs);
                         break;
 
                     // formerly mpStart5
@@ -253,16 +275,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // formerly mpStart6
                     case TAP_HERE_RECORD:
                         // do nothing
-                        break;
-
-                    case PLEASE_SAY_YOUR_NAME:
-                        //prompt "please say your name", then set timer to stop recording
-                        thread.setTimerToStopRecording();
-                        break;
-
-                    case YOU_SAID:
-                        //prompt "you said", then replay the newly taken video
-                        thread.newReplay(thread.vPath);
                         break;
 
                     case IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME:
@@ -439,6 +451,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                 //play clicked video
                 if (pv != null) pv.stopPlayingVideo();
+                int startTimeWithSilence = realStartTime - (languge.equals(LANG_EN) ? Common.TRAILING_SILENCE_EN : Common.TRAILING_SILENCE_SW);
                 pv = new playVideo(realStartTime, surfaceview, surfaceHolder, v, p, mHandler, GalleryActivity.this, false);
                 pv.start();
                 view.setBackgroundColor(Color.YELLOW);
@@ -610,7 +623,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         curUser.setID(accountsNumber);
         curUser.setUserIcon(thread.pPath);
         curUser.setUserVideo(thread.vPath);
-        curUser.setRecordTime(thread.realStartTime + "");
+        curUser.setRecordTime(thread.relativeStartTime + "");
         dbHelper.saveUserInfo(curUser);
 
         accountsNumber++;

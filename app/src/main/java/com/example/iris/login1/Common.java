@@ -21,6 +21,13 @@ public class Common {
     public static final int RECORD_TIME = 2000;
     public static final int CAPTURE_FRAME_TIME_GAP = 1000;
 
+    // indicate duration of RECORD prompt
+
+    // open the "[eng|swa]_pleasesayourname.wav" audio files with a sound-editing app like
+    // Audacity and check the length of silence at the end
+    public static final int TRAILING_SILENCE_EN = 400;
+    public static final int TRAILING_SILENCE_SW = 1200;
+
     //indicate type of message
     public static final int READY_TO_RECORD = 1;
     public static final int RECORD_DONE = 2;

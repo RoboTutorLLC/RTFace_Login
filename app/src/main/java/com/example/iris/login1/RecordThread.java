@@ -1,18 +1,15 @@
 package com.example.iris.login1;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,7 +30,8 @@ public class RecordThread extends Thread{
     private SurfaceHolder surfaceHolder;
     public MediaPlayer mPlayer;
     private int recordTime;
-    public int realStartTime;
+    public long absoluteStartTime;
+    public long relativeStartTime;
     private SurfaceView surfaceview;// place to show the video
     public Camera mCamera;
     public int chooseReplay = 0;
@@ -133,7 +131,10 @@ public class RecordThread extends Thread{
         mediarecorder.setVideoEncodingBitRate(10*1024*1024);
         mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());
         try {
+            long before = System.currentTimeMillis();
             mediarecorder.prepare();
+            long after = System.currentTimeMillis();
+            Log.i("DEBUG", "prepare:" + (after - before));
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -141,14 +142,21 @@ public class RecordThread extends Thread{
         }
 
         // start to record
+
+        long before = System.currentTimeMillis();
         mediarecorder.start();
-        //initiate realStartTime
-        realStartTime = new Long(System.currentTimeMillis()).intValue();
+        long after = System.currentTimeMillis();
+        Log.i("DEBUG", "start:" + (after - before));
+        //initiate absoluteStartTime
+        absoluteStartTime = System.currentTimeMillis();
         mHandler.sendEmptyMessage(Common.READY_TO_RECORD);
     }
 
     public void setTimerToStopRecording() {
-        realStartTime = new Long(System.currentTimeMillis()).intValue() - realStartTime;
+        Log.i("DEBUG", "absoluteStartTime=" + absoluteStartTime);
+        relativeStartTime = System.currentTimeMillis() - absoluteStartTime; // XXX
+        Log.i("DEBUG", "relativeStartTime=" + relativeStartTime);
+        Log.i("DEBUG", "recordTime=" + recordTime);
         //set timer, stop recording in 3s.
         Timer timer = new Timer();
         timer.schedule(new TimerThread(), recordTime);
@@ -201,7 +209,7 @@ public class RecordThread extends Thread{
             mmr.setDataSource(file.getAbsolutePath());
             //we need to transfer the real start time from ms to us
             //Capture frame (call it F) [2 sec after] when prompt ends.
-            Bitmap bitmap = mmr.getFrameAtTime((realStartTime + Common.CAPTURE_FRAME_TIME_GAP) * 1000);
+            Bitmap bitmap = mmr.getFrameAtTime((relativeStartTime + Common.CAPTURE_FRAME_TIME_GAP) * 1000);
             if (bitmap != null) {
                 createImageFile();
                 File pictureFile = new File(pPath);
@@ -225,7 +233,7 @@ public class RecordThread extends Thread{
      * replay the new video
      * @param vp
      */
-    public void newReplay(String vp) {
+    public void newReplay(String vp, long trailingSilence) { // XXX
         isPlaying = true;
         mPlayer = new MediaPlayer();
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -234,7 +242,7 @@ public class RecordThread extends Thread{
             @Override
             public void onCompletion(MediaPlayer arg0) {
                 backToFrame();
-                mHandler.sendEmptyMessage(Common.REPLAY_NEW_VIDEO_DONE);
+                mHandler.sendEmptyMessage(Common.REPLAY_NEW_VIDEO_DONE); // XXX
             }
         });
 
@@ -246,7 +254,13 @@ public class RecordThread extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mPlayer.seekTo(realStartTime);
+
+
+        int seekToMe = (int) (relativeStartTime - trailingSilence);
+        Log.i("DEBUG", "relativeStartTime=" + relativeStartTime + "; trailingSilence=" + trailingSilence + "; diff=" + seekToMe);
+        mPlayer.seekTo(seekToMe);
+        //mPlayer.seekTo(0);
+
         mPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
             @Override
             public void onSeekComplete(MediaPlayer mediaPlayer) {
@@ -259,7 +273,7 @@ public class RecordThread extends Thread{
     public void backToFrame() {
         isPlaying = false;
         if (mPlayer != null) {
-            mPlayer.seekTo(realStartTime + mPlayer.getDuration()); // set frame shown to last frame of video
+            mPlayer.seekTo((int) relativeStartTime + mPlayer.getDuration()); // set frame shown to last frame of video
         }
 
 
