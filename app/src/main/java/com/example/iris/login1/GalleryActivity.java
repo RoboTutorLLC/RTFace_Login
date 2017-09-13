@@ -26,6 +26,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.iris.login1.Common.*;
+import static com.example.iris.login1.Common.STATE.*;
+
 public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     //Lack for Swahili audio here, replace them later
@@ -51,26 +54,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private int[] playListDecide;
     private int[] playListAfterDeciding;
 
-    //mpIntro: This is roboTutor
-    private MediaPlayer mpIntro;
-    //mpStart1 & mpStart2: If you see your picture, please tap on your picture
-    //mpStart3 & mpStart4: To see more pictures, slide them like this.
-    //mpStart5 & mpStart6: If you don't find your picture, tap here.
-    private MediaPlayer mpStart1, mpStart2, mpStart3, mpStart4, mpStart5, mpStart6;
-    //mpRecord1: Please say your name.
-    //mpRecord2: You said
-    private MediaPlayer mpRecord1, mpRecord2;
-    //mpAccept1 & mpAccept2 & mpAccept3: If you like your picture and how you said your name, please tap here, otherwise tap here.
-    private MediaPlayer mpAccept1, mpAccept2, mpAccept3;
-    //mpAfterAccepting1 & mpAfterAccepting2: Good! Now...
-    //mpAfterAccepting3: OK, let's try again.
-    private MediaPlayer mpAfterAccepting1, mpAfterAccepting2, mpAfterAccepting3;
-    //mpDecide1 & mpDecide2: If this is you, please tap here.
-    //mpDecide3 & mpDecide4: If this is not you, please tap here.
-    private MediaPlayer mpDecide1, mpDecide2, mpDecide3, mpDecide4;
-    //mpAfterDeciding1: Let's get started.
-    //mpAfterDeciding2: Let's try again.
-    private MediaPlayer mpAfterDeciding1, mpAfterDeciding2;
+    private MediaPlayer mpAll;
+    private MediaPlayer.OnCompletionListener onCompletionListener;
 
     private SurfaceView surfaceviewFullScreen;
     private ImageButton logo;
@@ -110,11 +95,20 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean dislike_stopFlash = false;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    private String languge = Common.LANG_EN;
+    private String languge = LANG_EN;
+    private STATE _audioPlaying;
 
     private MediaPlayer playMediaInAccept(MediaPlayer mp, int file) {
         mp = MediaPlayer.create(this, playListAccept[file]);
         return mp;
+    }
+
+    private void releaseAndPlayAudioFile(int audioFile) {
+        mpAll.release();
+        mpAll = MediaPlayer.create(this, audioFile);
+        mpAll.setOnCompletionListener(onCompletionListener);
+        mpAll.seekTo(0);
+        mpAll.start();
     }
 
     @Override
@@ -133,6 +127,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             mGalleryScrollView.clearAllBackground();
         }
 
+        _audioPlaying = THIS_IS_ROBOTUTOR;
+
         SurfaceHolder holder = this.surfaceview.getHolder();// get holder
         holder.addCallback(this);    //add the callback interface to the holder
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -142,7 +138,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         setLikeOnClickListener();
         setDislikeOnClickListener();
 
-        mainHandler.postDelayed(playVideoOfGoodTapping, Common.DELAY_TO_SHOW_VIDEO_FULL_SCREEN);
+        mainHandler.postDelayed(playVideoOfGoodTapping, DELAY_TO_SHOW_VIDEO_FULL_SCREEN);
     }
 
     private void initVarsOfViews() {
@@ -167,8 +163,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private void initVarsOfMediaPlayer() {
         //choose audio according to language version
         switch(languge) {
-            case Common.LANG_EN:
-                mpIntro = MediaPlayer.create(this, R.raw.eng_thisisrobotutor);
+            case LANG_EN:
+                mpAll = MediaPlayer.create(this, R.raw.eng_thisisrobotutor);
                 playListStart = mediaListStartEng;
                 playListRecord = mediaListRecordEng;
                 playListAccept = mediaListAcceptEng;
@@ -177,8 +173,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 playListAfterDeciding = mediaListAfterDecidingEng;
                 break;
 
-            case Common.LANG_SW:
-                mpIntro = MediaPlayer.create(this, R.raw.swa_thisisrobotutor);
+            case LANG_SW:
+                mpAll = MediaPlayer.create(this, R.raw.swa_thisisrobotutor);
                 playListStart = mediaListStartSwa;
                 playListRecord = mediaListRecordSwa;
                 playListAccept = mediaListAcceptSwa;
@@ -188,236 +184,187 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 break;
         }
 
-        mpStart1 = MediaPlayer.create(this,playListStart[0]);
-        mpStart2 = MediaPlayer.create(this,playListStart[1]);
-        mpStart3 = MediaPlayer.create(this,playListStart[2]);
-        mpStart4 = MediaPlayer.create(this,playListStart[3]);
-        mpStart5 = MediaPlayer.create(this,playListStart[4]);
-        mpStart6 = MediaPlayer.create(this,playListStart[5]);
-
-        mpRecord1 = MediaPlayer.create(this,playListRecord[0]);
-        mpRecord2 = MediaPlayer.create(this,playListRecord[1]);
-
-        mpAccept1 = MediaPlayer.create(this,playListAccept[0]);
-        mpAccept2 = MediaPlayer.create(this,playListAccept[1]);
-        mpAccept3 = MediaPlayer.create(this,playListAccept[2]);
-
-        mpAfterAccepting1 = MediaPlayer.create(this,playListAfterAccepting[0]);
-        mpAfterAccepting2 = MediaPlayer.create(this,playListAfterAccepting[1]);
-        mpAfterAccepting3 = MediaPlayer.create(this,playListAfterAccepting[2]);
-
-        mpDecide1 = MediaPlayer.create(this,playListDecide[0]);
-        mpDecide2 = MediaPlayer.create(this,playListDecide[1]);
-        mpDecide3 = MediaPlayer.create(this,playListDecide[2]);
-        mpDecide4 = MediaPlayer.create(this,playListDecide[3]);
-
-        mpAfterDeciding1 = MediaPlayer.create(this,playListAfterDeciding[0]);
-        mpAfterDeciding2 = MediaPlayer.create(this,playListAfterDeciding[1]);
-
         setMeidaPlayerListeners();
     }
 
     private void setMeidaPlayerListeners() {
 
-        mpIntro.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        onCompletionListener = new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                toSTART();
-            }
-        });
 
-        mpStart1.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                if (capture.getVisibility() == View.VISIBLE) {
-                    mpStart2.seekTo(0);
-                    mpStart2.start();
+                switch (_audioPlaying) {
+
+                    // formerly mpIntro
+                    case THIS_IS_ROBOTUTOR:
+                        toSTART();
+                        break;
+
+                    // formerly mpStart1
+                    case IF_YOU_SEE_YOUR_PICTURE:
+
+                        if (capture.getVisibility() == View.VISIBLE) {
+                            _audioPlaying = PLEASE_TAP_ON_YOUR_PICTURE;
+                            releaseAndPlayAudioFile(playListStart[1]);
+                        }
+                        break;
+
+                    // formerly mpStart2
+                    case PLEASE_TAP_ON_YOUR_PICTURE:
+
+                        // formerly mpStart2
+                        if (capture.getVisibility() == View.VISIBLE) {
+                            if (mGalleryScrollView.exceedScreen(userInfo.size())) {
+                                _audioPlaying = TO_SEE_MORE_PICTURES;
+                                releaseAndPlayAudioFile(playListStart[2]);
+                            } else {
+                                _audioPlaying = IF_YOU_DONT_FIND_YOUR_PICTURE;
+                                releaseAndPlayAudioFile(playListStart[4]);
+                            }
+                        }
+                        break;
+
+                    // formerly mpStart3
+                    case TO_SEE_MORE_PICTURES:
+                        if (capture.getVisibility() == View.VISIBLE) {
+
+                            _audioPlaying = SLIDE_THEM_LIKE_THIS;
+                            releaseAndPlayAudioFile(playListStart[3]);
+
+                            slideFinger.setVisibility(View.VISIBLE);
+                            mainHandler.postDelayed(slideGallery, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+                        }
+                        break;
+
+                    // formerly mpStart4
+                    case SLIDE_THEM_LIKE_THIS:
+                        // do nothing
+                        break;
+
+                    // formerly mpStart5
+                    case IF_YOU_DONT_FIND_YOUR_PICTURE:
+                        if (capture.getVisibility() == View.VISIBLE) {
+                            _audioPlaying = TAP_HERE_RECORD; // XXX is there a difference between this and another tap_here_record??
+                            releaseAndPlayAudioFile(playListStart[5]);
+                            startFlash(FLASH_CAPTURE);
+                        }
+                        break;
+
+                    // formerly mpStart6
+                    case TAP_HERE_RECORD:
+                        // do nothing
+                        break;
+
+                    case PLEASE_SAY_YOUR_NAME:
+                        //prompt "please say your name", then set timer to stop recording
+                        thread.setTimerToStopRecording();
+                        break;
+
+                    case YOU_SAID:
+                        //prompt "you said", then replay the newly taken video
+                        thread.newReplay(thread.vPath);
+                        break;
+
+                    case IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME:
+                        if (needConfirm) {
+                            _audioPlaying = TAP_HERE_LIKE_PICTURE;
+                            releaseAndPlayAudioFile(playListAccept[1]);
+                            startFlash(FLASH_LIKE);
+                        }
+                        break;
+
+                    case TAP_HERE_LIKE_PICTURE:
+                        if (needConfirm) {
+                            _audioPlaying = TAP_HERE_DISLIKE_PICTURE;
+                            releaseAndPlayAudioFile(playListAccept[2]);
+                            startFlash(FLASH_DISLIKE);
+                        }
+                        break;
+
+                    case TAP_HERE_DISLIKE_PICTURE:
+                        if (needConfirm) {
+                            mHandler.postDelayed(toACCEPT, DELAY_TO_REPROMPT);
+                        }
+                        break;
+
+                    case GOOD:
+                        _audioPlaying = NOW;
+                        releaseAndPlayAudioFile(playListAfterAccepting[1]);
+                        break;
+
+                    case NOW:
+                        toSTART();
+                        break;
+
+                    case OKAY_LETS_TRY_AGAIN:
+                        toSTART();
+                        break;
+
+                    case IF_THIS_IS_YOU:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_IF_IS_YOU;
+                            releaseAndPlayAudioFile(playListDecide[1]);
+                            startFlash(FLASH_LIKE);
+                        }
+                        break;
+
+                    case TAP_HERE_IF_IS_YOU:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = IF_THIS_IS_NOT_YOU;
+                            releaseAndPlayAudioFile(playListDecide[2]);
+                        }
+                        break;
+
+                    case IF_THIS_IS_NOT_YOU:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_IF_IS_NOT_YOU;
+                            releaseAndPlayAudioFile(playListDecide[3]);
+                            startFlash(FLASH_DISLIKE);
+                        }
+                        break;
+
+                    case TAP_HERE_IF_IS_NOT_YOU:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
+                        }
+                        break;
+
+                    case LETS_GET_STARTED:
+                        // when the Confirm button is tapped, launch RoboTutor
+                        // TODO pass the unique student id
+                        // TODO test more fervently
+                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(ROBOTUTOR_PACKAGE_ADDRESS);
+                        if (launchIntent != null) {
+                            startActivity(launchIntent);
+                        }
+                        // System.exit(0);
+                        break;
+
+                    case LETS_TRY_AGAIN:
+                        toSTART();
+                        break;
+
                 }
-            }
-        });
 
-        mpStart2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                if (capture.getVisibility() == View.VISIBLE) {
-                    if (mGalleryScrollView.exceedScreen(userInfo.size())) {
-                        mpStart3.seekTo(0);
-                        mpStart3.start();
-                    } else {
-                        mpStart5.seekTo(0);
-                        mpStart5.start();
-                    }
-                }
             }
-        });
+        };
+        mpAll.setOnCompletionListener(onCompletionListener);
 
-        mpStart3.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                if (capture.getVisibility() == View.VISIBLE) {
-                    mpStart4.seekTo(0);
-                    mpStart4.start();
-
-                    slideFinger.setVisibility(View.VISIBLE);
-                    mainHandler.postDelayed(slideGallery, Common.DELAY_TO_SHOW_CHANGE_OF_FINGER);
-                }
-            }
-        });
-
-        mpStart5.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                if (capture.getVisibility() == View.VISIBLE) {
-                    mpStart6.seekTo(0);
-                    mpStart6.start();
-                    startFlash(Common.FLASH_CAPTURE);
-                }
-            }
-        });
-
-        mpRecord1.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                //prompt "please say your name", then set timer to stop recording
-                thread.setTimerToStopRecording();
-            }
-        });
-
-        mpRecord2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                //prompt "you said", then replay the newly taken video
-                thread.newReplay(thread.vPath);
-            }
-        });
-
-        mpAccept1.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                if (needConfirm) {
-                    mpAccept2.seekTo(0);
-                    mpAccept2.start();
-                    startFlash(Common.FLASH_LIKE);
-                }
-            }
-        });
-
-        mpAccept2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                if (needConfirm) {
-                    mpAccept3.seekTo(0);
-                    mpAccept3.start();
-                    startFlash(Common.FLASH_DISLIKE);
-                }
-            }
-        });
-
-        mpAccept3.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if (needConfirm) {
-                    mHandler.postDelayed(toACCEPT, Common.DELAY_TO_REPROMPT);
-                }
-            }
-        });
-
-        mpAfterAccepting1.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mpAfterAccepting2.seekTo(0);
-                mpAfterAccepting2.start();
-            }
-        });
-
-        mpAfterAccepting2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                toSTART();
-            }
-        });
-
-        mpAfterAccepting3.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                toSTART();
-            }
-        });
-
-        mpDecide1.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
-                    mpDecide2.seekTo(0);
-                    mpDecide2.start();
-                    startFlash(Common.FLASH_LIKE);
-                }
-            }
-        });
-
-        mpDecide2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
-                    mpDecide3.seekTo(0);
-                    mpDecide3.start();
-                }
-            }
-        });
-
-        mpDecide3.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
-                    mpDecide4.seekTo(0);
-                    mpDecide4.start();
-                    startFlash(Common.FLASH_DISLIKE);
-                }
-            }
-        });
-
-        mpDecide4.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
-                    mHandler.postDelayed(toDECIDE, Common.DELAY_TO_REPROMPT);
-                }
-            }
-        });
-
-        mpAfterDeciding1.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-
-                // when the Confirm button is tapped, launch RoboTutor
-                // TODO pass the unique student id
-                // TODO test more fervently
-                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(Common.ROBOTUTOR_PACKAGE_ADDRESS);
-                if (launchIntent != null) {
-                    startActivity(launchIntent);
-                }
-                // System.exit(0);
-            }
-        });
-        mpAfterDeciding2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                toSTART();
-            }
-        });
     }
 
     private void toSTART() {
         if (capture.getVisibility() == View.VISIBLE) {
             if (userInfo.size() > 0) {
                 //If you see your picture, please tap on it, otherwise tap here.
-                mpStart1.seekTo(0);
-                mpStart1.start();
+                _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
+                releaseAndPlayAudioFile(playListStart[0]);
+                //mpStart1.seekTo(0);
+                //mpStart1.start();
             } else {
                 //Please tap here
-                mpStart6.seekTo(0);
-                mpStart6.start();
-                startFlash(Common.FLASH_CAPTURE);
+                _audioPlaying = TAP_HERE_RECORD;
+                releaseAndPlayAudioFile(playListStart[5]);
+                startFlash(FLASH_CAPTURE);
             }
         }
     }
@@ -426,8 +373,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         @Override
         public void run() {
             if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
-                mpDecide1.seekTo(0);
-                mpDecide1.start();
+                _audioPlaying = IF_THIS_IS_YOU;
+                releaseAndPlayAudioFile(playListDecide[0]);
             }
         }
     };
@@ -436,8 +383,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         @Override
         public void run() {
             if (needConfirm) {
-                mpAccept1.seekTo(0);
-                mpAccept1.start();
+                _audioPlaying = IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME;
+                releaseAndPlayAudioFile(playListAccept[0]);
             }
         }
     };
@@ -472,8 +419,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 //if waiting for confirm to save new record
                 if(needConfirm) {
                     needConfirm = false;
-                    stopFlash(Common.FLASH_LIKE);
-                    stopFlash(Common.FLASH_DISLIKE);
+                    stopFlash(FLASH_LIKE);
+                    stopFlash(FLASH_DISLIKE);
                     //If waiting for confirm && user tap on an old one, delete the temporary new one.
                     thread.deleteVideoAndPicture();
                 }
@@ -516,7 +463,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             @Override
             public void onClick(View v) {
                 logo.setVisibility(View.INVISIBLE);
-                mpIntro.start();
+                mpAll.start();
             }
         });
     }
@@ -534,7 +481,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         capture.setImageResource(R.drawable.capture);
                         pauseAllAudios();
                         capture.setVisibility(View.GONE);
-                        stopFlash(Common.FLASH_CAPTURE);
+                        stopFlash(FLASH_CAPTURE);
                         if (pv != null) {
                             pv.stopPlayingVideo();
                             pv.interrupt();
@@ -550,7 +497,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             thread.interrupt();
                         }
                         surfaceHolder = surfaceview.getHolder();
-                        thread = new RecordThread(Common.RECORD_TIME, surfaceview, surfaceHolder, accountsNumber, dbHelper, mDatas, mHandler);
+                        thread = new RecordThread(RECORD_TIME, surfaceview, surfaceHolder, accountsNumber, dbHelper, mDatas, mHandler);
                         thread.start();
                         break;
                     default:
@@ -573,8 +520,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         like.setImageResource(R.drawable.like);
                         if (pv != null) pv.stopPlayingVideo();
                         if (thread != null) thread.stopPlayingVideo();
-                        stopFlash(Common.FLASH_LIKE);
-                        stopFlash(Common.FLASH_DISLIKE);
+                        stopFlash(FLASH_LIKE);
+                        stopFlash(FLASH_DISLIKE);
                         like.setVisibility(View.INVISIBLE);
                         dislike.setVisibility(View.INVISIBLE);
                         capture.setVisibility(View.VISIBLE);
@@ -587,11 +534,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             saveUserInfo();
                             needConfirm = false;
 
-                            mpAfterAccepting1.seekTo(0);
-                            mpAfterAccepting1.start();
+                            _audioPlaying = GOOD;
+                            releaseAndPlayAudioFile(playListAfterAccepting[0]);
                         } else {
-                            mpAfterDeciding1.seekTo(0);
-                            mpAfterDeciding1.start();
+                            _audioPlaying = LETS_GET_STARTED;
+                            releaseAndPlayAudioFile(playListAfterDeciding[0]);
                         }
                         break;
                     default:
@@ -614,8 +561,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         dislike.setImageResource(R.drawable.dislike);
                         if (pv != null) pv.stopPlayingVideo();
                         if (thread != null) thread.stopPlayingVideo();
-                        stopFlash(Common.FLASH_LIKE);
-                        stopFlash(Common.FLASH_DISLIKE);
+                        stopFlash(FLASH_LIKE);
+                        stopFlash(FLASH_DISLIKE);
                         like.setVisibility(View.INVISIBLE);
                         dislike.setVisibility(View.INVISIBLE);
                         capture.setVisibility(View.VISIBLE);
@@ -625,11 +572,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         if (needConfirm) {
                             needConfirm = false;
                             thread.deleteVideoAndPicture();
-                            mpAfterAccepting3.seekTo(0);
-                            mpAfterAccepting3.start();
+                            _audioPlaying = OKAY_LETS_TRY_AGAIN;
+                            releaseAndPlayAudioFile(playListAfterAccepting[2]);
                         } else {
-                            mpAfterDeciding2.seekTo(0);
-                            mpAfterDeciding2.start();
+                            _audioPlaying = LETS_TRY_AGAIN;
+                            releaseAndPlayAudioFile(playListAfterDeciding[1]);
                             mGalleryScrollView.clearAllBackground();
                         }
                         break;
@@ -699,19 +646,19 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case Common.READY_TO_RECORD:
+                case READY_TO_RECORD:
                     isPreparing = false;
                     coverSurface.setVisibility(View.INVISIBLE);
                     //prompt "please say your name"
-                    mpRecord1.seekTo(0);
-                    mpRecord1.start();
+                    _audioPlaying = PLEASE_SAY_YOUR_NAME;
+                    releaseAndPlayAudioFile(playListRecord[0]);
                     break;
-                case Common.RECORD_DONE:
+                case RECORD_DONE:
                     //record done, prompt "you said", then replay video
-                    mpRecord2.seekTo(0);
-                    mpRecord2.start();
+                    _audioPlaying = YOU_SAID;
+                    releaseAndPlayAudioFile(playListRecord[1]);
                     break;
-                case Common.REPLAY_NEW_VIDEO_DONE:
+                case REPLAY_NEW_VIDEO_DONE:
                     //if you like how you said your name, please tap here
                     //add newly taken photo to the gallery though not in the database
                     //refreshGalleryBeforeConfirm();
@@ -721,24 +668,24 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     mHandler.post(toACCEPT);
                     needConfirm = true;
                     break;
-                case Common.REFRESH_GALLERY:
+                case REFRESH_GALLERY:
                     refreshGallery();
                     break;
-                case Common.REPLAY_OLD_VIDEO_DONE:
+                case REPLAY_OLD_VIDEO_DONE:
                     //go to the menu
                     like.setVisibility(View.VISIBLE);
                     dislike.setVisibility(View.VISIBLE);
 
                     mHandler.post(toDECIDE);
                     break;
-                case Common.PLAY_TAPPING_VIDEO_DONE:
+                case PLAY_TAPPING_VIDEO_DONE:
                     if (surfaceviewFullScreen.getVisibility() == View.VISIBLE) {
                         logo.setVisibility(View.VISIBLE);
                         surfaceviewFullScreen.setVisibility(View.INVISIBLE);
                     } else
                         coverSurface.setVisibility(View.VISIBLE);
                     break;
-                case Common.UNCOVER_SCREEN:
+                case UNCOVER_SCREEN:
                     coverSurface.setVisibility(View.INVISIBLE);
                     break;
                 default:
@@ -749,7 +696,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private void startFlash(int viewToFlash) {
         switch (viewToFlash) {
-            case Common.FLASH_CAPTURE:
+            case FLASH_CAPTURE:
                 capture_startFlashTIme = System.nanoTime();
                 capture_lastFlashTime = System.nanoTime();
                 capture_stopFlash = false;
@@ -757,7 +704,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mainHandler.post(flashCapture);
                 break;
 
-            case Common.FLASH_LIKE:
+            case FLASH_LIKE:
                 like_startFlashTIme = System.nanoTime();
                 like_lastFlashTime = System.nanoTime();
                 like_stopFlash = false;
@@ -766,7 +713,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mainHandler.post(flashLike);
                 break;
 
-            case Common.FLASH_DISLIKE:
+            case FLASH_DISLIKE:
                 dislike_startFlashTIme = System.nanoTime();
                 dislike_lastFlashTime = System.nanoTime();
                 dislike_stopFlash = false;
@@ -782,19 +729,19 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private void stopFlash(int viewToStop) {
         switch (viewToStop) {
-            case Common.FLASH_CAPTURE:
+            case FLASH_CAPTURE:
                 capture_startFlashTIme = System.nanoTime();
                 capture_lastFlashTime = System.nanoTime();
                 capture_stopFlash = true;
                 break;
 
-            case Common.FLASH_LIKE:
+            case FLASH_LIKE:
                 like_startFlashTIme = System.nanoTime();
                 like_lastFlashTime = System.nanoTime();
                 like_stopFlash = true;
                 break;
 
-            case Common.FLASH_DISLIKE:
+            case FLASH_DISLIKE:
                 dislike_startFlashTIme = System.nanoTime();
                 dislike_lastFlashTime = System.nanoTime();
                 dislike_stopFlash = true;
@@ -816,7 +763,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
             //transfer nanosecond to millisecond
             long timepass = (System.nanoTime() - capture_lastFlashTime) / 1000000;
-            if(timepass >  Common.FLASH_FREQUENCE) {
+            if(timepass >  FLASH_FREQUENCE) {
                 if(!capture_nowClicked) {
                     capture.setImageResource(R.drawable.capture_finger_clicked);
                     capture_nowClicked = true;
@@ -827,14 +774,14 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 capture_lastFlashTime = System.nanoTime();
             }
 
-            if ((System.nanoTime() - capture_startFlashTIme)/1000000 <= Common.FLASH_DURATION)
-                mainHandler.postDelayed(flashCapture, Common.FLASH_FREQUENCE);
+            if ((System.nanoTime() - capture_startFlashTIme)/1000000 <= FLASH_DURATION)
+                mainHandler.postDelayed(flashCapture, FLASH_FREQUENCE);
             else {
                 capture.setImageResource(R.drawable.capture);
                 capture_nowClicked = false;
 
                 //if user hesitate, play the video of good tapping
-                mainHandler.postDelayed(playVideoOfGoodTapping, Common.DELAY_TO_SHOW_VIDEO);
+                mainHandler.postDelayed(playVideoOfGoodTapping, DELAY_TO_SHOW_VIDEO);
             }
         }
     };
@@ -866,7 +813,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
             //transfer nanosecond to millisecond
             long timepass = (System.nanoTime() - like_lastFlashTime) / 1000000;
-            if(timepass > Common.FLASH_FREQUENCE) {
+            if(timepass > FLASH_FREQUENCE) {
                 if(!like_nowClicked) {
                     like.setImageResource(R.drawable.like_finger_clicked);
                     like_nowClicked = true;
@@ -877,8 +824,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 like_lastFlashTime = System.nanoTime();
             }
 
-            if ((System.nanoTime() - like_startFlashTIme)/1000000 <= Common.FLASH_DURATION)
-                mainHandler.postDelayed(flashLike, Common.FLASH_FREQUENCE);
+            if ((System.nanoTime() - like_startFlashTIme)/1000000 <= FLASH_DURATION)
+                mainHandler.postDelayed(flashLike, FLASH_FREQUENCE);
             else {
                 like.setImageResource(R.drawable.like);
                 like_nowClicked = false;
@@ -897,7 +844,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
             //transfer nanosecond to millisecond
             long timepass = (System.nanoTime() - dislike_lastFlashTime) / 1000000;
-            if(timepass > Common.FLASH_FREQUENCE) {
+            if(timepass > FLASH_FREQUENCE) {
                 if(!dislike_nowClicked) {
                     dislike.setImageResource(R.drawable.dislike_finger_clicked);
                     dislike_nowClicked = true;
@@ -908,8 +855,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 dislike_lastFlashTime = System.nanoTime();
             }
 
-            if ((System.nanoTime() - dislike_startFlashTIme)/1000000 <= Common.FLASH_DURATION)
-                mainHandler.postDelayed(flashDislike, Common.FLASH_FREQUENCE);
+            if ((System.nanoTime() - dislike_startFlashTIme)/1000000 <= FLASH_DURATION)
+                mainHandler.postDelayed(flashDislike, FLASH_FREQUENCE);
             else {
                 dislike.setImageResource(R.drawable.dislike);
                 dislike_nowClicked = false;
@@ -932,15 +879,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     slideFinger.setImageResource(R.drawable.before_slide);
-                    mainHandler.postDelayed(hideSlideFinger, Common.DELAY_TO_SHOW_CHANGE_OF_FINGER);
-                    mainHandler.postDelayed(promptIfNotFindPicture, Common.DELAY_AFTER_SHOWING_SLIDE);
+                    mainHandler.postDelayed(hideSlideFinger, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+                    mainHandler.postDelayed(promptIfNotFindPicture, DELAY_AFTER_SHOWING_SLIDE);
                 }
 
                 @Override
                 public void onAnimationCancel(Animator animation) {
                     slideFinger.setImageResource(R.drawable.before_slide);
-                    mainHandler.postDelayed(hideSlideFinger, Common.DELAY_TO_SHOW_CHANGE_OF_FINGER);
-                    mainHandler.postDelayed(promptIfNotFindPicture, Common.DELAY_AFTER_SHOWING_SLIDE);
+                    mainHandler.postDelayed(hideSlideFinger, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+                    mainHandler.postDelayed(promptIfNotFindPicture, DELAY_AFTER_SHOWING_SLIDE);
                 }
 
                 @Override
@@ -956,8 +903,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         @Override
         public void run() {
             if (capture.getVisibility() == View.VISIBLE) {
-                mpStart5.seekTo(0);
-                mpStart5.start();
+
+                _audioPlaying = IF_YOU_DONT_FIND_YOUR_PICTURE;
+                releaseAndPlayAudioFile(playListStart[4]);
             }
         }
     };
@@ -1028,27 +976,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     }
 
     private void pauseAllAudios() {
-        if (mpIntro.isPlaying()) mpIntro.pause();
-        if (mpStart1.isPlaying()) mpStart1.pause();
-        if (mpStart2.isPlaying()) mpStart2.pause();
-        if (mpStart3.isPlaying()) mpStart3.pause();
-        if (mpStart4.isPlaying()) mpStart4.pause();
-        if (mpStart5.isPlaying()) mpStart5.pause();
-        if (mpStart6.isPlaying()) mpStart6.pause();
-        if (mpRecord1.isPlaying()) mpRecord1.pause();
-        if (mpRecord2.isPlaying()) mpRecord2.pause();
-        if (mpAccept1.isPlaying()) mpAccept1.pause();
-        if (mpAccept2.isPlaying()) mpAccept2.pause();
-        if (mpAccept3.isPlaying()) mpAccept3.pause();
-        if (mpAfterAccepting1.isPlaying()) mpAfterAccepting1.pause();
-        if (mpAfterAccepting2.isPlaying()) mpAfterAccepting2.pause();
-        if (mpAfterAccepting3.isPlaying()) mpAfterAccepting3.pause();
-        if (mpDecide1.isPlaying()) mpDecide1.pause();
-        if (mpDecide2.isPlaying()) mpDecide2.pause();
-        if (mpDecide3.isPlaying()) mpDecide3.pause();
-        if (mpDecide4.isPlaying()) mpDecide4.pause();
-        if (mpAfterDeciding1.isPlaying()) mpAfterDeciding1.pause();
-        if (mpAfterDeciding2.isPlaying()) mpAfterDeciding2.pause();
+        if (mpAll.isPlaying()) mpAll.pause();
     }
 
 }
