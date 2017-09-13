@@ -8,15 +8,68 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
-        versionName "0.5.0"
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+    signingConfigs {
+        android {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
     buildTypes {
+
+        def BOOLEAN = "boolean"
+        def STRING  = "String"
+        def TRUE    = "true"
+        def FALSE   = "false"
+
+        def LANGUAGE_FEATURE_ID = "LANGUAGE_FEATURE_ID"
+        def LANGUAGE_ENGLISH    = "\"LANG_EN\""
+        def LANGUAGE_SWAHILI    = "\"LANG_SW\""
+
+        debug {
+            buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_SWAHILI
+            debuggable true
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        en {
+            buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_ENGLISH
+            signingConfig signingConfigs.android
+        }
+
+        sw {
+            buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_SWAHILI
+            signingConfig signingConfigs.android
+        }
     }
+
+    // define apk naming behavior
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def project = "facelogin"
+            def SEP = "."
+            def buildType = variant.variantData.variantConfiguration.buildType.name
+            def version = variant.versionName
+
+            def newApkName = project + SEP + buildType + SEP + version + ".apk"
+            output.outputFile = new File(output.outputFile.parent, newApkName)
+        }
+    }
+
 }
 
 dependencies {

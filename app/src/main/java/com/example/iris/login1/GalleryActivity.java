@@ -97,7 +97,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
 
     private STATE _audioPlaying;
-    private String languge = LANG_SW;
+    private String language = BuildConfig.LANGUAGE_FEATURE_ID;
 
     private MediaPlayer playMediaInAccept(MediaPlayer mp, int file) {
         mp = MediaPlayer.create(this, playListAccept[file]);
@@ -163,7 +163,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private void initVarsOfMediaPlayer() {
         //choose audio according to language version
-        switch(languge) {
+        switch(language) {
             case LANG_EN:
                 mpAll = MediaPlayer.create(this, R.raw.eng_thisisrobotutor);
                 playListStart = mediaListStartEng;
@@ -251,7 +251,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         //prompt "you said", then replay the newly taken video
 
                         long silenceInMs = 0;
-                        switch(languge) {
+                        switch(language) {
                             case LANG_EN:
                                 silenceInMs = TRAILING_SILENCE_EN;
                                 break;
@@ -451,8 +451,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                 //play clicked video
                 if (pv != null) pv.stopPlayingVideo();
-                int startTimeWithSilence = realStartTime - (languge.equals(LANG_EN) ? Common.TRAILING_SILENCE_EN : Common.TRAILING_SILENCE_SW);
-                pv = new playVideo(realStartTime, surfaceview, surfaceHolder, v, p, mHandler, GalleryActivity.this, false);
+                int startTimeWithSilence = realStartTime - (language.equals(LANG_EN) ? Common.TRAILING_SILENCE_EN : Common.TRAILING_SILENCE_SW);
+                pv = new playVideo(startTimeWithSilence, surfaceview, surfaceHolder, v, p, mHandler, GalleryActivity.this, false);
                 pv.start();
                 view.setBackgroundColor(Color.YELLOW);
             }
