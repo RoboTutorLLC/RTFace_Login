@@ -97,7 +97,7 @@ public class RecordThread extends Thread{
 
         mCamera.setDisplayOrientation(0);
         Camera.Parameters params = mCamera.getParameters();
-        params.setPictureSize(640,480);// 640x480,320x240,176x144,160x120
+        params.setPictureSize(640,480); // 640x480,320x240,176x144,160x120
         mCamera.setParameters(params);
         //mCamera.startPreview();
         mCamera.unlock();
@@ -258,7 +258,7 @@ public class RecordThread extends Thread{
 
         int seekToMe = (int) (relativeStartTime - trailingSilence);
         Log.i("DEBUG", "relativeStartTime=" + relativeStartTime + "; trailingSilence=" + trailingSilence + "; diff=" + seekToMe);
-        mPlayer.seekTo(2010);
+        mPlayer.seekTo(2013);
         //mPlayer.seekTo(0);
 
         mPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
