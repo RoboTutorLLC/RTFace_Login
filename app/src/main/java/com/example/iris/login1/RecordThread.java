@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -91,9 +92,9 @@ public class RecordThread extends Thread{
             }
         }
         String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
-        File path = new File("/sdcard/FaceLogin");
+        File path = new File(Common.FACE_LOGIN_PATH);
         if (!path.exists()) path.mkdir();
-        vPath = "/sdcard/FaceLogin/" + "VIDEO_" + timeStamp + "_" + ".3gp";
+        vPath = Common.FACE_LOGIN_PATH + "/" + "VIDEO_" + Build.SERIAL + "_" +  timeStamp + ".3gp";
 
         mCamera.setDisplayOrientation(0);
         Camera.Parameters params = mCamera.getParameters();
@@ -195,11 +196,11 @@ public class RecordThread extends Thread{
     private void createImageFile()  {
         //create the name of image according to the Timestamp
         String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
-        File path = new File("/sdcard/FaceLogin");
+        File path = new File(Common.FACE_LOGIN_PATH);
         if (!path.exists()) path.mkdir();
 
-        pPath = "IMAGE_" + timeStamp + "_" + ".jpg";
-        pPath = "/sdcard/FaceLogin/"+ pPath;
+        pPath = Common.FACE_LOGIN_PATH + "/";
+        pPath += Common.IMAGE_FILE_PREFIX + Build.SERIAL + "_" + timeStamp + Common.IMAGE_FILE_SUFFIX;
     }
 
     public void saveFrame() {
