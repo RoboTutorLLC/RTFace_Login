@@ -346,6 +346,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
 
                     case LETS_GET_STARTED:
+                        // reset firstAttempt
+                        firstAttempt = true;
                         // when the Confirm button is tapped, launch RoboTutor
                         // TODO pass the unique student id
                         // TODO test more fervently
