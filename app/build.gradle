@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.example.iris.login1"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -59,14 +59,14 @@ android {
 
     // define apk naming behavior
     applicationVariants.all { variant ->
-        variant.outputs.each { output ->
+        variant.outputs.all { output ->
             def project = "facelogin"
             def SEP = "."
             def buildType = variant.variantData.variantConfiguration.buildType.name
             def version = variant.versionName
 
             def newApkName = project + SEP + buildType + SEP + version + ".apk"
-            output.outputFile = new File(output.outputFile.parent, newApkName)
+            outputFileName = new File(output.outputFile.parent, newApkName)
         }
     }
 
