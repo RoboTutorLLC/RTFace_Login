@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -23,7 +24,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.iris.login1.Common.*;
@@ -95,6 +98,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean dislike_stopFlash = false;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
+    private UserInfo currentUser;
 
     private STATE _audioPlaying;
     private String language = BuildConfig.LANGUAGE_FEATURE_ID;
@@ -342,12 +346,23 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
 
                     case LETS_GET_STARTED:
+                        // reset firstAttempt
+                        firstAttempt = true;
                         // when the Confirm button is tapped, launch RoboTutor
                         // TODO pass the unique student id
                         // TODO test more fervently
                         Intent launchIntent = getPackageManager().getLaunchIntentForPackage(ROBOTUTOR_PACKAGE_ADDRESS);
+                        Bundle sessionBundle = new Bundle();
+                        Log.w("BUNDLE", currentUser.getUserIcon());
+                        String uniqueUserID = generateUniqueIdFromFilename(currentUser.getUserIcon()); // ZZZ
+                        sessionBundle.putString(Common.STUDENT_ID_VAR, uniqueUserID);
+                        sessionBundle.putString(Common.SESSION_ID_VAR, generateSessionID());
+                        launchIntent.putExtras(sessionBundle);
+
                         if (launchIntent != null) {
                             startActivity(launchIntent);
+                        } else {
+                            Log.e("ACTIVITY", "New Activity failed to start!");
                         }
                         // System.exit(0);
                         break;
@@ -362,6 +377,37 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         };
         mpAll.setOnCompletionListener(onCompletionListener);
 
+    }
+
+    /**
+     * Generates a unique SessionID for RoboTutor
+     *
+     * @return
+     */
+    private String generateSessionID() {
+        String deviceId = Build.SERIAL;
+        String timestamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
+        return deviceId + "_" + timestamp;
+    }
+
+    /**
+     * Generate a unique ID for a student based on their audio filename
+     *
+     * @param filename
+     */
+    private String generateUniqueIdFromFilename(String filename) {
+        String uniqueId;
+        String prefix = Common.FACE_LOGIN_PATH + "/" + Common.IMAGE_FILE_PREFIX;
+        String suffix = Common.IMAGE_FILE_SUFFIX;
+
+        if(filename.startsWith(prefix)) {
+            uniqueId = filename.substring(prefix.length());
+            uniqueId = uniqueId.substring(0, uniqueId.length() - suffix.length());
+        } else {
+            uniqueId = "DEFAULT";
+        }
+
+        return uniqueId;
     }
 
     private void toSTART() {
@@ -437,8 +483,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     thread.deleteVideoAndPicture();
                 }
 
-                v = userInfo.get(position).getUserVideo();
-                p = userInfo.get(position).getUserIcon();
+                currentUser = userInfo.get(position);
+                v = currentUser.getUserVideo();
+                p = currentUser.getUserIcon();
                 realStartTime = Integer.parseInt(userInfo.get(position).getRecordTime());
                 pauseAllAudios();
 

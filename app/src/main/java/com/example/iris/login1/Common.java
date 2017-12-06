@@ -49,6 +49,13 @@ public class Common {
     public static final String LANG_SW = "LANG_SW";
     public static final String LANG_EN = "LANG_EN";
 
-    // RoboTutor Package address
+    // For passing data to RoboTutor
     public static final String ROBOTUTOR_PACKAGE_ADDRESS = "cmu.xprize.robotutor";
+    public static final String STUDENT_ID_VAR = "studentId";
+    public static final String SESSION_ID_VAR = "sessionId";
+
+    // File-naming conventions
+    public static final String FACE_LOGIN_PATH = "/sdcard/FaceLogin";
+    public static final String IMAGE_FILE_PREFIX = "IMAGE_";
+    public static final String IMAGE_FILE_SUFFIX = ".jpg";
 }
