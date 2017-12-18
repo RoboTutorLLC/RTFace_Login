@@ -46,7 +46,12 @@ public class playVideo extends Thread {
     }
 
     public void playResVideo() {
-        mPlayer = MediaPlayer.create(context, R.raw.makesuretoholdthetabletbythesidesandtaplightlywithonefingerlikethis);
+
+        int videoId = BuildConfig.LANGUAGE_FEATURE_ID.equals(Common.LANG_EN) ?
+                R.raw.tapping_instruction_video_en :
+                R.raw.tapping_instruction_video_sw;
+
+        mPlayer = MediaPlayer.create(context, videoId);
         mPlayer.setDisplay(surfaceHolder);
         mPlayer.start();
         mHandler.sendEmptyMessage(Common.UNCOVER_SCREEN);
