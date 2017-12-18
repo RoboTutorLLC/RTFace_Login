@@ -247,7 +247,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     case PLEASE_SAY_YOUR_NAME:
                         //prompt "please say your name", then set timer to stop recording
                         Log.w("TIMING", "PLEASE SAY YOUR NAME " + System.currentTimeMillis());
-                        thread.setTimerToStopRecording(); // XXX 2
+                        thread.setTimerToStopRecording();
                         Log.w("TIMING", "PLEASE SAY YOUR NAME " + System.currentTimeMillis());
                         break;
 
@@ -270,7 +270,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // formerly mpStart5
                     case IF_YOU_DONT_FIND_YOUR_PICTURE:
                         if (capture.getVisibility() == View.VISIBLE) {
-                            _audioPlaying = TAP_HERE_RECORD; // XXX is there a difference between this and another tap_here_record??
+                            _audioPlaying = TAP_HERE_RECORD;
                             releaseAndPlayAudioFile(playListStart[5]);
                             startFlash(FLASH_CAPTURE);
                         }
@@ -354,7 +354,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         Intent launchIntent = getPackageManager().getLaunchIntentForPackage(ROBOTUTOR_PACKAGE_ADDRESS);
                         Bundle sessionBundle = new Bundle();
                         Log.w("BUNDLE", currentUser.getUserIcon());
-                        String uniqueUserID = generateUniqueIdFromFilename(currentUser.getUserIcon()); // ZZZ
+                        String uniqueUserID = generateUniqueIdFromFilename(currentUser.getUserIcon());
                         sessionBundle.putString(Common.STUDENT_ID_VAR, uniqueUserID);
                         sessionBundle.putString(Common.SESSION_ID_VAR, generateSessionID());
                         launchIntent.putExtras(sessionBundle);

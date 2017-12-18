@@ -155,7 +155,7 @@ public class RecordThread extends Thread{
 
     public void setTimerToStopRecording() {
         Log.i("DEBUG", "absoluteStartTime=" + absoluteStartTime);
-        relativeStartTime = System.currentTimeMillis() - absoluteStartTime; // XXX
+        relativeStartTime = System.currentTimeMillis() - absoluteStartTime;
         Log.i("DEBUG", "relativeStartTime=" + relativeStartTime);
         Log.i("DEBUG", "recordTime=" + recordTime);
         //set timer, stop recording in 3s.
@@ -234,7 +234,7 @@ public class RecordThread extends Thread{
      * replay the new video
      * @param vp
      */
-    public void newReplay(String vp, long trailingSilence) { // XXX
+    public void newReplay(String vp, long trailingSilence) {
         isPlaying = true;
         mPlayer = new MediaPlayer();
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -243,7 +243,7 @@ public class RecordThread extends Thread{
             @Override
             public void onCompletion(MediaPlayer arg0) {
                 backToFrame();
-                mHandler.sendEmptyMessage(Common.REPLAY_NEW_VIDEO_DONE); // XXX
+                mHandler.sendEmptyMessage(Common.REPLAY_NEW_VIDEO_DONE);
             }
         });
 
