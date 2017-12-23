@@ -1027,12 +1027,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         pauseAllAudios();
         Log.i("RecordDemoActivity", "onDestroy()");
 
-        // TODO TEST will this pop up in front of RoboTutor?
-        // TODO TEST more fervently
-        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
-        if (launchIntent != null) {
-            startActivity(launchIntent);
-        }
     }
 
     private void pauseAllAudios() {
