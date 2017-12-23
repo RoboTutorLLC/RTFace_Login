@@ -47,11 +47,15 @@ public class playVideo extends Thread {
 
     public void playResVideo() {
 
-        int videoId = BuildConfig.LANGUAGE_FEATURE_ID.equals(Common.LANG_EN) ?
-                R.raw.tapping_instruction_video_en :
-                R.raw.tapping_instruction_video_sw;
 
-        mPlayer = MediaPlayer.create(context, videoId);
+        if( BuildConfig.LANGUAGE_FEATURE_ID.equals(Common.LANG_EN) ) {
+            // English version
+            mPlayer = MediaPlayer.create(context,  R.raw.tapping_instruction_video_en);
+        } else {
+            // Swahili version
+            mPlayer = MediaPlayer.create(context, R.raw.tapping_instruction_video_sw);
+        }
+
         mPlayer.setDisplay(surfaceHolder);
         mPlayer.start();
         mHandler.sendEmptyMessage(Common.UNCOVER_SCREEN);
