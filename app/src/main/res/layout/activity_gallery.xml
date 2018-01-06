@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:layout_weight="1"
-                    android:src="@drawable/before_slide"
+                    android:src="@drawable/robofinger_extend"
                     android:visibility="invisible"
                     android:id="@+id/slide_finger"/>
 
@@ -122,6 +122,7 @@
 
     </LinearLayout>
 
+    <!-- Begin the splash screen Views -->
     <View
         android:id="@+id/splash"
         android:layout_width="match_parent"
@@ -153,6 +154,14 @@
         android:layout_gravity="center"
         android:src="@drawable/logo"
         android:background="@null"/>
+
+    <ImageView
+        android:layout_width="140dp"
+        android:layout_height="120dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/robofinger_extend"
+        android:visibility="invisible"
+        android:id="@+id/splash_finger"/>
 
     <SurfaceView
         android:id="@+id/show_full_screen"

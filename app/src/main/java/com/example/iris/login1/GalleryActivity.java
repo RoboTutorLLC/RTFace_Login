@@ -1,7 +1,9 @@
 package com.example.iris.login1;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -74,9 +76,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private SurfaceView surfaceviewFullScreen;
     private ImageButton logo;
     private ImageView logoShadow;
-    private int logoToShadow3dOffset = 20;
+    private int logoToShadow3dOffset = 10;
     private View splash;
     private View centerAnchor;
+    private ImageView splashRoboFinger;
 
     private MyScrollView mGalleryScrollView;
     private ScrollViewAdapter mAdapter;
@@ -90,7 +93,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private ImageView capture;
     private ImageView like;
     private ImageView dislike;
-    private ImageView slideFinger;
+    /* RoboFinger */
+    private ImageView slideRoboFinger;
     private int accountsNumber;
     private PlayVideoThread videoThread;
     private boolean readyToStartTimer = false;
@@ -160,7 +164,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         setLikeOnClickListener();
         setDislikeOnClickListener();
 
-        mainHandler.postDelayed(playVideoOfGoodTapping, DELAY_TO_SHOW_VIDEO_FULL_SCREEN);
+        mainHandler.postDelayed(splashRoboFingerSlideRunnable, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+        mainHandler.postDelayed(playVideoOfGoodTappingRunnable, DELAY_TO_SHOW_VIDEO_FULL_SCREEN);
+
     }
 
     private void initVarsOfViews() {
@@ -171,11 +177,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         masterLayout = (RelativeLayout) findViewById(R.id.masterLayout);
 
+        /* Find the Splash screen Views */
         surfaceviewFullScreen = (SurfaceView) findViewById(R.id.show_full_screen);
         logo = (ImageButton) findViewById(R.id.logo);
         logoShadow = (ImageView) findViewById(R.id.logoShadow);
         splash = (View) findViewById(R.id.splash);
         centerAnchor = (View) findViewById(R.id.centerAnchor);
+        splashRoboFinger = (ImageView) findViewById(R.id.splash_finger);
 
 
         // in order to set View locations programmatically, we must wait for RelativeLayout to finish setting up
@@ -199,7 +207,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         capture = (ImageView) findViewById(R.id.capture);
         like = (ImageView) findViewById(R.id.like);
         dislike = (ImageView) findViewById(R.id.dislike);
-        slideFinger = (ImageView)findViewById(R.id.slide_finger);
+        slideRoboFinger = (ImageView)findViewById(R.id.slide_finger);
 
         mGalleryScrollView = (MyScrollView) findViewById(R.id.id_scrollView);
     };
@@ -284,12 +292,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
 
                     // formerly mpStart3
+                    // XXX this is where RoboFinger is called!
                     case TO_SEE_MORE_PICTURES:
                         if (capture.getVisibility() == View.VISIBLE) {
                             _audioPlaying = SLIDE_THEM_LIKE_THIS;
                             releaseAndPlayAudioFile(playListStart[3]);
-                            slideFinger.setVisibility(View.VISIBLE);
-                            mainHandler.postDelayed(slideGallery, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+                            slideRoboFinger.setVisibility(View.VISIBLE);
+                            mainHandler.postDelayed(slideGalleryRunnable, DELAY_TO_SHOW_CHANGE_OF_FINGER);
                         }
                         break;
 
@@ -595,6 +604,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         logo.setVisibility(View.INVISIBLE);
                         logoShadow.setVisibility(View.INVISIBLE);
                         splash.setVisibility(View.INVISIBLE);
+                        splashRoboFinger.setVisibility(View.INVISIBLE);
                         mpAll.start();
 
                         break;
@@ -628,8 +638,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         float centerX = centerAnchor.getX();
         float centerY = centerAnchor.getY();
         Log.d("LOCATIONS", "x: " + centerX + ", " + centerY);
-        logo.setX(centerX - logo.getWidth() / 2 + logoToShadow3dOffset);
-        logo.setY(centerY - logo.getHeight() / 2 + logoToShadow3dOffset);
+        logo.setX(centerX - logo.getWidth() / 2 - logoToShadow3dOffset);
+        logo.setY(centerY - logo.getHeight() / 2 - logoToShadow3dOffset);
     }
 
     private void setCaptureOnClickListener(){
@@ -805,6 +815,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         //mGalleryScrollView.shrinkPicture(mAdapter, surfaceview.getWidth(), surfaceview.getHeight());
     }
 
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -849,7 +860,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         logoShadow.setVisibility(View.VISIBLE);
                         splash.setVisibility(View.VISIBLE);
                         surfaceviewFullScreen.setVisibility(View.INVISIBLE);
+                        splashRoboFinger.setVisibility(View.INVISIBLE);
+                        mainHandler.postDelayed(splashRoboFingerSlideRunnable, DELAY_TO_SHOW_CHANGE_OF_FINGER);
                     } else
+                        // when does this happen?
                         coverSurface.setVisibility(View.VISIBLE);
                     break;
                 case UNCOVER_SCREEN:
@@ -861,6 +875,84 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
+    private Runnable splashRoboFingerSlideRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            // XXX run an animation here...
+            // RoboFinger becomes visible and starts (100,100) away from logo
+            splashRoboFinger.setVisibility(View.VISIBLE);
+            float startX = logo.getX() + logo.getWidth() + 5f;
+            float startY = logo.getY() + logo.getWidth() + 5f;
+
+            float endX = logo.getX() + (logo.getWidth() / 2);
+            float endY = logo.getY() + (logo.getHeight() / 2);
+
+            splashRoboFinger.setX(startX);
+            splashRoboFinger.setY(startY);
+
+            AnimatorSet diagonalMovement = new AnimatorSet();
+
+            ObjectAnimator animX = ObjectAnimator.ofFloat(splashRoboFinger, "translationX", startX, endX);
+            ObjectAnimator animY = ObjectAnimator.ofFloat(splashRoboFinger, "translationY", startY, endY);
+            diagonalMovement.playTogether(animX, animY);
+
+            diagonalMovement.setDuration(2000);
+
+            diagonalMovement.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    splashRoboFinger.setImageResource(R.drawable.robofinger_press);
+                    pressLogoAction();
+
+                    mainHandler.postDelayed(splashRoboFingerUntapRunnable, 500);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                    splashRoboFinger.setImageResource(R.drawable.robofinger_press);
+                    pressLogoAction();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+
+            diagonalMovement.start();
+
+        }
+    };
+
+    /**
+     * the motion of pressing down the RoboTutor logo
+     */
+    private Runnable spashRoboFingerTapRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            splashRoboFinger.setImageResource(R.drawable.robofinger_press);
+            pressLogoAction();
+        }
+    };
+
+    /**
+     * the motion of untapping / depressing the RoboTutor logo
+     */
+    private Runnable splashRoboFingerUntapRunnable = new Runnable() {
+        @Override
+        public void run() {
+            splashRoboFinger.setImageResource(R.drawable.robofinger_extend);
+            depressLogoAction();
+        }
+    };
+
     private void startFlash(int viewToFlash) {
         switch (viewToFlash) {
             case FLASH_CAPTURE:
@@ -868,7 +960,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 capture_lastFlashTime = System.nanoTime();
                 capture_stopFlash = false;
                 capture_nowClicked = false;
-                mainHandler.post(flashCapture);
+                mainHandler.post(flashCaptureRunnable);
                 break;
 
             case FLASH_LIKE:
@@ -877,7 +969,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 like_stopFlash = false;
                 like_nowClicked = false;
                 like.setImageResource(R.drawable.like_finger);
-                mainHandler.post(flashLike);
+                mainHandler.post(flashLikeRunnable);
                 break;
 
             case FLASH_DISLIKE:
@@ -886,7 +978,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 dislike_stopFlash = false;
                 dislike_nowClicked = false;
                 dislike.setImageResource(R.drawable.dislike_finger);
-                mainHandler.post(flashDislike);
+                mainHandler.post(flashDislikeRunnable);
                 break;
 
             default:
@@ -919,8 +1011,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     }
 
-    //change capture button's color from white to red consecutively 3 times.
-    private Runnable flashCapture = new Runnable() {
+    /**
+     * change capture button's color from white to red consecutively 3 times.
+     */
+    private Runnable flashCaptureRunnable = new Runnable() {
         @Override
         public void run() {
             if (capture_stopFlash) {
@@ -942,18 +1036,21 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
 
             if ((System.nanoTime() - capture_startFlashTIme)/1000000 <= FLASH_DURATION)
-                mainHandler.postDelayed(flashCapture, FLASH_FREQUENCE);
+                mainHandler.postDelayed(flashCaptureRunnable, FLASH_FREQUENCE);
             else {
                 capture.setImageResource(R.drawable.capture);
                 capture_nowClicked = false;
 
                 //if user hesitate, play the video of good tapping
-                mainHandler.postDelayed(playVideoOfGoodTapping, DELAY_TO_SHOW_VIDEO);
+                mainHandler.postDelayed(playVideoOfGoodTappingRunnable, DELAY_TO_SHOW_VIDEO);
             }
         }
     };
 
-    private Runnable playVideoOfGoodTapping = new Runnable() {
+    /**
+     * show tapping video
+     */
+    private Runnable playVideoOfGoodTappingRunnable = new Runnable() {
         @Override
         public void run() {
             if (logo.getVisibility() == View.VISIBLE) {
@@ -972,7 +1069,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     };
 
     //change Like button's color from white to red consecutively 3 times.
-    private Runnable flashLike = new Runnable() {
+    private Runnable flashLikeRunnable = new Runnable() {
         @Override
         public void run() {
             if (like_stopFlash) {
@@ -994,7 +1091,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
 
             if ((System.nanoTime() - like_startFlashTIme)/1000000 <= FLASH_DURATION)
-                mainHandler.postDelayed(flashLike, FLASH_FREQUENCE);
+                mainHandler.postDelayed(flashLikeRunnable, FLASH_FREQUENCE);
             else {
                 like.setImageResource(R.drawable.like);
                 like_nowClicked = false;
@@ -1002,8 +1099,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
-    //change Dislike button's color from white to red consecutively 3 times.
-    private Runnable flashDislike = new Runnable() {
+    /**
+     *  change Dislike button's color from white to red consecutively 3 times.
+     */
+    private Runnable flashDislikeRunnable = new Runnable() {
         @Override
         public void run() {
             if (dislike_stopFlash) {
@@ -1025,7 +1124,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
 
             if ((System.nanoTime() - dislike_startFlashTIme)/1000000 <= FLASH_DURATION)
-                mainHandler.postDelayed(flashDislike, FLASH_FREQUENCE);
+                mainHandler.postDelayed(flashDislikeRunnable, FLASH_FREQUENCE);
             else {
                 dislike.setImageResource(R.drawable.dislike);
                 dislike_nowClicked = false;
@@ -1033,12 +1132,16 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
-    private Runnable slideGallery = new Runnable() {
+    /**
+     * A Runnable that slides RoboFinger along the enrollment photo gallery
+     */
+    private Runnable slideGalleryRunnable = new Runnable() {
         @Override
         public void run() {
-            slideFinger.setImageResource(R.drawable.when_slide);
+            // XXX aha, so this is where the RoboFinger does the sliding
+            slideRoboFinger.setImageResource(R.drawable.robofinger_press);
             int dy = mGalleryScrollView.mScreenHeight / 2;
-            ObjectAnimator anim = ObjectAnimator.ofFloat(slideFinger, "translationY", 0, -dy, 0);
+            ObjectAnimator anim = ObjectAnimator.ofFloat(slideRoboFinger, "translationY", 0, -dy, 0);
             anim.setDuration(2000);
             anim.addListener(new Animator.AnimatorListener() {
                 @Override
@@ -1047,16 +1150,16 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    slideFinger.setImageResource(R.drawable.before_slide);
-                    mainHandler.postDelayed(hideSlideFinger, DELAY_TO_SHOW_CHANGE_OF_FINGER);
-                    mainHandler.postDelayed(promptIfNotFindPicture, DELAY_AFTER_SHOWING_SLIDE);
+                    slideRoboFinger.setImageResource(R.drawable.robofinger_extend);
+                    mainHandler.postDelayed(hideSlideFingerRunnable, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+                    mainHandler.postDelayed(promptIfNotFindPictureRunnable, DELAY_AFTER_SHOWING_SLIDE);
                 }
 
                 @Override
                 public void onAnimationCancel(Animator animation) {
-                    slideFinger.setImageResource(R.drawable.before_slide);
-                    mainHandler.postDelayed(hideSlideFinger, DELAY_TO_SHOW_CHANGE_OF_FINGER);
-                    mainHandler.postDelayed(promptIfNotFindPicture, DELAY_AFTER_SHOWING_SLIDE);
+                    slideRoboFinger.setImageResource(R.drawable.robofinger_extend);
+                    mainHandler.postDelayed(hideSlideFingerRunnable, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+                    mainHandler.postDelayed(promptIfNotFindPictureRunnable, DELAY_AFTER_SHOWING_SLIDE);
                 }
 
                 @Override
@@ -1068,7 +1171,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
-    private Runnable promptIfNotFindPicture = new Runnable() {
+    private Runnable promptIfNotFindPictureRunnable = new Runnable() {
         @Override
         public void run() {
             if (capture.getVisibility() == View.VISIBLE) {
@@ -1079,10 +1182,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
-    private Runnable hideSlideFinger = new Runnable() {
+    /**
+     * Runnable that gets run by the Main Handler
+     */
+    private Runnable hideSlideFingerRunnable = new Runnable() {
         @Override
         public void run() {
-            slideFinger.setVisibility(View.INVISIBLE);
+            slideRoboFinger.setVisibility(View.INVISIBLE);
         }
     };
 
