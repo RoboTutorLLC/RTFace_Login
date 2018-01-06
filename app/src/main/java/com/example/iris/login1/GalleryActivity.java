@@ -18,10 +18,12 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -34,6 +36,9 @@ import static com.example.iris.login1.Common.STATE.*;
 
 public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
+    /* --------------------------------- */
+    /* ---------- Audio files ---------- */
+    /* --------------------------------- */
     //Lack for Swahili audio here, replace them later
     private int[] mediaListStartSwa = {R.raw.swa_ifyouseeyourpicture, R.raw.swa_pleasetaponyourpicture, R.raw.swa_toseemorepictures, R.raw.swa_slidethemlikethis, R.raw.swa_ifyoudontfindyourpicture, R.raw.swa_pleasetaphere2};
     private int[] mediaListStartEng = {R.raw.eng_ifyouseeyourpicture, R.raw.eng_pleasetaponyourpicture, R.raw.eng_toseemorepictures, R.raw.eng_slidethemlikethis, R.raw.eng_ifyoudontfindyourpicture, R.raw.eng_pleasetaphere2};
@@ -50,6 +55,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private int[] mediaListAfterDecidingSwa = {R.raw.swa_letsgetstarted, R.raw.swa_letstryagain};
     private int[] mediaListAfterDecidingEng = {R.raw.eng_letsgetstarted, R.raw.eng_letstryagain};
 
+    /* ---------------------------------------- */
+    /* ---------- Audio file holders ---------- */
+    /* ---------------------------------------- */
     private int[] playListStart;
     private int[] playListRecord;
     private int[] playListAccept;
@@ -60,8 +68,16 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private MediaPlayer mpAll;
     private MediaPlayer.OnCompletionListener onCompletionListener;
 
+    private View masterLayout;
+
+    /* -- Splash screen views -- */
     private SurfaceView surfaceviewFullScreen;
     private ImageButton logo;
+    private ImageView logoShadow;
+    private int logoToShadow3dOffset = 20;
+    private View splash;
+    private View centerAnchor;
+
     private MyScrollView mGalleryScrollView;
     private ScrollViewAdapter mAdapter;
     private SurfaceView surfaceview;
@@ -76,7 +92,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private ImageView dislike;
     private ImageView slideFinger;
     private int accountsNumber;
-    private playVideo pv;
+    private PlayVideoThread videoThread;
     private boolean readyToStartTimer = false;
     private boolean isPreparing = false;
     private boolean needConfirm = false;
@@ -102,6 +118,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private STATE _audioPlaying;
     private String language = BuildConfig.LANGUAGE_FEATURE_ID;
+
 
     private MediaPlayer playMediaInAccept(MediaPlayer mp, int file) {
         mp = MediaPlayer.create(this, playListAccept[file]);
@@ -138,7 +155,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         holder.addCallback(this);    //add the callback interface to the holder
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        setLogoOnClickListener();
+        setLogoOnTouchListener();
         setCaptureOnClickListener();
         setLikeOnClickListener();
         setDislikeOnClickListener();
@@ -152,8 +169,30 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_gallery);
 
+        masterLayout = (RelativeLayout) findViewById(R.id.masterLayout);
+
         surfaceviewFullScreen = (SurfaceView) findViewById(R.id.show_full_screen);
         logo = (ImageButton) findViewById(R.id.logo);
+        logoShadow = (ImageView) findViewById(R.id.logoShadow);
+        splash = (View) findViewById(R.id.splash);
+        centerAnchor = (View) findViewById(R.id.centerAnchor);
+
+
+        // in order to set View locations programmatically, we must wait for RelativeLayout to finish setting up
+        masterLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+
+                        initializeAndPlaceLogo();
+
+                        // remove listener when done (only works in certain android version???)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            masterLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+                    }
+                }
+        );
 
         surfaceview = (SurfaceView) findViewById(R.id.id_content);
         coverSurface = (ImageView) findViewById(R.id.cover_surface);
@@ -164,6 +203,21 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         mGalleryScrollView = (MyScrollView) findViewById(R.id.id_scrollView);
     };
+
+    /**
+     * XXX places the logo and the logo shadow
+     */
+    private void initializeAndPlaceLogo() {
+
+        float centerX = centerAnchor.getX();
+        float centerY = centerAnchor.getY();
+        Log.d("LOCATIONS", "x: " + centerX + ", " + centerY);
+        logo.setX(centerX - logo.getWidth() / 2 - logoToShadow3dOffset);
+        logo.setY(centerY - logo.getHeight() / 2 - logoToShadow3dOffset);
+
+        logoShadow.setX(centerX - logoShadow.getWidth() / 2 + logoToShadow3dOffset);
+        logoShadow.setY(centerY - logoShadow.getHeight() / 2 + logoToShadow3dOffset);
+    }
 
     private void initVarsOfMediaPlayer() {
         //choose audio according to language version
@@ -497,10 +551,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 }
 
                 //play clicked video
-                if (pv != null) pv.stopPlayingVideo();
+                if (videoThread != null) videoThread.stopPlayingVideo();
                 int startTimeWithSilence = realStartTime - (language.equals(LANG_EN) ? Common.TRAILING_SILENCE_EN : Common.TRAILING_SILENCE_SW);
-                pv = new playVideo(startTimeWithSilence, surfaceview, surfaceHolder, v, p, mHandler, GalleryActivity.this, false);
-                pv.start();
+                // create a new EnrollmentVideo thread
+                videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
+                videoThread.start();
                 view.setBackgroundColor(Color.YELLOW);
             }
         });
@@ -518,14 +573,63 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         accountsNumber = userInfo.size();
     }
 
-    private void setLogoOnClickListener() {
-        logo.setOnClickListener(new View.OnClickListener() {
+
+    private void setLogoOnTouchListener() {
+        logo.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
-            public void onClick(View v) {
-                logo.setVisibility(View.INVISIBLE);
-                mpAll.start();
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                // XXX when the logo is clicked, we enter the true "FaceLogin" mode
+                switch(motionEvent.getAction()) {
+
+                    case MotionEvent.ACTION_DOWN:
+
+                        // XXX
+                        pressLogoAction();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        Log.d("SPLASH", "ACTION_UP");
+                        depressLogoAction();
+                        logo.setVisibility(View.INVISIBLE);
+                        logoShadow.setVisibility(View.INVISIBLE);
+                        splash.setVisibility(View.INVISIBLE);
+                        mpAll.start();
+
+                        break;
+                }
+
+
+
+                return true;
             }
+
+
         });
+    }
+
+    /**
+     * makes it look like Logo is being pressed
+     */
+    private void pressLogoAction() {
+        float centerX = centerAnchor.getX();
+        float centerY = centerAnchor.getY();
+        Log.d("LOCATIONS", "x: " + centerX + ", " + centerY);
+        logo.setX(centerX - logo.getWidth() / 2 + logoToShadow3dOffset);
+        logo.setY(centerY - logo.getHeight() / 2 + logoToShadow3dOffset);
+
+    }
+
+    /**
+     * makes it look like Logo is being depressed / unpressed
+     */
+    private void depressLogoAction() {
+        float centerX = centerAnchor.getX();
+        float centerY = centerAnchor.getY();
+        Log.d("LOCATIONS", "x: " + centerX + ", " + centerY);
+        logo.setX(centerX - logo.getWidth() / 2 + logoToShadow3dOffset);
+        logo.setY(centerY - logo.getHeight() / 2 + logoToShadow3dOffset);
     }
 
     private void setCaptureOnClickListener(){
@@ -542,9 +646,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         pauseAllAudios();
                         capture.setVisibility(View.GONE);
                         stopFlash(FLASH_CAPTURE);
-                        if (pv != null) {
-                            pv.stopPlayingVideo();
-                            pv.interrupt();
+                        if (videoThread != null) {
+                            videoThread.stopPlayingVideo();
+                            videoThread.interrupt();
                         }
                         if (thread == null) {
                             if (needConfirm) {
@@ -578,7 +682,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
                     case MotionEvent.ACTION_UP:
                         like.setImageResource(R.drawable.like);
-                        if (pv != null) pv.stopPlayingVideo();
+                        if (videoThread != null) videoThread.stopPlayingVideo();
                         if (thread != null) thread.stopPlayingVideo();
                         stopFlash(FLASH_LIKE);
                         stopFlash(FLASH_DISLIKE);
@@ -619,7 +723,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
                     case MotionEvent.ACTION_UP:
                         dislike.setImageResource(R.drawable.dislike);
-                        if (pv != null) pv.stopPlayingVideo();
+                        if (videoThread != null) videoThread.stopPlayingVideo();
                         if (thread != null) thread.stopPlayingVideo();
                         stopFlash(FLASH_LIKE);
                         stopFlash(FLASH_DISLIKE);
@@ -731,7 +835,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 case REFRESH_GALLERY:
                     refreshGallery();
                     break;
-                case REPLAY_OLD_VIDEO_DONE:
+                case REPLAY_EXISTING_VIDEO_DONE:
                     //go to the menu
                     like.setVisibility(View.VISIBLE);
                     dislike.setVisibility(View.VISIBLE);
@@ -739,8 +843,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     mHandler.post(toDECIDE);
                     break;
                 case PLAY_TAPPING_VIDEO_DONE:
+                    // XXX when video is done, return to Splash/logo screen
                     if (surfaceviewFullScreen.getVisibility() == View.VISIBLE) {
                         logo.setVisibility(View.VISIBLE);
+                        logoShadow.setVisibility(View.VISIBLE);
+                        splash.setVisibility(View.VISIBLE);
                         surfaceviewFullScreen.setVisibility(View.INVISIBLE);
                     } else
                         coverSurface.setVisibility(View.VISIBLE);
@@ -852,11 +959,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             if (logo.getVisibility() == View.VISIBLE) {
                 surfaceviewFullScreen.setVisibility(View.VISIBLE);
                 logo.setVisibility(View.INVISIBLE);
-                pv = new playVideo(0, surfaceviewFullScreen, surfaceviewFullScreen.getHolder(), "", "", mHandler, GalleryActivity.this, true);
-                pv.start();
+                logoShadow.setVisibility(View.INVISIBLE);
+                splash.setVisibility(View.INVISIBLE);
+                videoThread = new PlayTappingVideo(surfaceviewFullScreen.getHolder(), mHandler, GalleryActivity.this);
+                videoThread.start();
             } else if (readyToStartTimer){
-                pv = new playVideo(0, surfaceview, surfaceHolder, "", "", mHandler, GalleryActivity.this, true);
-                if (capture.getVisibility() == View.VISIBLE) pv.start();
+                videoThread = new PlayTappingVideo(surfaceHolder, mHandler, GalleryActivity.this);
+                if (capture.getVisibility() == View.VISIBLE) videoThread.start();
             }
             readyToStartTimer = true;
         }

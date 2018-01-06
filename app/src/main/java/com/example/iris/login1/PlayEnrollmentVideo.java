@@ -11,72 +11,37 @@ import java.io.IOException;
 
 /**
  * Created by Iris on 16/7/25.
+ * Edited by Kevin DeLand on other dates.
+ *
+ * This is a thread that plays the enrollment video of one of the students
  */
 
-public class playVideo extends Thread {
+public class PlayEnrollmentVideo extends PlayVideoThread {
     private int realStartTime;
-    //surfaceview is used to show the video
-    private SurfaceView surfaceview;
+    // SurfaceHolder is used to show the video
     private SurfaceHolder surfaceHolder;
     public String vPath = "";
     public String pPath = "";
     private MediaPlayer mPlayer;
     private Handler mHandler;
     private Context context;
-    private boolean isResVideo = false;
+
     private boolean isPlaying = true;
 
-    public playVideo(int realStartTime, SurfaceView surfaceview, SurfaceHolder surfaceHolder,
-                     String vPath_, String pPath_, Handler mhandler_, Context context, boolean isResVideo) {
+    public PlayEnrollmentVideo(SurfaceHolder surfaceHolder,
+                               Handler mhandler_, Context context, String vPath_, String pPath_, int realStartTime) {
         this.realStartTime = realStartTime;
-        this.surfaceview = surfaceview;
         this.surfaceHolder = surfaceHolder;
         this.vPath = vPath_;
         this.pPath = pPath_;
         this.context = context;
         this.mHandler = mhandler_;
-        this.isResVideo = isResVideo;
     }
 
+    @Override
     public void run() {
-        if (isResVideo)
-            playResVideo();
-        else
-            playSdcardVideo();
-    }
 
-    public void playResVideo() {
-
-
-        if( BuildConfig.LANGUAGE_FEATURE_ID.equals(Common.LANG_EN) ) {
-            // English version
-            mPlayer = MediaPlayer.create(context,  R.raw.tapping_instruction_video_en);
-        } else {
-            // Swahili version
-            mPlayer = MediaPlayer.create(context, R.raw.tapping_instruction_video_sw);
-        }
-
-        mPlayer.setDisplay(surfaceHolder);
-        mPlayer.start();
-        mHandler.sendEmptyMessage(Common.UNCOVER_SCREEN);
-        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mHandler.sendEmptyMessage(Common.PLAY_TAPPING_VIDEO_DONE);
-                mPlayer.release();
-                mPlayer = null;
-            }
-        });
-        mPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                mPlayer.reset();
-                return false;
-            }
-        });
-    }
-
-    public void playSdcardVideo() {
+        // set up the MediaPlayer
         mPlayer = new MediaPlayer();
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mPlayer.setDisplay(surfaceHolder);
@@ -89,6 +54,7 @@ public class playVideo extends Thread {
             e.printStackTrace();
         }
 
+        /* Other listeners... not sure what for **/
         mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
@@ -107,16 +73,18 @@ public class playVideo extends Thread {
             }
         });
 
+        /* OnCompletionListener **/
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer arg0) {
                 if (mPlayer != null) {
                     mPlayer.seekTo(realStartTime + mPlayer.getDuration()); // set frame shown to last frame of video
                 }
-                mHandler.sendEmptyMessage(Common.REPLAY_OLD_VIDEO_DONE);      //after replay,login kids in
+                mHandler.sendEmptyMessage(Common.REPLAY_EXISTING_VIDEO_DONE);      //after replay,login kids in
             }
         });
 
+        /* OnErrorListener **/
         mPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
@@ -126,6 +94,8 @@ public class playVideo extends Thread {
         });
     }
 
+
+    @Override
     public void stopPlayingVideo() {
         if (mPlayer != null) {
             mPlayer.release();

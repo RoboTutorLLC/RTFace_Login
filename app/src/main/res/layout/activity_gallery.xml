@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context="com.example.iris.login1.GalleryActivity">
+    tools:context="com.example.iris.login1.GalleryActivity"
+    android:id="@+id/masterLayout">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_gallery"
@@ -121,13 +122,37 @@
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/logo"
+    <View
+        android:id="@+id/splash"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
         android:background="@android:color/darker_gray"
-        android:src="@drawable/logo" />
+        />
+
+    <View
+        android:id="@+id/centerAnchor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        />
+
+    <ImageView
+        android:id="@+id/logoShadow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/logo_shadow"
+        android:background="@null"/>
+
+    <ImageButton
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/logo"
+        android:background="@null"/>
 
     <SurfaceView
         android:id="@+id/show_full_screen"

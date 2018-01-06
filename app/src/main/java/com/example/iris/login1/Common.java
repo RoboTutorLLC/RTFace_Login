@@ -33,7 +33,7 @@ public class Common {
     public static final int RECORD_DONE = 2;
     public static final int REPLAY_NEW_VIDEO_DONE = 3;
     public static final int REFRESH_GALLERY = 4;
-    public static final int REPLAY_OLD_VIDEO_DONE = 5;
+    public static final int REPLAY_EXISTING_VIDEO_DONE = 5;
     public static final int PLAY_TAPPING_VIDEO_DONE = 6;
     public static final int UNCOVER_SCREEN = 7;
 
