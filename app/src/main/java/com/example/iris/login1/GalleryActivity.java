@@ -942,7 +942,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     /**
      * Close system pop-ups
      * @param hasFocus
-     */  
+     */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -1263,6 +1263,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         super.onDestroy();
         pauseAllAudios();
         Log.i("RecordDemoActivity", "onDestroy()");
+
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+        if (launchIntent != null) {
+            startActivity(launchIntent);
+        }
 
     }
 
