@@ -187,6 +187,7 @@ public class RecordThread extends Thread{
             stopRecord();
             saveFrame();
             //should play "you said"
+            // KIMTAR this is called when the video is done recording
             mHandler.sendEmptyMessage(Common.RECORD_DONE);
             //newReplay(vPath);
             //this.cancel();

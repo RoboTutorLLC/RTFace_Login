@@ -41,6 +41,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     /* --------------------------------- */
     /* ---------- Audio files ---------- */
     /* --------------------------------- */
+    // KIMTAR this is where audio files are. Their names are what is said.
     //Lack for Swahili audio here, replace them later
     private int[] mediaListStartSwa = {R.raw.swa_ifyouseeyourpicture, R.raw.swa_pleasetaponyourpicture, R.raw.swa_toseemorepictures, R.raw.swa_slidethemlikethis, R.raw.swa_ifyoudontfindyourpicture, R.raw.swa_pleasetaphere2};
     private int[] mediaListStartEng = {R.raw.eng_ifyouseeyourpicture, R.raw.eng_pleasetaponyourpicture, R.raw.eng_toseemorepictures, R.raw.eng_slidethemlikethis, R.raw.eng_ifyoudontfindyourpicture, R.raw.eng_pleasetaphere2};
@@ -129,6 +130,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         return mp;
     }
 
+    /**
+     * KIMTAR this is the method that is called anytime an audio file must be played
+     *
+     * @param audioFile
+     */
     private void releaseAndPlayAudioFile(int audioFile) {
         mpAll.release();
         mpAll = MediaPlayer.create(this, audioFile);
@@ -139,6 +145,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // KIMTAR this is the first method called when FaceLogin starts
 
         super.onCreate(savedInstanceState);
 
@@ -153,6 +160,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             mGalleryScrollView.clearAllBackground();
         }
 
+        // KIMTAR, _audioPlaying this is the state that specifies which part of "onCompletionListener" is played
         _audioPlaying = THIS_IS_ROBOTUTOR;
 
         SurfaceHolder holder = this.surfaceview.getHolder();// get holder
@@ -642,6 +650,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         logo.setY(centerY - logo.getHeight() / 2 - logoToShadow3dOffset);
     }
 
+    /**
+     * KIMTAR this is what happens when the red "record/capture" button is pressed
+     */
     private void setCaptureOnClickListener(){
         capture.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -682,6 +693,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         });
     }
 
+    /**
+     * KIMTAR this is what happens when the green smiley face button is pressed
+     */
     private void setLikeOnClickListener(){
         like.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -723,6 +737,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         });
     }
 
+    /**
+     * KIMTAR this is what happens when the red frowny face is pressed
+     */
     private void setDislikeOnClickListener(){
         dislike.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -815,8 +832,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         //mGalleryScrollView.shrinkPicture(mAdapter, surfaceview.getWidth(), surfaceview.getHeight());
     }
 
+    /**
+     * KIMTAR this is where various messages are handled from "RecordThread" and other places
+     */
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
