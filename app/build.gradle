@@ -37,7 +37,7 @@ android {
         def LANGUAGE_SWAHILI    = "\"LANG_SW\""
 
         debug {
-            buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_SWAHILI
+            buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_ENGLISH
             debuggable true
         }
 
