@@ -42,6 +42,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     /* ---------- Audio files ---------- */
     /* --------------------------------- */
     // KIMTAR this is where audio files are. Their names are what is said.
+    // TODO: add media files for new states
     //Lack for Swahili audio here, replace them later
     private int[] mediaListStartSwa = {R.raw.swa_ifyouseeyourpicture, R.raw.swa_pleasetaponyourpicture, R.raw.swa_toseemorepictures, R.raw.swa_slidethemlikethis, R.raw.swa_ifyoudontfindyourpicture, R.raw.swa_pleasetaphere2};
     private int[] mediaListStartEng = {R.raw.eng_ifyouseeyourpicture, R.raw.eng_pleasetaponyourpicture, R.raw.eng_toseemorepictures, R.raw.eng_slidethemlikethis, R.raw.eng_ifyoudontfindyourpicture, R.raw.eng_pleasetaphere2};
@@ -268,13 +269,17 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
 
+                // TODO: check which of three cases (empty, previous user, regular user)
+
                 switch (_audioPlaying) {
 
+                    // NEWSTATE: WELCOME
                     // formerly mpIntro
                     case THIS_IS_ROBOTUTOR:
                         toSTART();
                         break;
 
+                    // NEWSTATE: CHECK_IF_EXPECTED
                     // formerly mpStart1
                     case IF_YOU_SEE_YOUR_PICTURE:
 
@@ -284,6 +289,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         break;
 
+                    // NEWSTATE: CHECK_IF_EXPECTED A
                     // formerly mpStart2
                     case PLEASE_TAP_ON_YOUR_PICTURE:
 
@@ -299,6 +305,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         break;
 
+                    // NEWSTATE: LOGIN_GALLERY 2
                     // formerly mpStart3
                     // XXX this is where RoboFinger is called!
                     case TO_SEE_MORE_PICTURES:
@@ -310,11 +317,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         break;
 
+                    // NEWSTATE: LOGIN_GALLERY 2
                     // formerly mpStart4
                     case SLIDE_THEM_LIKE_THIS:
                         // do nothing
                         break;
 
+                    // NEWSTATE: ENROLL_RECORD
                     case PLEASE_SAY_YOUR_NAME:
                         //prompt "please say your name", then set timer to stop recording
                         Log.w("TIMING", "PLEASE SAY YOUR NAME " + System.currentTimeMillis());
@@ -322,6 +331,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         Log.w("TIMING", "PLEASE SAY YOUR NAME " + System.currentTimeMillis());
                         break;
 
+                    // TODO: not here anymore, relocate
+                    // NEWSTATE: LOGIN_APPROVE VIDEO
                     case YOU_SAID:
                         //prompt "you said", then replay the newly taken video
 
@@ -338,6 +349,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         thread.newReplay(thread.vPath, silenceInMs);
                         break;
 
+                    // NEWSTATE: DON'T HAVE IN CURRENT STATE DIAGRAM
                     // formerly mpStart5
                     case IF_YOU_DONT_FIND_YOUR_PICTURE:
                         if (capture.getVisibility() == View.VISIBLE) {
@@ -347,11 +359,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         break;
 
+                    // TODO: is this a duplicate?
+                    // NEWSTATE: ???
                     // formerly mpStart6
                     case TAP_HERE_RECORD:
                         // do nothing
                         break;
 
+                    // TODO: remove
+                    // NEWSTATE: REMOVE
                     case IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME:
                         if (needConfirm) {
                             _audioPlaying = TAP_HERE_LIKE_PICTURE;
@@ -360,6 +376,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         break;
 
+                    // NEWSTATE: REMOVE
                     case TAP_HERE_LIKE_PICTURE:
                         if (needConfirm) {
                             _audioPlaying = TAP_HERE_DISLIKE_PICTURE;
@@ -368,6 +385,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         break;
 
+                    // NEWSTATE: REMOVE
                     case TAP_HERE_DISLIKE_PICTURE:
                         if (needConfirm) {
                             mHandler.postDelayed(toACCEPT, DELAY_TO_REPROMPT);
@@ -387,6 +405,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         toSTART();
                         break;
 
+                    // NEWSTATE: CHECK_IF_EXPECTED OR VERIFY_IDENTITY?
                     case IF_THIS_IS_YOU:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             _audioPlaying = TAP_HERE_IF_IS_YOU;
@@ -395,6 +414,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         break;
 
+                    // NEWSTATE: CHECK_IF_EXPECTED 1
                     case TAP_HERE_IF_IS_YOU:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             _audioPlaying = IF_THIS_IS_NOT_YOU;
@@ -402,6 +422,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         break;
 
+                    // NEWSTATE: CHECK_IF_EXPECTED 2
                     case IF_THIS_IS_NOT_YOU:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             _audioPlaying = TAP_HERE_IF_IS_NOT_YOU;
@@ -410,12 +431,14 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         break;
 
+                    // NEWSTATE: CHECK_IF_EXPECTED 2
                     case TAP_HERE_IF_IS_NOT_YOU:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
                         }
                         break;
 
+                    // NEWSTATE: LOGIN_FINISH
                     case LETS_GET_STARTED:
                         // reset firstAttempt
                         firstAttempt = true;
@@ -438,6 +461,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         // System.exit(0);
                         break;
 
+                    // NEWSTATE: NEED TO ACCOUNT FOR 3 CASES
                     case LETS_TRY_AGAIN:
                         toSTART();
                         break;
@@ -498,6 +522,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     }
 
+    // NEWSTATE: ???
     private Runnable toDECIDE = new Runnable() {
         @Override
         public void run() {
@@ -779,6 +804,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         });
     }
 
+    // NEWSTATE: KEEP OR REMOVE?
     private void deleteLastUserInfo() {
         //delete video
         String vPath = userInfo.get(0).getUserVideo();
@@ -795,6 +821,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         dbHelper.deletUserInfo(accountsNumber + "");
     }
 
+    // NEWSTATE: SAVE DIFF TIME, ADD ICON
     private void saveUserInfo() {
         //save info and update UI Interface
         UserInfo curUser = new UserInfo();
@@ -1192,6 +1219,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
+    // TODO: MIGHT HAVE TO CHANGE THE WAY WE FIND PICTURE
     private Runnable promptIfNotFindPictureRunnable = new Runnable() {
         @Override
         public void run() {
