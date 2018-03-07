@@ -15,7 +15,7 @@ import java.io.IOException;
  *
  * This is a thread that plays the enrollment video of one of the students
  */
-
+//TODO need to make files to play all needed videos?
 public class PlayEnrollmentVideo extends PlayVideoThread {
     private int realStartTime;
     // SurfaceHolder is used to show the video

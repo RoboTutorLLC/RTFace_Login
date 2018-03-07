@@ -83,6 +83,7 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
     }
 
     protected void loadPreImg() {
+        //TODO: need to add icon of child to the screen! (currently only displays photo)
         //already the first img
         if (mFristIndex == 0)
             return;
