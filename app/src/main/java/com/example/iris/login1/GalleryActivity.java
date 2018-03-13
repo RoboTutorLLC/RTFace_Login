@@ -467,11 +467,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
 
                     // MARCH NEWSTATE [OLD_OR_NEW]
-                    // MARCH NEWSTATE [INTRO]
                     // MARCH NEWSTATE [ENROLL_GENDER]
                     // MARCH NEWSTATE [ENROLL_ICON]
                     // MARCH NEWSTATE [LOGIN_APPROVE_VIDEO 2]
-                    // MARCH NEWSTATE [LOGIN_RECORD]
                     // MARCH NEWSTATE [LOGIN_ICON]
 
                     // MARCH DOTHIS account for three cases (empty, previous user, regular user)
