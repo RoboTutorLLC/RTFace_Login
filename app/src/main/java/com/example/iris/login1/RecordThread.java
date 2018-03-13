@@ -91,7 +91,7 @@ public class RecordThread extends Thread{
                 break;
             }
         }
-        String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File path = new File(Common.FACE_LOGIN_PATH);
         if (!path.exists()) path.mkdir();
         vPath = Common.FACE_LOGIN_PATH + "/" + "VIDEO_" + Build.SERIAL + "_" +  timeStamp + ".3gp";
@@ -196,7 +196,7 @@ public class RecordThread extends Thread{
 
     private void createImageFile()  {
         //create the name of image according to the Timestamp
-        String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File path = new File(Common.FACE_LOGIN_PATH);
         if (!path.exists()) path.mkdir();
 

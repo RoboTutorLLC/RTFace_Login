@@ -9,13 +9,15 @@ public class UserInfo {
     public static final String USERICON = "userIcon";
     public static final String USERVIDEO = "userVideo";
     public static final String RECORDTIME = "recordTime";
+    public static final String LAST_LOGIN_TIME = "lastLogin";
 
     private int id;
     private String userIcon;
     private String userVideo;
     private String recordTime;
+    private String lastLogin;
 
-    public int getID(){
+    public int getID() {
         return id;
     }
 
@@ -23,15 +25,21 @@ public class UserInfo {
         this.id = id;
     }
 
-    public String getUserIcon(){ return userIcon;}
+    public String getUserIcon() {
+        return userIcon;
+    }
 
-    public void setUserIcon(String userIcon){
+    public void setUserIcon(String userIcon) {
         this.userIcon = userIcon;
     }
 
-    public String getUserVideo(){return userVideo;}
+    public String getUserVideo() {
+        return userVideo;
+    }
 
-    public void setUserVideo(String userVideo) {this.userVideo = userVideo;}
+    public void setUserVideo(String userVideo) {
+        this.userVideo = userVideo;
+    }
 
     public String getRecordTime() {
         return recordTime;
@@ -39,5 +47,13 @@ public class UserInfo {
 
     public void setRecordTime(String recordTime) {
         this.recordTime = recordTime;
+    }
+
+    public String getLastLoginTime() {
+        return lastLogin;
+    }
+
+    public void setLastLoginTime(String lastLogin) {
+        this.lastLogin = lastLogin;
     }
 }

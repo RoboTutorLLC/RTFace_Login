@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,9 +42,19 @@ public class DataHelper {
             user.setUserIcon(cursor.getString(1));
             user.setUserVideo(cursor.getString(2));
             user.setRecordTime(cursor.getString(3));
+
+            Cursor cursor2 = db.query(SqliteHelper.REC_NAME, new String[] {UserInfo.LAST_LOGIN_TIME}, UserInfo.ID + "=?", new String[] {String.valueOf(user.getID())}, null, null, null, null);
+            if (!(cursor2.moveToFirst()) || cursor2.getCount() == 0) {
+                user.setLastLoginTime(new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
+                this.saveUserTime(user);
+            } else {
+                user.setLastLoginTime(cursor2.getString(0));
+            }
             userList.add(user);
+            cursor2.close();
             cursor.moveToNext();
         }
+        Collections.sort(userList, new LoginTimeComparator());
         cursor.close();
         return userList;
     }
@@ -57,6 +70,26 @@ public class DataHelper {
         return uid;
     }
 
+    public Long saveUserTime(UserInfo user) {
+        ContentValues values_time = new ContentValues();
+        values_time.put(UserInfo.ID, user.getID());
+        values_time.put(UserInfo.LAST_LOGIN_TIME, user.getLastLoginTime());
+        Long uid = db.insert(SqliteHelper.REC_NAME, null, values_time);
+        Log.e("saveUserTime", uid + "");
+        return uid;
+    }
+
+    public int updateUserTime(UserInfo user) {
+        ContentValues values_time = new ContentValues();
+        values_time.put(UserInfo.LAST_LOGIN_TIME, user.getLastLoginTime());
+        String where = UserInfo.ID + "=?";
+        String[] whereArgs = new String[] {String.valueOf(user.getID())};
+        int uid = db.update(SqliteHelper.REC_NAME, values_time, where, whereArgs);
+        Log.e("updateUserTime", uid + "");
+        return uid;
+
+    }
+
     public Boolean haveUserInfo(String UserId){
         Boolean b = false;
         Cursor cursor = db.query(SqliteHelper.TB_NAME, null, UserInfo.ID + "=" + UserId, null, null, null, null);
@@ -68,7 +101,27 @@ public class DataHelper {
 
     public int deletUserInfo(String ID){
         int id = db.delete(SqliteHelper.TB_NAME, UserInfo.ID + "=" + ID, null);
+        int id2 = db.delete(SqliteHelper.REC_NAME, UserInfo.ID + "=" + ID, null);
         System.out.println("Delete UserInfo " + ID);
         return id;
     }
+    public String getTableAsString(String tableName) {
+        Log.d("DataHelper", "getTableAsString called");
+        String tableString = String.format("Table %s:\n", tableName);
+        Cursor allRows  = db.rawQuery("SELECT * FROM " + tableName, null);
+        if (allRows.moveToFirst() ){
+            String[] columnNames = allRows.getColumnNames();
+            do {
+                for (String name: columnNames) {
+                    tableString += String.format("%s: %s\n", name,
+                            allRows.getString(allRows.getColumnIndex(name)));
+                }
+                tableString += "\n";
+
+            } while (allRows.moveToNext());
+        }
+
+        return tableString;
+    }
+
 }

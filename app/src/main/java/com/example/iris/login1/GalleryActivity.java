@@ -30,8 +30,11 @@ import android.widget.RelativeLayout;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.iris.login1.Common.*;
 import static com.example.iris.login1.Common.STATE.*;
@@ -440,6 +443,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     case LETS_GET_STARTED:
                         // reset firstAttempt
                         firstAttempt = true;
+                        String newSessId = generateSessionID();
+                        currentUser.setLastLoginTime(newSessId.split("_")[1]);
+                        dbHelper.updateUserTime(currentUser);
+
                         // when the Confirm button is tapped, launch RoboTutor
                         // TODO pass the unique student id
                         // TODO test more fervently
@@ -448,7 +455,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         Log.w("BUNDLE", currentUser.getUserIcon());
                         String uniqueUserID = generateUniqueIdFromFilename(currentUser.getUserIcon());
                         sessionBundle.putString(Common.STUDENT_ID_VAR, uniqueUserID);
-                        sessionBundle.putString(Common.SESSION_ID_VAR, generateSessionID());
+                        sessionBundle.putString(Common.SESSION_ID_VAR, newSessId);
                         launchIntent.putExtras(sessionBundle);
 
                         if (launchIntent != null) {
@@ -487,7 +494,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
      */
     private String generateSessionID() {
         String deviceId = Build.SERIAL;
-        String timestamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         return deviceId + "_" + timestamp;
     }
 
@@ -833,7 +840,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         curUser.setUserIcon(thread.pPath);
         curUser.setUserVideo(thread.vPath);
         curUser.setRecordTime(thread.relativeStartTime + "");
+        curUser.setLastLoginTime(new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
         dbHelper.saveUserInfo(curUser);
+        dbHelper.saveUserTime(curUser);
+
+        Log.e("users table: ", dbHelper.getTableAsString(SqliteHelper.TB_NAME));
+        Log.e("recency table: ", dbHelper.getTableAsString(SqliteHelper.REC_NAME));
 
         accountsNumber++;
         refreshGallery();
