@@ -165,6 +165,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
 
         // KIMTAR, _audioPlaying this is the state that specifies which part of "onCompletionListener" is played
+        // MARCH DOTHIS go to ENROLL_GENDER 1
         _audioPlaying = THIS_IS_ROBOTUTOR;
 
         SurfaceHolder holder = this.surfaceview.getHolder();// get holder
@@ -279,7 +280,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH [WELCOME]
                     // formerly mpIntro
                     case THIS_IS_ROBOTUTOR:
+                        // MARCH go to INTRO 1
                         toSTART();
+                        // MARCH DOTHIS go to CHECK_IF_EXPECTED
                         break;
 
                     // MARCH [LOGIN_GALLERY 1]
@@ -306,6 +309,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                 releaseAndPlayAudioFile(playListStart[4]);
                             }
                         }
+                        // MARCH DOTHIS go to LOGIN_VERIFY_IDENTITY 1
                         break;
 
                     // MARCH [LOGIN_GALLERY 2]
@@ -332,6 +336,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         Log.w("TIMING", "PLEASE SAY YOUR NAME " + System.currentTimeMillis());
                         thread.setTimerToStopRecording();
                         Log.w("TIMING", "PLEASE SAY YOUR NAME " + System.currentTimeMillis());
+                        // MARCH DOTHIS record video; play back video; go to LOGIN_GALLERY 1
                         break;
 
                     // MARCH DOTHIS relocate if needed
@@ -350,6 +355,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         Log.i("TIMING", "setting record at " + silenceInMs);
                         thread.newReplay(thread.vPath, silenceInMs);
+                        // MARCH DOTHIS IF YES AND NEW USER go to LOGIN_APPROVE_VIDEO 1
+                        // MARCH DOTHIS IF YES AND OLD USER go to LOGIN_APPROVE_VIDEO 2
+                        // MARCH DOTHIS IS NO go to LOGIN_GALLERY 1
                         break;
 
                     // MARCH [LOGIN_GALLERY 3]
@@ -360,6 +368,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             releaseAndPlayAudioFile(playListStart[5]);
                             startFlash(FLASH_CAPTURE);
                         }
+                        // MARCH DOTHIS go to OLD_OR_NEW
                         break;
 
                     // MARCH DOTHIS remove if no purpose
@@ -384,6 +393,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             releaseAndPlayAudioFile(playListAccept[2]);
                             startFlash(FLASH_DISLIKE);
                         }
+                        // MARCH DOTHIS go to LOGIN_ICON 1
                         break;
 
                     // MARCH [LOGIN_APPROVE_VIDEO 1B]
@@ -391,6 +401,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         if (needConfirm) {
                             mHandler.postDelayed(toACCEPT, DELAY_TO_REPROMPT);
                         }
+                        // MARCH DOTHIS "PLEASE SAY YOUR NAME"; record video; play back video;
+                        // MARCH DOTHIS go to LOGIN_APPROVE_VIDEO 1
                         break;
 
                     case GOOD:
@@ -420,6 +432,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             _audioPlaying = IF_THIS_IS_NOT_YOU;
                             releaseAndPlayAudioFile(playListDecide[2]);
+                            // MARCH DOTHIS go to LOGIN_APPROVE_VIDEO 2
                         }
                         break;
 
@@ -436,6 +449,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     case TAP_HERE_IF_IS_NOT_YOU:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
+                            // MARCH DOTHIS go to OLD_OR_NEW 1
                         }
                         break;
 
@@ -463,14 +477,37 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         } else {
                             Log.e("ACTIVITY", "New Activity failed to start!");
                         }
+                        // MARCH go to WELCOME
                         // System.exit(0);
                         break;
 
                     // MARCH NEWSTATE [OLD_OR_NEW]
+                    // MARCH CASE A
+                    // MARCH DOTHIS IF TAP YES go to LOGIN_GALLERY 1
+                    // MARCH CASE B
+                    // MARCH DOTHIS IF TAP NO go to INTRO 1
+
                     // MARCH NEWSTATE [ENROLL_GENDER]
+                    // MARCH DOTHIS IF TAP EITHER GIRL OR BOY go to ENROLL_ICON 1
+
                     // MARCH NEWSTATE [ENROLL_ICON]
+                    // MARCH CASE A
+                    // MARCH DOTHIS IF TAP YES go to ENROLL_RECORD 1
+                    // MARCH CASE B
+                    // MARCH DOTHIS IF TAP NO go to ENROLL_ICON 1
+
                     // MARCH NEWSTATE [LOGIN_APPROVE_VIDEO 2]
+                    // MARCH CASE A
+                    // MARCH DOTHIS IF TAP RECORD "PLEASE SAY YOUR NAME"; record video;
+                    // MARCH DOTHIS play back video; go to LOGIN_APPROVE_VIDEO 2
+                    // MARCH CASE B
+                    // MARCH DOTHIS IF TAP GO ON go to LOGIN_ICON 1
+
                     // MARCH NEWSTATE [LOGIN_ICON]
+                    // MARCH CASE A
+                    // MARCH DOTHIS IF TAP YES go to LOGIN_FINISH
+                    // MARCH CASE B
+                    // MARCH DOTHIS IF TAP NO randomly pick any icon, go to LOGIN_ICON 1
 
                     // MARCH DOTHIS account for three cases (empty, previous user, regular user)
                     case LETS_TRY_AGAIN:
