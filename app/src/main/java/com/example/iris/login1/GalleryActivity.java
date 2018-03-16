@@ -45,22 +45,85 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     /* ---------- Audio files ---------- */
     /* --------------------------------- */
     // KIMTAR this is where audio files are. Their names are what is said.
-    // MARCH DOTHIS add media files for new states
+    // MARCH DONE add media files for new states
     //Lack for Swahili audio here, replace them later
-    private int[] mediaListStartSwa = {R.raw.swa_ifyouseeyourpicture, R.raw.swa_pleasetaponyourpicture, R.raw.swa_toseemorepictures, R.raw.swa_slidethemlikethis, R.raw.swa_ifyoudontfindyourpicture, R.raw.swa_pleasetaphere2};
-    private int[] mediaListStartEng = {R.raw.eng_ifyouseeyourpicture, R.raw.eng_pleasetaponyourpicture, R.raw.eng_toseemorepictures, R.raw.eng_slidethemlikethis, R.raw.eng_ifyoudontfindyourpicture, R.raw.eng_pleasetaphere2};
+    private int[] mediaListStartSwa =
+            {R.raw.swa_ifyouseeyourpicture, R.raw.swa_pleasetaponyourpicture,
+                    R.raw.swa_toseemorepictures, R.raw.swa_slidethemlikethis,
+                    R.raw.swa_ifyoudontfindyourpicture, R.raw.swa_pleasetaphere2};
+    private int[] mediaListStartEng =
+            {R.raw.eng_ifyouseeyourpicture, R.raw.eng_pleasetaponyourpicture,
+                    R.raw.eng_toseemorepictures, R.raw.eng_slidethemlikethis,
+                    R.raw.eng_ifyoudontfindyourpicture, R.raw.eng_pleasetaphere2};
+
     private int[] mediaListRecordSwa = {R.raw.swa_pleasesayyourname, R.raw.swa_yousaid};
     private int[] mediaListRecordEng = {R.raw.eng_pleasesayyourname, R.raw.eng_yousaid};
-    private int[] mediaListAcceptSwa = {R.raw.swa_ifyoulikeyourpictureandhowyousaidyourname, R.raw.swa_pleasetaphere1, R.raw.swa_otherwisetaphere};
-    private int[] mediaListAcceptEng = {R.raw.eng_ifyoulikeyourpictureandhowyousaidyourname, R.raw.eng_pleasetaphere1, R.raw.eng_otherwisetaphere};
+
+    // MARCH [LOGIN_APPROVE_VIDEO] MEDIA LIST
+    private int[] mediaListAcceptSwa =
+            {R.raw.swa_ifyoulikeyourpictureandhowyousaidyourname, R.raw.swa_pleasetaphere1,
+                    R.raw.swa_otherwisetaphere};
+    private int[] mediaListAcceptEng =
+            {R.raw.eng_ifyoulikeyourpictureandhowyousaidyourname, R.raw.eng_pleasetaphere1,
+                    R.raw.eng_otherwisetaphere};
 
     //Lack for Swahili audio here, replace them later
-    private int[] mediaListAfterAcceptingSwa = {R.raw.swa_good, R.raw.swa_now, R.raw.swa_okletstryagain};
-    private int[] mediaListAfterAcceptingEng = {R.raw.eng_good, R.raw.eng_now, R.raw.eng_okletstryagain};
-    private int[] mediaListDecideSwa = {R.raw.swa_ifthisisyou, R.raw.swa_pleasetaphere2, R.raw.swa_ifthisisnotyou, R.raw.swa_pleasetaphere2};
-    private int[] mediaListDecideEng = {R.raw.eng_ifthisisyou, R.raw.eng_pleasetaphere2, R.raw.eng_ifthisisnotyou, R.raw.eng_pleasetaphere2};
+    private int[] mediaListAfterAcceptingSwa =
+            {R.raw.swa_good, R.raw.swa_now, R.raw.swa_okletstryagain};
+    private int[] mediaListAfterAcceptingEng =
+            {R.raw.eng_good, R.raw.eng_now, R.raw.eng_okletstryagain};
+
+    private int[] mediaListDecideSwa =
+            {R.raw.swa_ifthisisyou, R.raw.swa_pleasetaphere2, R.raw.swa_ifthisisnotyou,
+                    R.raw.swa_pleasetaphere2};
+    private int[] mediaListDecideEng =
+            {R.raw.eng_ifthisisyou, R.raw.eng_pleasetaphere2, R.raw.eng_ifthisisnotyou,
+                    R.raw.eng_pleasetaphere2};
+
     private int[] mediaListAfterDecidingSwa = {R.raw.swa_letsgetstarted, R.raw.swa_letstryagain};
     private int[] mediaListAfterDecidingEng = {R.raw.eng_letsgetstarted, R.raw.eng_letstryagain};
+
+    // MARCH [CHECK_IF_EXPECTED] MEDIA LIST
+    private int[] mediaListExpectedSwa =
+            {R.raw.swa_ifthisisyouexpected, R.raw.swa_pleasetaphere3, R.swa_ifthisisnotyouexpected,
+                    R.raw.swa_pleasetaphere3};
+    private int[] mediaListExpectedEng =
+            {R.raw.eng_ifthisisyouexpected, R.raw.eng_pleasetaphere3, R.eng_ifthisisnotyouexpected,
+                    R.raw.eng_pleasetaphere3};
+
+    // MARCH [OLD_OR_NEW] MEDIA LIST
+    private int[] mediaListOldNewSwa =
+            {R.raw.swa_ifyouveusedrobotutorbefore, R.raw.swa_pleasetaphere4,
+                    R.raw.swa_ifyouveneverusedrobotutorbefore, R.raw.swa_pleasetaphere4};
+    private int[] mediaListOldNewEng =
+            {R.raw.eng_ifyouveusedrobotutorbefore, R.raw.eng_pleasetaphere4,
+                    R.raw.eng_ifyouveneverusedrobotutorbefore, R.raw.eng_pleasetaphere4};
+
+    // MARCH [ENROLL_GENDER] MEDIA LIST
+    private int[] mediaListGenderSwa =
+            {R.raw.swa_ifyoureaboy, R.raw.swa_pleasetaphere5, R.raw.swa_ifyoureagirl,
+                    R.raw.swa_pleasetaphere5};
+    private int[] mediaListGenderEng =
+            {R.raw.eng_ifyoureaboy, R.raw.eng_pleasetaphere5, R.raw.eng_ifyoureagirl,
+                    R.raw.eng_pleasetaphere5};
+
+    // MARCH R.raw.swa_ifyouwanttoseeadifferentpciture is the same for [ENROLL_ICON] and [LOGIN_ICON]
+
+    // MARCH [ENROLL_ICON] MEDIA LIST
+    private int[] mediaListIconSwa =
+            {R.raw.swa_ifyoulikethispicture, R.raw.swa_pleasetaphere6,
+                    R.raw.swa_ifyouwanttoseeadifferentpicture, R.raw.swa_pleasetaphere6};
+    private int[] mediaListIconEng =
+            {R.raw.eng_ifyoulikethispicture, R.raw.eng_pleasetaphere6,
+                    R.raw.eng_ifyouwanttoseeadifferentpicture, R.raw.eng_pleasetaphere6};
+
+    // MARCH [LOGIN_ICON] MEDIA LIST
+    private int[] mediaListLoginIconSwa =
+            {R.raw.swa_ifyouwanttogoon, R.raw.swa_pleasetaphere7,
+                    R.raw.swa_ifyouwanttoseeadifferentpicture, R.raw.swa_pleasetaphere7};
+    private int[] mediaListLoginIconEng =
+            {R.raw.eng_ifyouwanttogoon, R.raw.eng_pleasetaphere7,
+                    R.raw.eng_ifyouwanttoseeadifferentpicture, R.raw.eng_pleasetaphere7};
 
     /* ---------------------------------------- */
     /* ---------- Audio file holders ---------- */
@@ -71,6 +134,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private int[] playListAfterAccepting;
     private int[] playListDecide;
     private int[] playListAfterDeciding;
+    // MARCH PLAYLIST FOR NEW MEDIA LIST
+    private int[] playListExpected;
+    private int[] playListOldNew;
+    private int[] playListGender;
+    private int[] playListIcon;
+    private int[] playListLoginIcon;
 
     private MediaPlayer mpAll;
     private MediaPlayer.OnCompletionListener onCompletionListener;
@@ -251,6 +320,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 playListAfterAccepting = mediaListAfterAcceptingEng;
                 playListDecide = mediaListDecideEng;
                 playListAfterDeciding = mediaListAfterDecidingEng;
+                // MARCH SET PLAYLIST FOR NEW MEDIA LIST IN EN
+                playListExpected = mediaListExpectedEng;
+                playListOldNew = mediaListOldNewEng;
+                playListGender = mediaListGenderEng;
+                playListIcon = mediaListIconEng;
+                playListLoginIcon = mediaListLoginIconEng;
                 break;
 
             case LANG_SW:
@@ -261,6 +336,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 playListAfterAccepting = mediaListAfterAcceptingSwa;
                 playListDecide = mediaListDecideSwa;
                 playListAfterDeciding = mediaListAfterDecidingSwa;
+                // MARCH SET PLAYLIST FOR NEW MEDIA LIST IN SWA
+                playListExpected = mediaListExpectedSwa;
+                playListOldNew = mediaListOldNewSwa;
+                playListGender = mediaListGenderSwa;
+                playListIcon = mediaListIconSwa;
+                playListLoginIcon = mediaListLoginIconSwa;
                 break;
         }
 
