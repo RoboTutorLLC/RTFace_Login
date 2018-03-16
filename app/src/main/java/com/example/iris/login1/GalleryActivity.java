@@ -45,7 +45,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     /* ---------- Audio files ---------- */
     /* --------------------------------- */
     // KIMTAR this is where audio files are. Their names are what is said.
-    // MARCH DONE add media files for new states
+    // MARCH DOTHIS add media files for new states
     //Lack for Swahili audio here, replace them later
     private int[] mediaListStartSwa =
             {R.raw.swa_ifyouseeyourpicture, R.raw.swa_pleasetaponyourpicture,
@@ -234,7 +234,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
 
         // KIMTAR, _audioPlaying this is the state that specifies which part of "onCompletionListener" is played
-        // MARCH DOTHIS go to ENROLL_GENDER 1
+        // MARCH START WITH THIS_IS_ROBOTUTOR
         _audioPlaying = THIS_IS_ROBOTUTOR;
 
         SurfaceHolder holder = this.surfaceview.getHolder();// get holder
@@ -361,9 +361,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH [WELCOME]
                     // formerly mpIntro
                     case THIS_IS_ROBOTUTOR:
-                        // MARCH go to INTRO 1
+                        // MARCH go to toSTART
                         toSTART();
-                        // MARCH DOTHIS go to CHECK_IF_EXPECTED
                         break;
 
                     // MARCH [LOGIN_GALLERY 1]
@@ -452,6 +451,14 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         // MARCH DOTHIS go to OLD_OR_NEW
                         break;
 
+                    // MARCH DOTHIS IMPLEMENT RECORD FOR FUN FUNCTIONALITY THAT WORKS WITH EXISTING [LOGIN_APPROVE_VIDEO 1]
+                    // MARCH NEWSTATE [LOGIN_APPROVE_VIDEO 2]
+                    // MARCH CASE A
+                    // MARCH DOTHIS IF TAP RECORD "PLEASE SAY YOUR NAME"; record video;
+                    // MARCH DOTHIS play back video; go to LOGIN_APPROVE_VIDEO 2
+                    // MARCH CASE B
+                    // MARCH DOTHIS IF TAP GO ON go to LOGIN_ICON 1
+
                     // MARCH DOTHIS remove if no purpose
                     // formerly mpStart6
                     case TAP_HERE_RECORD:
@@ -513,7 +520,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             _audioPlaying = IF_THIS_IS_NOT_YOU;
                             releaseAndPlayAudioFile(playListDecide[2]);
-                            // MARCH DOTHIS go to LOGIN_APPROVE_VIDEO 2
                         }
                         break;
 
@@ -530,7 +536,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     case TAP_HERE_IF_IS_NOT_YOU:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
-                            // MARCH DOTHIS go to OLD_OR_NEW 1
+                            // MARCH DOTHIS IF_IS_YOU go to LOGIN_APPROVE_VIDEO 2
+                            // MARCH DOTHIS IF_IS_NOT_YOU go to OLD_OR_NEW 1
                         }
                         break;
 
@@ -562,33 +569,139 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         // System.exit(0);
                         break;
 
+
                     // MARCH NEWSTATE [OLD_OR_NEW]
+                    case IF_YOUVE_USED_ROBOTUTOR_BEFORE:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_YES;
+                            releaseAndPlayAudioFile(playListOldNew[1]);
+                            startFlash(FLASH_LIKE);
+                        }
+                        break;
+
                     // MARCH CASE A
-                    // MARCH DOTHIS IF TAP YES go to LOGIN_GALLERY 1
+                    case TAP_HERE_YES:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = IF_YOUVE_NEVER_USED_ROBOTUTOR_BEFORE;
+                            releaseAndPlayAudioFile(playListOldNew[2]);
+                        }
+                        break;
+
+                    case IF_YOUVE_NEVER_USED_ROBOTUTOR_BEFORE:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_NO;
+                            releaseAndPlayAudioFile(playListOldNew[3]);
+                            startFlash(FLASH_DISLIKE);
+                        }
+                        break;
+
                     // MARCH CASE B
-                    // MARCH DOTHIS IF TAP NO go to INTRO 1
+                    case TAP_HERE_NO:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
+                            // MARCH DOTHIS IF TAP YES go to LOGIN_GALLERY 1
+                            // MARCH DOTHIS IF TAP NO go to INTRO 1
+                        }
+                        break;
+
 
                     // MARCH NEWSTATE [ENROLL_GENDER]
-                    // MARCH DOTHIS IF TAP EITHER GIRL OR BOY go to ENROLL_ICON 1
+                    case IF_YOURE_A_BOY:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_BOY;
+                            releaseAndPlayAudioFile(playListGender[1]);
+                            startFlash(FLASH_LIKE);
+                        }
+                        break;
+
+                    case TAP_HERE_BOY:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = IF_YOUVE_NEVER_USED_ROBOTUTOR_BEFORE;
+                            releaseAndPlayAudioFile(playListGender[2]);
+                        }
+                        break;
+
+                    case IF_YOURE_A_GIRL:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_GIRL;
+                            releaseAndPlayAudioFile(playListGender[3]);
+                            startFlash(FLASH_DISLIKE);
+                        }
+                        break;
+
+                    case TAP_HERE_GIRL:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
+                            // MARCH DOTHIS IF TAP EITHER GIRL OR BOY go to ENROLL_ICON 1
+                        }
+                        break;
+
 
                     // MARCH NEWSTATE [ENROLL_ICON]
-                    // MARCH CASE A
-                    // MARCH DOTHIS IF TAP YES go to ENROLL_RECORD 1
-                    // MARCH CASE B
-                    // MARCH DOTHIS IF TAP NO go to ENROLL_ICON 1
+                    case IF_YOU_LIKE_THIS_PICTURE:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_YES_ICON;
+                            releaseAndPlayAudioFile(playListIcon[1]);
+                            startFlash(FLASH_LIKE);
+                        }
+                        break;
 
-                    // MARCH NEWSTATE [LOGIN_APPROVE_VIDEO 2]
                     // MARCH CASE A
-                    // MARCH DOTHIS IF TAP RECORD "PLEASE SAY YOUR NAME"; record video;
-                    // MARCH DOTHIS play back video; go to LOGIN_APPROVE_VIDEO 2
+                    case TAP_HERE_YES_ICON:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE;
+                            releaseAndPlayAudioFile(playListIcon[2]);
+                        }
+                        break;
+
+                    case IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_NO_ICON;
+                            releaseAndPlayAudioFile(playListIcon[3]);
+                            startFlash(FLASH_DISLIKE);
+                        }
+                        break;
+
                     // MARCH CASE B
-                    // MARCH DOTHIS IF TAP GO ON go to LOGIN_ICON 1
+                    case TAP_HERE_NO_ICON:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
+                            // MARCH DOTHIS IF TAP YES go to ENROLL_RECORD 1
+                            // MARCH DOTHIS IF TAP NO go to ENROLL_ICON 1
+                        }
+                        break;
+
 
                     // MARCH NEWSTATE [LOGIN_ICON]
+                    case IF_YOU_WANT_TO_GO_ON:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_YES_LOGIN_ICON;
+                            releaseAndPlayAudioFile(playListLoginIcon[1]);
+                            startFlash(FLASH_LIKE);
+                        }
+                        break;
+
                     // MARCH CASE A
-                    // MARCH DOTHIS IF TAP YES go to LOGIN_FINISH
+                    case TAP_HERE_YES_LOGIN_ICON:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE_LOGIN;
+                            releaseAndPlayAudioFile(playListLoginIcon[2]);
+                        }
+                        break;
+
+                    case IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE_LOGIN:
+                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            _audioPlaying = TAP_HERE_NO_LOGIN_ICON;
+                            releaseAndPlayAudioFile(playListLoginIcon[3]);
+                            startFlash(FLASH_DISLIKE);
+                        }
+                        break;
+
                     // MARCH CASE B
-                    // MARCH DOTHIS IF TAP NO randomly pick any icon, go to LOGIN_ICON 1
+                    case TAP_HERE_NO_LOGIN_ICON:
+                        // MARCH DOTHIS IF TAP YES go to LOGIN_FINISH
+                        // MARCH DOTHIS IF TAP NO randomly pick any icon, go to LOGIN_ICON 1
+                        break;
 
                     // MARCH DOTHIS account for three cases (empty, previous user, regular user)
                     case LETS_TRY_AGAIN:
@@ -636,6 +749,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private void toSTART() {
         if (capture.getVisibility() == View.VISIBLE) {
+            // MARCH if this is you tap here
+            // MARCH if this is not you tap here
+            _audioPlaying = IF_THIS_IS_YOU;
+            releaseAndPlayAudioFile(playListExpected[0]);
+            // OLD
+            /*
             if (userInfo.size() > 0) {
                 //If you see your picture, please tap on it, otherwise tap here.
                 _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
@@ -648,6 +767,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 releaseAndPlayAudioFile(playListStart[5]);
                 startFlash(FLASH_CAPTURE);
             }
+            */
         }
     }
 
