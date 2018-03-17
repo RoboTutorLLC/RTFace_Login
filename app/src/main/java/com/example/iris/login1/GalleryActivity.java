@@ -176,6 +176,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean needConfirm = false;
     private boolean firstAttempt = true;
 
+    // MARCH new boolean checks
+    private boolean firstVideo = true;
+    private boolean firstIcon = true;
+
     private long capture_lastFlashTime = System.nanoTime();
     private long capture_startFlashTIme = System.nanoTime();
     private long like_lastFlashTime = System.nanoTime();
@@ -436,7 +440,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         Log.i("TIMING", "setting record at " + silenceInMs);
                         thread.newReplay(thread.vPath, silenceInMs);
                         // MARCH DOTHIS IF YES AND NEW USER go to LOGIN_APPROVE_VIDEO 1
-                        // MARCH DOTHIS IF YES AND OLD USER go to LOGIN_APPROVE_VIDEO 2
+                        // MARCH DOTHIS IF YES AND NOT NEW USER go to LOGIN_APPROVE_VIDEO 2
                         // MARCH DOTHIS IS NO go to LOGIN_GALLERY 1
                         break;
 
@@ -451,21 +455,16 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         // MARCH DOTHIS go to OLD_OR_NEW
                         break;
 
-                    // MARCH DOTHIS IMPLEMENT RECORD FOR FUN FUNCTIONALITY THAT WORKS WITH EXISTING [LOGIN_APPROVE_VIDEO 1]
-                    // MARCH NEWSTATE [LOGIN_APPROVE_VIDEO 2]
-                    // MARCH CASE A
-                    // MARCH DOTHIS IF TAP RECORD "PLEASE SAY YOUR NAME"; record video;
-                    // MARCH DOTHIS play back video; go to LOGIN_APPROVE_VIDEO 2
-                    // MARCH CASE B
-                    // MARCH DOTHIS IF TAP GO ON go to LOGIN_ICON 1
+                    // MARCH DOTHIS IMPLEMENT RECORD FOR FUN FUNCTIONALITY
 
-                    // MARCH DOTHIS remove if no purpose
+                    // MARCH how does this record?
                     // formerly mpStart6
                     case TAP_HERE_RECORD:
                         // do nothing
                         break;
 
                     // MARCH [LOGIN_APPROVE_VIDEO 1A]
+                    // MARCH NEWSTATE [LOGIN_APPROVE_VIDEO 2]
                     case IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME:
                         if (needConfirm) {
                             _audioPlaying = TAP_HERE_LIKE_PICTURE;
@@ -481,7 +480,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             releaseAndPlayAudioFile(playListAccept[2]);
                             startFlash(FLASH_DISLIKE);
                         }
-                        // MARCH DOTHIS go to LOGIN_ICON 1
+                        // MARCH [LOGIN_APPROVE_VIDEO 1A] DOTHIS go to LOGIN_ICON 1
+
+                        // MARCH [LOGIN_APPROVE_VIDEO 2] DOTHIS IF TAP RECORD "PLEASE SAY YOUR NAME"; record video;
+                        // MARCH [LOGIN_APPROVE_VIDEO 2] DOTHIS play back video; go to LOGIN_APPROVE_VIDEO 2
                         break;
 
                     // MARCH [LOGIN_APPROVE_VIDEO 1B]
@@ -489,8 +491,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         if (needConfirm) {
                             mHandler.postDelayed(toACCEPT, DELAY_TO_REPROMPT);
                         }
-                        // MARCH DOTHIS "PLEASE SAY YOUR NAME"; record video; play back video;
-                        // MARCH DOTHIS go to LOGIN_APPROVE_VIDEO 1
+                        // MARCH [LOGIN_APPROVE_VIDEO 1B] DOTHIS "PLEASE SAY YOUR NAME"; record video; play back video;
+                        // MARCH [LOGIN_APPROVE_VIDEO 1B] DOTHIS go to LOGIN_APPROVE_VIDEO 1
+
+                        // MARCH [LOGIN_APPROVE_VIDEO 2] DOTHIS IF TAP GO ON go to LOGIN_ICON 1
                         break;
 
                     case GOOD:
@@ -616,7 +620,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                     case TAP_HERE_BOY:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
-                            _audioPlaying = IF_YOUVE_NEVER_USED_ROBOTUTOR_BEFORE;
+                            _audioPlaying = IF_YOURE_A_GIRL;
                             releaseAndPlayAudioFile(playListGender[2]);
                         }
                         break;
@@ -751,8 +755,20 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         if (capture.getVisibility() == View.VISIBLE) {
             // MARCH if this is you tap here
             // MARCH if this is not you tap here
-            _audioPlaying = IF_THIS_IS_YOU;
-            releaseAndPlayAudioFile(playListExpected[0]);
+            if (userInfo.size() > 0) {
+                //If you see your picture, please tap on it, otherwise tap here.
+                // MARCH IF NOT FIRST USER
+                _audioPlaying = IF_THIS_IS_YOU;
+                releaseAndPlayAudioFile(playListExpected[0]);
+                //mpStart1.seekTo(0);
+                //mpStart1.start();
+            } else {
+                //Please tap here
+                // MARCH IF FIRST USER
+                _audioPlaying = TAP_HERE_RECORD;
+                releaseAndPlayAudioFile(playListStart[5]);
+                startFlash(FLASH_CAPTURE);
+            }
             // OLD
             /*
             if (userInfo.size() > 0) {
@@ -1137,6 +1153,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     //if you like how you said your name, please tap here
                     //add newly taken photo to the gallery though not in the database
                     //refreshGalleryBeforeConfirm();
+                    // MARCH DOTHIS ONLY SAVE VIDEO IF IN [LOGIN_APPROVE_VIDEO 1]
+                    // MARCH USE BOOL FIRSTVIDEO TO HELP DISTINGUISH BETWEEN FIRST TIME AND NOT
                     like.setVisibility(View.VISIBLE);
                     dislike.setVisibility(View.VISIBLE);
 
