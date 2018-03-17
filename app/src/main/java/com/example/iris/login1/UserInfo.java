@@ -10,12 +10,16 @@ public class UserInfo {
     public static final String USERVIDEO = "userVideo";
     public static final String RECORDTIME = "recordTime";
     public static final String LAST_LOGIN_TIME = "lastLogin";
+    public static final String BIRTH_DEVICE = "birthDevice"; // i.e creation device
+    public static final String BIRTH_DATE = "birthDate"; // i.e creation time
 
     private int id;
     private String userIcon;
     private String userVideo;
     private String recordTime;
     private String lastLogin;
+    private String birthDevice;
+    private String birthDate;
 
     public int getID() {
         return id;
@@ -56,4 +60,21 @@ public class UserInfo {
     public void setLastLoginTime(String lastLogin) {
         this.lastLogin = lastLogin;
     }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public String getBirthDevice() {
+        return birthDevice;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void setBirthDevice(String birthDevice) {
+        this.birthDevice = birthDevice;
+    }
+
 }

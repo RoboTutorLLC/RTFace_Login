@@ -458,7 +458,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         // reset firstAttempt
                         firstAttempt = true;
                         String newSessId = generateSessionID();
-                        currentUser.setLastLoginTime(newSessId.split("_")[1]);
+                        currentUser.setLastLoginTime(newSessId.split("_", 2)[1]);
                         dbHelper.updateUserTime(currentUser);
 
                         // when the Confirm button is tapped, launch RoboTutor
@@ -871,16 +871,19 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private void saveUserInfo() {
         //save info and update UI Interface
         UserInfo curUser = new UserInfo();
+        String birthDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         curUser.setID(accountsNumber);
         curUser.setUserIcon(thread.pPath);
         curUser.setUserVideo(thread.vPath);
         curUser.setRecordTime(thread.relativeStartTime + "");
-        curUser.setLastLoginTime(new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
+        curUser.setLastLoginTime(birthDate);
+        curUser.setBirthDevice(DataHelper.SERIAL_ID);
+        curUser.setBirthDate(birthDate);
         dbHelper.saveUserInfo(curUser);
         dbHelper.saveUserTime(curUser);
 
-        Log.e("users table: ", dbHelper.getTableAsString(SqliteHelper.TB_NAME));
-        Log.e("recency table: ", dbHelper.getTableAsString(SqliteHelper.REC_NAME));
+        Log.e("users table gallact: ", dbHelper.getTableAsString(SqliteHelper.TB_NAME));
+        Log.e("recency table gallact: ", dbHelper.getTableAsString(SqliteHelper.REC_NAME));
 
         accountsNumber++;
         refreshGallery();
