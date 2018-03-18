@@ -325,7 +325,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 // MARCH SET PLAYLIST FOR NEW MEDIA LIST IN EN
                 playListExpected = mediaListExpectedEng;
                 playListOldNew = mediaListOldNewEng;
-                //playListGender = mediaListGenderEng;
                 playListIcon = mediaListIconEng;
                 playListLoginIcon = mediaListLoginIconEng;
                 break;
@@ -341,7 +340,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 // MARCH SET PLAYLIST FOR NEW MEDIA LIST IN SWA
                 playListExpected = mediaListExpectedSwa;
                 playListOldNew = mediaListOldNewSwa;
-                //playListGender = mediaListGenderSwa;
                 playListIcon = mediaListIconSwa;
                 playListLoginIcon = mediaListLoginIconSwa;
                 break;
