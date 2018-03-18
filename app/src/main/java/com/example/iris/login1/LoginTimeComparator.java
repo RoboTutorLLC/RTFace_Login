@@ -21,7 +21,7 @@ public class LoginTimeComparator implements Comparator<UserInfo>{
     @Override
     public int compare(UserInfo lhs, UserInfo rhs) {
         try {
-            return dateFormat.parse(lhs.getLastLoginTime()).compareTo(dateFormat.parse(rhs.getLastLoginTime()));
+            return dateFormat.parse(rhs.getLastLoginTime()).compareTo(dateFormat.parse(lhs.getLastLoginTime()));
         } catch (ParseException e) {
             Log.e(TAG, e.getMessage());
             return 0;
