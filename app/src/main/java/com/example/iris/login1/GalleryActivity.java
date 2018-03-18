@@ -133,7 +133,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     // MARCH PLAYLIST FOR NEW MEDIA LIST
     private int[] playListExpected;
     private int[] playListOldNew;
-    private int[] playListGender;
+
+    //TODO Gender list and references commented out, uncomment when media files are added
+    // private int[] playListGender;
     private int[] playListIcon;
     private int[] playListLoginIcon;
 
@@ -323,7 +325,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 // MARCH SET PLAYLIST FOR NEW MEDIA LIST IN EN
                 playListExpected = mediaListExpectedEng;
                 playListOldNew = mediaListOldNewEng;
-                playListGender = mediaListGenderEng;
+                //playListGender = mediaListGenderEng;
                 playListIcon = mediaListIconEng;
                 playListLoginIcon = mediaListLoginIconEng;
                 break;
@@ -339,7 +341,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 // MARCH SET PLAYLIST FOR NEW MEDIA LIST IN SWA
                 playListExpected = mediaListExpectedSwa;
                 playListOldNew = mediaListOldNewSwa;
-                playListGender = mediaListGenderSwa;
+                //playListGender = mediaListGenderSwa;
                 playListIcon = mediaListIconSwa;
                 playListLoginIcon = mediaListLoginIconSwa;
                 break;
@@ -609,7 +611,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     case IF_YOURE_A_BOY:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             _audioPlaying = TAP_HERE_BOY;
-                            releaseAndPlayAudioFile(playListGender[1]);
+                            //releaseAndPlayAudioFile(playListGender[1]);
                             startFlash(FLASH_LIKE);
                         }
                         break;
@@ -617,14 +619,14 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     case TAP_HERE_BOY:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             _audioPlaying = IF_YOURE_A_GIRL;
-                            releaseAndPlayAudioFile(playListGender[2]);
+                            //releaseAndPlayAudioFile(playListGender[2]);
                         }
                         break;
 
                     case IF_YOURE_A_GIRL:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                             _audioPlaying = TAP_HERE_GIRL;
-                            releaseAndPlayAudioFile(playListGender[3]);
+                            //releaseAndPlayAudioFile(playListGender[3]);
                             startFlash(FLASH_DISLIKE);
                         }
                         break;
