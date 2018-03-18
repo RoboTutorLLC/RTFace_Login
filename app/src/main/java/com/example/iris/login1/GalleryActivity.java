@@ -84,45 +84,41 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private int[] mediaListAfterDecidingEng = {R.raw.eng_letsgetstarted, R.raw.eng_letstryagain};
 
     // MARCH [CHECK_IF_EXPECTED] MEDIA LIST
+    // MARCH PROMPTS ARE SAME AS DECIDE
     private int[] mediaListExpectedSwa =
-            {R.raw.swa_ifthisisyouexpected, R.raw.swa_pleasetaphere3, R.swa_ifthisisnotyouexpected,
-                    R.raw.swa_pleasetaphere3};
+            {R.raw.swa_ifthisisyou, R.raw.swa_pleasetaphere2, R.raw.swa_ifthisisnotyou,
+                    R.raw.swa_pleasetaphere2};
     private int[] mediaListExpectedEng =
-            {R.raw.eng_ifthisisyouexpected, R.raw.eng_pleasetaphere3, R.eng_ifthisisnotyouexpected,
-                    R.raw.eng_pleasetaphere3};
+            {R.raw.eng_ifthisisyou, R.raw.eng_pleasetaphere2, R.raw.eng_ifthisisnotyou,
+                    R.raw.eng_pleasetaphere2};
 
     // MARCH [OLD_OR_NEW] MEDIA LIST
     private int[] mediaListOldNewSwa =
             {R.raw.swa_ifyouveusedrobotutorbefore, R.raw.swa_pleasetaphere4,
-                    R.raw.swa_ifyouveneverusedrobotutorbefore, R.raw.swa_pleasetaphere4};
+                    R.raw.swa_ifyouveneverusedrobotutorbefore, R.raw.swa_pleasetaphere5};
     private int[] mediaListOldNewEng =
             {R.raw.eng_ifyouveusedrobotutorbefore, R.raw.eng_pleasetaphere4,
-                    R.raw.eng_ifyouveneverusedrobotutorbefore, R.raw.eng_pleasetaphere4};
+                    R.raw.eng_ifyouveneverusedrobotutorbefore, R.raw.eng_pleasetaphere5};
 
     // MARCH [ENROLL_GENDER] MEDIA LIST
-    private int[] mediaListGenderSwa =
-            {R.raw.swa_ifyoureaboy, R.raw.swa_pleasetaphere5, R.raw.swa_ifyoureagirl,
-                    R.raw.swa_pleasetaphere5};
-    private int[] mediaListGenderEng =
-            {R.raw.eng_ifyoureaboy, R.raw.eng_pleasetaphere5, R.raw.eng_ifyoureagirl,
-                    R.raw.eng_pleasetaphere5};
+    // MARCH HOW TO SET UP GENDER VIDEOS
 
     // MARCH R.raw.swa_ifyouwanttoseeadifferentpciture is the same for [ENROLL_ICON] and [LOGIN_ICON]
 
     // MARCH [ENROLL_ICON] MEDIA LIST
     private int[] mediaListIconSwa =
             {R.raw.swa_ifyoulikethispicture, R.raw.swa_pleasetaphere6,
-                    R.raw.swa_ifyouwanttoseeadifferentpicture, R.raw.swa_pleasetaphere6};
+                    R.raw.swa_ifyouwanttoseeadifferentpicture, R.raw.swa_pleasetaphere7};
     private int[] mediaListIconEng =
             {R.raw.eng_ifyoulikethispicture, R.raw.eng_pleasetaphere6,
-                    R.raw.eng_ifyouwanttoseeadifferentpicture, R.raw.eng_pleasetaphere6};
+                    R.raw.eng_ifyouwanttoseeadifferentpicture, R.raw.eng_pleasetaphere7};
 
     // MARCH [LOGIN_ICON] MEDIA LIST
     private int[] mediaListLoginIconSwa =
-            {R.raw.swa_ifyouwanttogoon, R.raw.swa_pleasetaphere7,
+            {R.raw.swa_pleasetapheretogoon,
                     R.raw.swa_ifyouwanttoseeadifferentpicture, R.raw.swa_pleasetaphere7};
     private int[] mediaListLoginIconEng =
-            {R.raw.eng_ifyouwanttogoon, R.raw.eng_pleasetaphere7,
+            {R.raw.eng_pleasetapheretogoon,
                     R.raw.eng_ifyouwanttoseeadifferentpicture, R.raw.eng_pleasetaphere7};
 
     /* ---------------------------------------- */
