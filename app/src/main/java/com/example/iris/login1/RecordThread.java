@@ -212,7 +212,8 @@ public class RecordThread extends Thread{
             //we need to transfer the real start time from ms to us
             //Capture frame (call it F) [2 sec after] when prompt ends.
             Bitmap bitmap = mmr.getFrameAtTime((relativeStartTime + Common.CAPTURE_FRAME_TIME_GAP) * 1000);
-            if (bitmap != null) {
+            // MARCH save if first registration
+            if (bitmap != null && GalleryActivity.getFirstRegistration()) {
                 createImageFile();
                 File pictureFile = new File(pPath);
                 FileOutputStream fos = null;

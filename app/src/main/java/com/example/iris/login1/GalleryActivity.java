@@ -174,9 +174,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean needConfirm = false;
     private boolean firstAttempt = true;
 
-    // MARCH new boolean checks
-    private boolean firstVideo = true;
-    private boolean firstIcon = true;
+    // MARCH boolean check for first registration
+    private static boolean firstRegistration = false;
+
+    // MARCH counter variable
+    private int counter = 0;
 
     private long capture_lastFlashTime = System.nanoTime();
     private long capture_startFlashTIme = System.nanoTime();
@@ -203,6 +205,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private MediaPlayer playMediaInAccept(MediaPlayer mp, int file) {
         mp = MediaPlayer.create(this, playListAccept[file]);
         return mp;
+    }
+
+    // MARCH get firstRegistration variable
+    public static boolean getFirstRegistration() {
+        return firstRegistration;
     }
 
     /**
@@ -487,6 +494,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH [LOGIN_APPROVE_VIDEO 1B]
                     case TAP_HERE_DISLIKE_PICTURE:
                         if (needConfirm) {
+                            counter += 1;
                             mHandler.postDelayed(toACCEPT, DELAY_TO_REPROMPT);
                         }
                         // MARCH [LOGIN_APPROVE_VIDEO 1B] DOTHIS "PLEASE SAY YOUR NAME"; record video; play back video;
@@ -537,6 +545,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH [CHECK_IF_EXPECTED 2]
                     case TAP_HERE_IF_IS_NOT_YOU:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            counter += 1;
                             mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF_IS_YOU go to LOGIN_APPROVE_VIDEO 2
                             // MARCH DOTHIS IF_IS_NOT_YOU go to OLD_OR_NEW 1
@@ -600,6 +609,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH CASE B
                     case TAP_HERE_NO:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            counter += 1;
                             mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF TAP YES go to LOGIN_GALLERY 1
                             // MARCH DOTHIS IF TAP NO go to INTRO 1
@@ -633,6 +643,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                     case TAP_HERE_GIRL:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            counter += 1;
                             mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF TAP EITHER GIRL OR BOY go to ENROLL_ICON 1
                         }
@@ -667,6 +678,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH CASE B
                     case TAP_HERE_NO_ICON:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                            counter += 1;
                             mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF TAP YES go to ENROLL_RECORD 1
                             // MARCH DOTHIS IF TAP NO go to ENROLL_ICON 1
@@ -1031,6 +1043,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         dislike.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean  onTouch(View v, MotionEvent event) {
+                // MARCH check if first registration
+                if (_audioPlaying == TAP_HERE_NO) {
+                    firstRegistration = true;
+                }
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         dislike.setImageResource(R.drawable.dislike_clicked);
@@ -1136,6 +1152,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         @Override
         public void handleMessage(Message msg) {
+            // MARCH if counter reaches 3 then go to WELCOME
+            if (counter == 3) {
+                _audioPlaying = THIS_IS_ROBOTUTOR;
+                toSTART();
+            }
+
             super.handleMessage(msg);
             switch (msg.what) {
                 case READY_TO_RECORD:
@@ -1144,11 +1166,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     //prompt "please say your name"
                     _audioPlaying = PLEASE_SAY_YOUR_NAME;
                     releaseAndPlayAudioFile(playListRecord[0]);
+                    // MARCH reset counter to 0
+                    counter = 0;
                     break;
                 case RECORD_DONE:
                     //record done, prompt "you said", then replay video
                     _audioPlaying = YOU_SAID;
                     releaseAndPlayAudioFile(playListRecord[1]);
+                    // MARCH reset counter to 0
+                    counter = 0;
                     break;
                 case REPLAY_NEW_VIDEO_DONE:
                     //if you like how you said your name, please tap here
@@ -1161,9 +1187,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                     mHandler.post(toACCEPT);
                     needConfirm = true;
+                    // MARCH reset counter to 0
+                    counter = 0;
                     break;
                 case REFRESH_GALLERY:
                     refreshGallery();
+                    // MARCH reset counter to 0
+                    counter = 0;
                     break;
                 case REPLAY_EXISTING_VIDEO_DONE:
                     //go to the menu
@@ -1171,6 +1201,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     dislike.setVisibility(View.VISIBLE);
 
                     mHandler.post(toDECIDE);
+                    // MARCH reset counter to 0
+                    counter = 0;
                     break;
                 case PLAY_TAPPING_VIDEO_DONE:
                     // XXX when video is done, return to Splash/logo screen
@@ -1184,9 +1216,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     } else
                         // when does this happen?
                         coverSurface.setVisibility(View.VISIBLE);
+                    // MARCH reset counter to 0
+                    counter = 0;
                     break;
                 case UNCOVER_SCREEN:
                     coverSurface.setVisibility(View.INVISIBLE);
+                    // MARCH reset counter to 0
+                    counter = 0;
                     break;
                 default:
                     break;
