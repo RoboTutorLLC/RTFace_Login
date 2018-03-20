@@ -213,7 +213,9 @@ public class RecordThread extends Thread{
             //Capture frame (call it F) [2 sec after] when prompt ends.
             Bitmap bitmap = mmr.getFrameAtTime((relativeStartTime + Common.CAPTURE_FRAME_TIME_GAP) * 1000);
             // MARCH save if first registration
-            if (bitmap != null && GalleryActivity.getFirstRegistration()) {
+
+            //if (bitmap != null && GalleryActivity.getFirstRegistration()) {
+            if (bitmap != null) {
                 createImageFile();
                 File pictureFile = new File(pPath);
                 FileOutputStream fos = null;

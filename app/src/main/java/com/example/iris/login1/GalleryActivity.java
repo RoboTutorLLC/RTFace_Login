@@ -23,8 +23,10 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.io.File;
@@ -103,6 +105,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     // MARCH [ENROLL_GENDER] MEDIA LIST
     // MARCH HOW TO SET UP GENDER VIDEOS
 
+    //TODO add english gender media list
+    private int[] mediaListGenderEng = {R.raw.eng_if_youre_a_boy, R.raw.eng_boy_please_tap_here, R.raw.eng_if_youre_a_girl, R.raw.eng_girl_please_tap_here};
+
+    private int[] mediaListGenderSwa = {R.raw.swa_if_youre_a_boy, R.raw.swa_boy_please_tap_here, R.raw.swa_if_youre_a_girl, R.raw.swa_girl_please_tap_here};
+
     // MARCH R.raw.swa_ifyouwanttoseeadifferentpciture is the same for [ENROLL_ICON] and [LOGIN_ICON]
 
     // MARCH [ENROLL_ICON] MEDIA LIST
@@ -135,7 +142,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private int[] playListOldNew;
 
     //TODO Gender list and references commented out, uncomment when media files are added
-    // private int[] playListGender;
+    private int[] playListGender;
     private int[] playListIcon;
     private int[] playListLoginIcon;
 
@@ -165,6 +172,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private ImageView capture;
     private ImageView like;
     private ImageView dislike;
+
+    private ImageView genderboy;
+    private ImageView gendergirl;
+    private LinearLayout genderlay;
+    private LinearLayout activity_gal;
     /* RoboFinger */
     private ImageView slideRoboFinger;
     private int accountsNumber;
@@ -197,6 +209,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private UserInfo currentUser;
+    private UserInfo curUser;
 
     private STATE _audioPlaying;
     private String language = BuildConfig.LANGUAGE_FEATURE_ID;
@@ -251,9 +264,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         setLogoOnTouchListener();
-        setCaptureOnClickListener();
-        setLikeOnClickListener();
-        setDislikeOnClickListener();
+
+        //capture, like and dislike onclicks moved to toStart
 
         mainHandler.postDelayed(splashRoboFingerSlideRunnable, DELAY_TO_SHOW_CHANGE_OF_FINGER);
         mainHandler.postDelayed(playVideoOfGoodTappingRunnable, DELAY_TO_SHOW_VIDEO_FULL_SCREEN);
@@ -301,6 +313,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         slideRoboFinger = (ImageView)findViewById(R.id.slide_finger);
 
         mGalleryScrollView = (MyScrollView) findViewById(R.id.id_scrollView);
+
+        genderboy = (ImageView) findViewById(R.id.genderboy);
+        gendergirl = (ImageView) findViewById(R.id.gendergirl);
+        genderlay = (LinearLayout) findViewById(R.id.genderlay);
+        activity_gal = (LinearLayout) findViewById(R.id.activity_gallery);
     };
 
     /**
@@ -332,7 +349,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 // MARCH SET PLAYLIST FOR NEW MEDIA LIST IN EN
                 playListExpected = mediaListExpectedEng;
                 playListOldNew = mediaListOldNewEng;
-                //playListGender = mediaListGenderEng;
+                playListGender = mediaListGenderEng;
                 playListIcon = mediaListIconEng;
                 playListLoginIcon = mediaListLoginIconEng;
                 break;
@@ -348,7 +365,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 // MARCH SET PLAYLIST FOR NEW MEDIA LIST IN SWA
                 playListExpected = mediaListExpectedSwa;
                 playListOldNew = mediaListOldNewSwa;
-                //playListGender = mediaListGenderSwa;
+                playListGender = mediaListGenderSwa;
                 playListIcon = mediaListIconSwa;
                 playListLoginIcon = mediaListLoginIconSwa;
                 break;
@@ -509,7 +526,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
 
                     case NOW:
-                        toSTART();
+                        //toSTART();
                         break;
 
                     case OKAY_LETS_TRY_AGAIN:
@@ -618,33 +635,39 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
 
                     // MARCH NEWSTATE [ENROLL_GENDER]
+
+                    //TODO need !needConfirm?
                     case IF_YOURE_A_BOY:
-                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                        if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
                             _audioPlaying = TAP_HERE_BOY;
-                            //releaseAndPlayAudioFile(playListGender[1]);
-                            startFlash(FLASH_LIKE);
+                            releaseAndPlayAudioFile(playListGender[1]);
+
+                            //TODO add robofinger for this
+                            //startFlash(FLASH_LIKE);
                         }
                         break;
 
                     case TAP_HERE_BOY:
-                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                        if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
                             _audioPlaying = IF_YOURE_A_GIRL;
-                            //releaseAndPlayAudioFile(playListGender[2]);
+                            releaseAndPlayAudioFile(playListGender[2]);
                         }
                         break;
 
                     case IF_YOURE_A_GIRL:
-                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                        if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
                             _audioPlaying = TAP_HERE_GIRL;
-                            //releaseAndPlayAudioFile(playListGender[3]);
-                            startFlash(FLASH_DISLIKE);
+                            releaseAndPlayAudioFile(playListGender[3]);
+
+                            //TODO add robofinger for this
+                            //startFlash(FLASH_DISLIKE);
                         }
                         break;
 
                     case TAP_HERE_GIRL:
-                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                        if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
                             counter += 1;
-                            mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
+                            mHandler.postDelayed(toDECIDEGender, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF TAP EITHER GIRL OR BOY go to ENROLL_ICON 1
                         }
                         break;
@@ -761,24 +784,35 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         return uniqueId;
     }
 
+
     private void toSTART() {
-        if (capture.getVisibility() == View.VISIBLE) {
+        //if (capture.getVisibility() == View.VISIBLE) {
             // MARCH if this is you tap here
             // MARCH if this is not you tap here
-            if (userInfo.size() > 0) {
-                //If you see your picture, please tap on it, otherwise tap here.
-                // MARCH IF NOT FIRST USER
-                _audioPlaying = IF_THIS_IS_YOU;
-                releaseAndPlayAudioFile(playListExpected[0]);
-                //mpStart1.seekTo(0);
-                //mpStart1.start();
-            } else {
-                //Please tap here
-                // MARCH IF FIRST USER
-                _audioPlaying = TAP_HERE_RECORD;
-                releaseAndPlayAudioFile(playListStart[5]);
-                startFlash(FLASH_CAPTURE);
-            }
+
+        //TODO need to add boolean for case when size > 0 but newuser
+        if (userInfo.size() > 0) {
+
+            setCaptureOnClickListener();
+            setLikeOnClickListener();
+            setDislikeOnClickListener();
+
+            _audioPlaying = IF_THIS_IS_YOU;
+            releaseAndPlayAudioFile(playListExpected[0]);
+            //mpStart1.seekTo(0);
+            //mpStart1.start();
+        } else {
+            //TODO add intro video
+
+            curUser = new UserInfo();
+
+            setGenderBoyOnClickListener();
+            setGenderGirlOnClickListener();
+
+            _audioPlaying = IF_YOURE_A_BOY;
+            releaseAndPlayAudioFile(playListGender[0]);
+            //startFlash(FLASH_CAPTURE);
+        }
             // OLD
             /*
             if (userInfo.size() > 0) {
@@ -794,8 +828,18 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 startFlash(FLASH_CAPTURE);
             }
             */
-        }
+        //}
     }
+
+    private Runnable toDECIDEGender = new Runnable() {
+        @Override
+        public void run() {
+            if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
+                _audioPlaying = IF_YOURE_A_BOY;
+                releaseAndPlayAudioFile(playListGender[0]);
+            }
+        }
+    };
 
     private Runnable toDECIDE = new Runnable() {
         @Override
@@ -912,12 +956,18 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         logoShadow.setVisibility(View.INVISIBLE);
                         splash.setVisibility(View.INVISIBLE);
                         splashRoboFinger.setVisibility(View.INVISIBLE);
+
+                        if (userInfo.size() > 0) {
+                            activity_gal.setVisibility(View.VISIBLE);
+                        } else {
+                            //TODO add intro video
+                            genderlay.setVisibility(View.VISIBLE);
+                        }
+
                         mpAll.start();
 
                         break;
                 }
-
-
 
                 return true;
             }
@@ -1082,6 +1132,57 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         });
     }
 
+    private void setGenderBoyOnClickListener(){
+        genderboy.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        //TODO set clicked gender image or maybe do nothing?
+                        break;
+                    case MotionEvent.ACTION_UP:
+
+                        curUser.setGender("male");
+
+                        Log.e("Gender set", curUser.getGender());
+                        genderlay.setVisibility(View.GONE);
+                        pauseAllAudios();
+                        _audioPlaying = GOOD;
+                        releaseAndPlayAudioFile(playListAfterAccepting[0]);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void setGenderGirlOnClickListener(){
+        gendergirl.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        //TODO set clicked gender image or maybe do nothing?
+                        break;
+                    case MotionEvent.ACTION_UP:
+
+                        curUser.setGender("female");
+                        Log.e("Gender set", curUser.getGender());
+                        genderlay.setVisibility(View.GONE);
+                        pauseAllAudios();
+                        _audioPlaying = GOOD;
+                        releaseAndPlayAudioFile(playListAfterAccepting[0]);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
     private void deleteLastUserInfo() {
         //delete video
         String vPath = userInfo.get(0).getUserVideo();
@@ -1101,7 +1202,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     // MARCH ADDTHIS icon and recency info for arranging gallery
     private void saveUserInfo() {
         //save info and update UI Interface
-        UserInfo curUser = new UserInfo();
+        // only save when all fields are there
         String birthDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         curUser.setID(accountsNumber);
         curUser.setUserIcon(thread.pPath);

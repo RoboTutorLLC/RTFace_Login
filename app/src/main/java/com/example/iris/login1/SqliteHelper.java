@@ -33,6 +33,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                         UserInfo.USERICON + " varchar," +
                         UserInfo.USERVIDEO + " varchar," +
                         UserInfo.RECORDTIME + " varchar," +
+                        UserInfo.GENDER + " varchar," +
                         UserInfo.BIRTH_DEVICE + " varchar," +
                         UserInfo.BIRTH_DATE + " varchar" +
                         ")"

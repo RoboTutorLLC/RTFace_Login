@@ -10,6 +10,7 @@ public class UserInfo {
     public static final String USERVIDEO = "userVideo";
     public static final String RECORDTIME = "recordTime";
     public static final String LAST_LOGIN_TIME = "lastLogin";
+    public static final String GENDER = "gender";
     public static final String BIRTH_DEVICE = "birthDevice"; // i.e creation device
     public static final String BIRTH_DATE = "birthDate"; // i.e creation time
 
@@ -20,6 +21,7 @@ public class UserInfo {
     private String lastLogin;
     private String birthDevice;
     private String birthDate;
+    private String gender;
 
     public int getID() {
         return id;
@@ -77,4 +79,11 @@ public class UserInfo {
         this.birthDevice = birthDevice;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 }
