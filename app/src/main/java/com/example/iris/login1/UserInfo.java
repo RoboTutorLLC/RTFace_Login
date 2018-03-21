@@ -6,7 +6,8 @@ package com.example.iris.login1;
 
 public class UserInfo {
     public static final String ID = "_id";
-    public static final String USERICON = "userIcon";
+    public static final String USERICON = "userIcon"; // the user pic in the gallery
+    public static final String PROFILEICON = "profileIcon"; // the animal
     public static final String USERVIDEO = "userVideo";
     public static final String RECORDTIME = "recordTime";
     public static final String LAST_LOGIN_TIME = "lastLogin";
@@ -22,6 +23,7 @@ public class UserInfo {
     private String birthDevice;
     private String birthDate;
     private String gender;
+    private String profileIcon;
 
     public int getID() {
         return id;
@@ -85,5 +87,13 @@ public class UserInfo {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public void setProfileIcon(String profileIcon) {
+        this.profileIcon = profileIcon;
+    }
+
+    public String getProfileIcon() {
+        return profileIcon;
     }
 }

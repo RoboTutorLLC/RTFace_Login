@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
@@ -28,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -37,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static com.example.iris.login1.Common.*;
 import static com.example.iris.login1.Common.STATE.*;
@@ -140,8 +143,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     // MARCH PLAYLIST FOR NEW MEDIA LIST
     private int[] playListExpected;
     private int[] playListOldNew;
-
-    //TODO Gender list and references commented out, uncomment when media files are added
     private int[] playListGender;
     private int[] playListIcon;
     private int[] playListLoginIcon;
@@ -177,6 +178,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private ImageView gendergirl;
     private LinearLayout genderlay;
     private LinearLayout activity_gal;
+    private LinearLayout iconlay;
+    private ImageView iconlike;
+    private ImageView icondislike;
+    private ImageView iconpic;
+    private TextView icontext;
     /* RoboFinger */
     private ImageView slideRoboFinger;
     private int accountsNumber;
@@ -185,6 +191,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean isPreparing = false;
     private boolean needConfirm = false;
     private boolean firstAttempt = true;
+    private boolean newReg = false;
+    private boolean recordAgain = false;
+    private boolean genderRegd = false;
+    private boolean iconRegd = false;
+    private boolean iconRepeat = false;
 
     // MARCH boolean check for first registration
     private static boolean firstRegistration = false;
@@ -318,6 +329,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         gendergirl = (ImageView) findViewById(R.id.gendergirl);
         genderlay = (LinearLayout) findViewById(R.id.genderlay);
         activity_gal = (LinearLayout) findViewById(R.id.activity_gallery);
+        iconlay = (LinearLayout) findViewById(R.id.iconlay);
+        iconpic = (ImageView) findViewById(R.id.iconpic);
+        icondislike = (ImageView) findViewById(R.id.icondislike);
+        iconlike = (ImageView) findViewById(R.id.iconlike);
+        icontext = (TextView) findViewById(R.id.icontext);
     };
 
     /**
@@ -388,6 +404,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // formerly mpIntro
                     case THIS_IS_ROBOTUTOR:
                         // MARCH go to toSTART
+                        newReg = false;
+                        recordAgain = false;
+                        genderRegd = false;
+                        iconRepeat = false;
+                        iconRegd = false;
                         toSTART();
                         break;
 
@@ -526,11 +547,33 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
 
                     case NOW:
-                        //toSTART();
+                        if(newReg){
+                            toSTART();
+                            break;
+                        }
+
+                        if (genderRegd && !iconRegd){
+                            _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
+                            releaseAndPlayAudioFile(playListIcon[0]);
+                        } else if(genderRegd && iconRegd){
+                            setCaptureOnClickListener();
+                            setLikeOnClickListener();
+                            setDislikeOnClickListener();
+                            _audioPlaying = TAP_HERE_RECORD;
+                            releaseAndPlayAudioFile(playListStart[5]);
+                            startFlash(FLASH_CAPTURE);
+                        } else {
+                            toSTART();
+                        }
                         break;
 
                     case OKAY_LETS_TRY_AGAIN:
-                        toSTART();
+                        if(iconRepeat) {
+                            _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
+                            releaseAndPlayAudioFile(playListIcon[0]);
+                        } else {
+                            toSTART();
+                        }
                         break;
 
                     // MARCH [CHECK_IF_EXPECTED 1]
@@ -674,8 +717,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
 
                     // MARCH NEWSTATE [ENROLL_ICON]
+                    //TODO need !needConfirm?
                     case IF_YOU_LIKE_THIS_PICTURE:
-                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                        if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
+                            setIconLikeOnClickListener();
+                            setIconDislikeOnClickListener();
                             _audioPlaying = TAP_HERE_YES_ICON;
                             releaseAndPlayAudioFile(playListIcon[1]);
                             startFlash(FLASH_LIKE);
@@ -684,14 +730,14 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                     // MARCH CASE A
                     case TAP_HERE_YES_ICON:
-                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                        if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
                             _audioPlaying = IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE;
                             releaseAndPlayAudioFile(playListIcon[2]);
                         }
                         break;
 
                     case IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE:
-                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                        if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
                             _audioPlaying = TAP_HERE_NO_ICON;
                             releaseAndPlayAudioFile(playListIcon[3]);
                             startFlash(FLASH_DISLIKE);
@@ -700,9 +746,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                     // MARCH CASE B
                     case TAP_HERE_NO_ICON:
-                        if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                        if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
                             counter += 1;
-                            mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
+                            mHandler.postDelayed(toDECIDEIcon, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF TAP YES go to ENROLL_RECORD 1
                             // MARCH DOTHIS IF TAP NO go to ENROLL_ICON 1
                         }
@@ -792,25 +838,43 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         //TODO need to add boolean for case when size > 0 but newuser
         if (userInfo.size() > 0) {
-
             setCaptureOnClickListener();
             setLikeOnClickListener();
             setDislikeOnClickListener();
 
-            _audioPlaying = IF_THIS_IS_YOU;
-            releaseAndPlayAudioFile(playListExpected[0]);
-            //mpStart1.seekTo(0);
-            //mpStart1.start();
+            if(recordAgain || newReg){
+                _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
+                releaseAndPlayAudioFile(playListStart[0]);
+            } else {
+                if (capture.getVisibility() == View.VISIBLE) {
+
+                    _audioPlaying = IF_THIS_IS_YOU;
+                    releaseAndPlayAudioFile(playListExpected[0]);
+                }
+                //mpStart1.seekTo(0);
+                //mpStart1.start();
+            }
         } else {
-            //TODO add intro video
 
-            curUser = new UserInfo();
+            if(recordAgain){
+                setCaptureOnClickListener();
+                setLikeOnClickListener();
+                setDislikeOnClickListener();
+                _audioPlaying = TAP_HERE_RECORD;
+                releaseAndPlayAudioFile(playListStart[5]);
+                startFlash(FLASH_CAPTURE);
+            } else {
+                //TODO add intro video
 
-            setGenderBoyOnClickListener();
-            setGenderGirlOnClickListener();
 
-            _audioPlaying = IF_YOURE_A_BOY;
-            releaseAndPlayAudioFile(playListGender[0]);
+                curUser = new UserInfo();
+
+                setGenderBoyOnClickListener();
+                setGenderGirlOnClickListener();
+
+                _audioPlaying = IF_YOURE_A_BOY;
+                releaseAndPlayAudioFile(playListGender[0]);
+            }
             //startFlash(FLASH_CAPTURE);
         }
             // OLD
@@ -840,6 +904,16 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
         }
     };
+    private Runnable toDECIDEIcon = new Runnable() {
+        @Override
+        public void run() {
+            if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
+                _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
+                releaseAndPlayAudioFile(playListIcon[0]);
+            }
+        }
+    };
+
 
     private Runnable toDECIDE = new Runnable() {
         @Override
@@ -1070,6 +1144,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             else deleteLastUserInfo();
                             saveUserInfo();
                             needConfirm = false;
+                            newReg = true;
 
                             _audioPlaying = GOOD;
                             releaseAndPlayAudioFile(playListAfterAccepting[0]);
@@ -1116,6 +1191,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         if (needConfirm) {
                             needConfirm = false;
                             thread.deleteVideoAndPicture();
+                            recordAgain = true;
                             _audioPlaying = OKAY_LETS_TRY_AGAIN;
                             releaseAndPlayAudioFile(playListAfterAccepting[2]);
                         } else {
@@ -1146,7 +1222,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                         Log.e("Gender set", curUser.getGender());
                         genderlay.setVisibility(View.GONE);
+
+                        //TODO pick less used
+                        String icntext = Common.ANIMAL_NAMES[new Random().nextInt(Common.ANIMAL_NAMES.length)];
+                        icontext.setText(icntext.toUpperCase());
+                        iconpic.setImageDrawable(getResources().getDrawable(Common.ANIMALS.get(icntext)));
+                        iconlay.setVisibility(View.VISIBLE);
+
                         pauseAllAudios();
+                        genderRegd = true;
                         _audioPlaying = GOOD;
                         releaseAndPlayAudioFile(playListAfterAccepting[0]);
                         break;
@@ -1171,9 +1255,83 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         curUser.setGender("female");
                         Log.e("Gender set", curUser.getGender());
                         genderlay.setVisibility(View.GONE);
+
+                        //TODO pick less used
+                        String icntext = Common.ANIMAL_NAMES[new Random().nextInt(Common.ANIMAL_NAMES.length)];
+                        icontext.setText(icntext.toUpperCase());
+                        iconpic.setImageDrawable(getResources().getDrawable(Common.ANIMALS.get(icntext)));
+                        iconlay.setVisibility(View.VISIBLE);
+
                         pauseAllAudios();
+                        genderRegd = true;
                         _audioPlaying = GOOD;
                         releaseAndPlayAudioFile(playListAfterAccepting[0]);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void setIconLikeOnClickListener(){
+        iconlike.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        iconlike.setImageResource(R.drawable.like_clicked);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        iconlike.setImageResource(R.drawable.like);
+
+                        curUser.setProfileIcon(icontext.getText().toString().trim());
+                        Log.e("Icon set", curUser.getProfileIcon());
+
+                        //TODO stop flash
+                        stopFlash(FLASH_LIKE);
+                        iconlay.setVisibility(View.GONE);
+
+                        pauseAllAudios();
+                        iconRegd = true;
+                        iconRepeat = false;
+                        activity_gal.setVisibility(View.VISIBLE);
+                        capture.setVisibility(View.VISIBLE);
+                        coverSurface.setVisibility(View.VISIBLE);
+                        _audioPlaying = GOOD;
+                        releaseAndPlayAudioFile(playListAfterAccepting[0]);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void setIconDislikeOnClickListener(){
+        icondislike.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        icondislike.setImageResource(R.drawable.dislike_clicked);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        icondislike.setImageResource(R.drawable.dislike);
+
+                        //TODO stop flash
+                        stopFlash(FLASH_DISLIKE);
+                        //TODO pick less used
+
+                        String icntext = Common.ANIMAL_NAMES[new Random().nextInt(Common.ANIMAL_NAMES.length)];
+                        icontext.setText(icntext.toUpperCase());
+                        iconpic.setImageDrawable(getResources().getDrawable(Common.ANIMALS.get(icntext)));
+                        iconRepeat = true;
+                        pauseAllAudios();
+                        _audioPlaying = OKAY_LETS_TRY_AGAIN;
+                        releaseAndPlayAudioFile(playListAfterAccepting[2]);
                         break;
                     default:
                         break;
@@ -1424,8 +1582,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 like_lastFlashTime = System.nanoTime();
                 like_stopFlash = false;
                 like_nowClicked = false;
-                like.setImageResource(R.drawable.like_finger);
-                mainHandler.post(flashLikeRunnable);
+                if(_audioPlaying == TAP_HERE_YES_ICON){
+                    iconlike.setImageResource(R.drawable.like_finger);
+                    mainHandler.post(flashLikeRunnableIcon);
+                } else {
+                    like.setImageResource(R.drawable.like_finger);
+                    mainHandler.post(flashLikeRunnable);
+                }
                 break;
 
             case FLASH_DISLIKE:
@@ -1433,8 +1596,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 dislike_lastFlashTime = System.nanoTime();
                 dislike_stopFlash = false;
                 dislike_nowClicked = false;
-                dislike.setImageResource(R.drawable.dislike_finger);
-                mainHandler.post(flashDislikeRunnable);
+                if(_audioPlaying == TAP_HERE_NO_ICON){
+                    icondislike.setImageResource(R.drawable.dislike_finger);
+                    mainHandler.post(flashDislikeRunnableIcon);
+                } else {
+                    dislike.setImageResource(R.drawable.dislike_finger);
+                    mainHandler.post(flashDislikeRunnable);
+                }
                 break;
 
             default:
@@ -1555,6 +1723,36 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
+    private Runnable flashLikeRunnableIcon = new Runnable() {
+        @Override
+        public void run() {
+            if (like_stopFlash) {
+                iconlike.setImageResource(R.drawable.like);
+                like_nowClicked = false;
+                return;
+            }
+            //transfer nanosecond to millisecond
+            long timepass = (System.nanoTime() - like_lastFlashTime) / 1000000;
+            if(timepass > FLASH_FREQUENCE) {
+                if(!like_nowClicked) {
+                    iconlike.setImageResource(R.drawable.like_finger_clicked);
+                    like_nowClicked = true;
+                } else {
+                    like_nowClicked = false;
+                    iconlike.setImageResource(R.drawable.like_finger);
+                }
+                like_lastFlashTime = System.nanoTime();
+            }
+
+            if ((System.nanoTime() - like_startFlashTIme)/1000000 <= FLASH_DURATION)
+                mainHandler.postDelayed(flashLikeRunnableIcon, FLASH_FREQUENCE);
+            else {
+                iconlike.setImageResource(R.drawable.like);
+                like_nowClicked = false;
+            }
+        }
+    };
+
     /**
      *  change Dislike button's color from white to red consecutively 3 times.
      */
@@ -1583,6 +1781,36 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mainHandler.postDelayed(flashDislikeRunnable, FLASH_FREQUENCE);
             else {
                 dislike.setImageResource(R.drawable.dislike);
+                dislike_nowClicked = false;
+            }
+        }
+    };
+
+    private Runnable flashDislikeRunnableIcon = new Runnable() {
+        @Override
+        public void run() {
+            if (dislike_stopFlash) {
+                icondislike.setImageResource(R.drawable.dislike);
+                dislike_nowClicked = false;
+                return;
+            }
+            //transfer nanosecond to millisecond
+            long timepass = (System.nanoTime() - dislike_lastFlashTime) / 1000000;
+            if(timepass > FLASH_FREQUENCE) {
+                if(!dislike_nowClicked) {
+                    icondislike.setImageResource(R.drawable.dislike_finger_clicked);
+                    dislike_nowClicked = true;
+                } else {
+                    icondislike.setImageResource(R.drawable.dislike_finger);
+                    dislike_nowClicked = false;
+                }
+                dislike_lastFlashTime = System.nanoTime();
+            }
+
+            if ((System.nanoTime() - dislike_startFlashTIme)/1000000 <= FLASH_DURATION)
+                mainHandler.postDelayed(flashDislikeRunnableIcon, FLASH_FREQUENCE);
+            else {
+                icondislike.setImageResource(R.drawable.dislike);
                 dislike_nowClicked = false;
             }
         }

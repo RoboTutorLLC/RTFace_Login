@@ -31,6 +31,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                         TB_NAME + "(" +
                         UserInfo.ID + " integer," +
                         UserInfo.USERICON + " varchar," +
+                        UserInfo.PROFILEICON + " varchar," +
                         UserInfo.USERVIDEO + " varchar," +
                         UserInfo.RECORDTIME + " varchar," +
                         UserInfo.GENDER + " varchar," +

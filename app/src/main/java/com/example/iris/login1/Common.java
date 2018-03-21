@@ -1,5 +1,8 @@
 package com.example.iris.login1;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Zero on 2016/9/16.
  */
@@ -20,6 +23,29 @@ public class Common {
         TAP_HERE_NO_ICON, IF_YOU_WANT_TO_GO_ON, TAP_HERE_YES_LOGIN_ICON,
         IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE_LOGIN, TAP_HERE_NO_LOGIN_ICON
     }
+
+    public static final String[] ANIMAL_NAMES = {"bat", "bear", "bee", "bird", "bug", "butterfly",
+        "camel", "cat", "cheetah", "chicken", "cow", "crocodile", "dinosaur", "dog", "dolphin", "dove",
+        "duck", "eagle", "elephant", "fish", "flamingo", "fox", "frog", "giraffe", "gorilla", "horse",
+        "kangaroo", "koala", "leopard", "lion", "monkey", "mouse", "palm", "panda", "parrot", "penguin",
+        "shark", "sheep", "snake", "spider", "squirrel", "starfish", "tiger", "turtle", "wolf", "zebra"};
+
+    public static final int[] ANIMAL_PATHS = {R.drawable.bat, R.drawable.bear, R.drawable.bee, R.drawable.bird,
+            R.drawable.bug, R.drawable.butterfly, R.drawable.camel, R.drawable.cat, R.drawable.cheetah,
+            R.drawable.chicken, R.drawable.cow, R.drawable.crocodile, R.drawable.dinosaur, R.drawable.dog,
+            R.drawable.dolphin, R.drawable.dove, R.drawable.duck, R.drawable.eagle, R.drawable.elephant,
+            R.drawable.fish, R.drawable.flamingo, R.drawable.fox, R.drawable.frog, R.drawable.giraffe,
+            R.drawable.gorilla, R.drawable.horse, R.drawable.kangaroo, R.drawable.koala, R.drawable.leopard,
+            R.drawable.lion, R.drawable.monkey, R.drawable.mouse, R.drawable.palm, R.drawable.panda,
+            R.drawable.parrot, R.drawable.penguin, R.drawable.shark, R.drawable.sheep, R.drawable.snake,
+            R.drawable.spider, R.drawable.squirrel, R.drawable.starfish, R.drawable.tiger, R.drawable.turtle,
+            R.drawable.wolf, R.drawable.zebra};
+
+    public static final Map<String, Integer> ANIMALS = new HashMap<String, Integer>() {{
+        for(int i = 0; i < ANIMAL_NAMES.length; i++){
+            put(ANIMAL_NAMES[i], ANIMAL_PATHS[i]);
+        }
+    }};
 
     //indicate the delay time
     public static final int DELAY_TO_SHOW_VIDEO_FULL_SCREEN = 7000;

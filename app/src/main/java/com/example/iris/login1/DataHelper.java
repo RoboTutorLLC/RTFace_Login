@@ -48,11 +48,12 @@ public class DataHelper {
             UserInfo user = new UserInfo();
             user.setID(Integer.parseInt(cursor.getString(0)));
             user.setUserIcon(cursor.getString(1));
-            user.setUserVideo(cursor.getString(2));
-            user.setRecordTime(cursor.getString(3));
-            user.setGender(cursor.getString(4));
-            user.setBirthDevice(cursor.getString(5));
-            user.setBirthDate(cursor.getString(6));
+            user.setProfileIcon(cursor.getString(2));
+            user.setUserVideo(cursor.getString(3));
+            user.setRecordTime(cursor.getString(4));
+            user.setGender(cursor.getString(5));
+            user.setBirthDevice(cursor.getString(6));
+            user.setBirthDate(cursor.getString(7));
 
             Cursor cursor2 = db.query(SqliteHelper.REC_NAME, new String[] {UserInfo.LAST_LOGIN_TIME}, UserInfo.ID + "=?", new String[] {String.valueOf(user.getID())}, null, null, null, null);
             if (!(cursor2.moveToFirst()) || cursor2.getCount() == 0) {
@@ -76,6 +77,7 @@ public class DataHelper {
         ContentValues values = new ContentValues();
         values.put(UserInfo.ID, user.getID());
         values.put(UserInfo.USERICON, user.getUserIcon());
+        values.put(UserInfo.PROFILEICON, user.getProfileIcon());
         values.put(UserInfo.USERVIDEO,user.getUserVideo());
         values.put(UserInfo.RECORDTIME, user.getRecordTime());
         values.put(UserInfo.GENDER, user.getGender());
