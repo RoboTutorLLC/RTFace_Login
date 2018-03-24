@@ -99,6 +99,17 @@ public class DataHelper {
         return uid;
     }
 
+    public int updateProfileIcon(UserInfo user){
+        ContentValues values_time = new ContentValues();
+        values_time.put(UserInfo.PROFILEICON, user.getProfileIcon());
+        String where = UserInfo.ID + "=?";
+        String[] whereArgs = new String[] {String.valueOf(user.getID())};
+        int uid = db.update(SqliteHelper.TB_NAME, values_time, where, whereArgs);
+        Log.e("updateProfileIcon", uid + "");
+        Log.e("recen table uproficon: ", this.getTableAsString(SqliteHelper.REC_NAME));
+        return uid;
+    }
+
     public int updateUserTime(UserInfo user) {
         ContentValues values_time = new ContentValues();
         values_time.put(UserInfo.LAST_LOGIN_TIME, user.getLastLoginTime());
