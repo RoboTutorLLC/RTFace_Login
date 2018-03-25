@@ -548,7 +548,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH [LOGIN_APPROVE_VIDEO 1B]
                     case TAP_HERE_DISLIKE_PICTURE:
                         if (needConfirm) {
-                            counter += 1;
+                            //counter += 1;
                             mHandler.postDelayed(toACCEPT, DELAY_TO_REPROMPT);
                         }
                         // MARCH [LOGIN_APPROVE_VIDEO 1B] DOTHIS "PLEASE SAY YOUR NAME"; record video; play back video;
@@ -631,7 +631,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH [CHECK_IF_EXPECTED 2]
                     case TAP_HERE_IF_IS_NOT_YOU:
                         if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
-                            counter += 1;
+                            //counter += 1;
                             mHandler.postDelayed(toDECIDE, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF_IS_YOU go to LOGIN_APPROVE_VIDEO 2
                             // MARCH DOTHIS IF_IS_NOT_YOU go to OLD_OR_NEW 1
@@ -695,7 +695,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH CASE B
                     case TAP_HERE_NO:
                         if (oldnewlike.getVisibility() == View.VISIBLE && oldnewdislike.getVisibility() == View.VISIBLE) {
-                            counter += 1;
+                            //counter += 1;
                             mHandler.postDelayed(toDECIDEOldNew, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF TAP YES go to LOGIN_GALLERY 1
                             // MARCH DOTHIS IF TAP NO go to INTRO 1
@@ -735,7 +735,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                     case TAP_HERE_GIRL:
                         if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
-                            counter += 1;
+                            //counter += 1;
                             mHandler.postDelayed(toDECIDEGender, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF TAP EITHER GIRL OR BOY go to ENROLL_ICON 1
                         }
@@ -773,7 +773,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH CASE B
                     case TAP_HERE_NO_ICON:
                         if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
-                            counter += 1;
+                            //counter += 1;
                             mHandler.postDelayed(toDECIDEIcon, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF TAP YES go to ENROLL_RECORD 1
                             // MARCH DOTHIS IF TAP NO go to ENROLL_ICON 1
@@ -808,7 +808,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                     // MARCH CASE B
                     case TAP_HERE_NO_LOGIN_ICON:
-                        counter += 1;
+                        //counter += 1;
                         mHandler.postDelayed(toDECIDEIcon, DELAY_TO_REPROMPT);
                         // MARCH DOTHIS IF TAP YES go to LOGIN_FINISH
                         // MARCH DOTHIS IF TAP NO randomly pick any icon, go to LOGIN_ICON 1
@@ -894,8 +894,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 startFlash(FLASH_CAPTURE);
             } else {
                 //TODO add intro video
-
-
+                newUserOldNew = false;
                 curUser = new UserInfo();
 
                 setGenderBoyOnClickListener();
@@ -927,7 +926,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toDECIDEGender = new Runnable() {
         @Override
         public void run() {
+            checkCount();
             if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
+                counter += 1;
                 _audioPlaying = IF_YOURE_A_BOY;
                 releaseAndPlayAudioFile(playListGender[0]);
             }
@@ -936,8 +937,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toDECIDEIcon = new Runnable() {
         @Override
         public void run() {
-
+            checkCount();
             if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
+                counter += 1;
                 if(!iconpick2) {
                     _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
                     releaseAndPlayAudioFile(playListIcon[0]);
@@ -953,7 +955,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toDECIDE = new Runnable() {
         @Override
         public void run() {
+            checkCount();
             if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                counter += 1;
                 _audioPlaying = IF_THIS_IS_YOU;
                 releaseAndPlayAudioFile(playListDecide[0]);
             }
@@ -963,7 +967,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toDECIDEOldNew = new Runnable() {
         @Override
         public void run() {
+            checkCount();
             if (oldnewlike.getVisibility() == View.VISIBLE && oldnewdislike.getVisibility() == View.VISIBLE) {
+                counter += 1;
                 _audioPlaying = IF_YOUVE_USED_ROBOTUTOR_BEFORE;
                 releaseAndPlayAudioFile(playListOldNew[0]);
             }
@@ -973,7 +979,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toACCEPT = new Runnable() {
         @Override
         public void run() {
+            checkCount();
             if (needConfirm) {
+                counter += 1;
                 _audioPlaying = IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME;
                 releaseAndPlayAudioFile(playListAccept[0]);
             }
@@ -1000,6 +1008,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     view.setBackgroundColor(Color.YELLOW);
                     return;
                 }
+
+                view.setBackgroundColor(Color.YELLOW);
 
                 capture.setVisibility(View.GONE);
                 like.setVisibility(View.INVISIBLE);
@@ -1035,7 +1045,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 // create a new EnrollmentVideo thread
                 videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
                 videoThread.start();
-                view.setBackgroundColor(Color.YELLOW);
+                //view.setBackgroundColor(Color.YELLOW);
             }
         });
     }
@@ -1371,6 +1381,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             coverSurface.setVisibility(View.VISIBLE);
                             _audioPlaying = GOOD;
                             pauseAllAudios();
+                            mHandler.removeCallbacksAndMessages(null);
                             releaseAndPlayAudioFile(playListAfterAccepting[0]);
                         } else {
                             currentUser.setProfileIcon(icontext.getText().toString().trim());
@@ -1442,10 +1453,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         coverSurface.setVisibility(View.VISIBLE);
 
                         //TODO go to "if you see your picture"
-                        _audioPlaying = GOOD;
+                        _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
                         pauseAllAudios();
                         mHandler.removeCallbacksAndMessages(null);
-                        releaseAndPlayAudioFile(playListAfterAccepting[0]);
+                        releaseAndPlayAudioFile(playListStart[0]);
 
                         break;
                     default:
@@ -1550,6 +1561,20 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         //mGalleryScrollView.shrinkPicture(mAdapter, surfaceview.getWidth(), surfaceview.getHeight());
     }
 
+    public void checkCount(){
+        if (this.counter == 2) {
+            this.counter = 0;
+
+            //TODO since we're going to WELCOME anyway, just restart app?
+            Intent i = getBaseContext().getPackageManager()
+                    .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+
+            //toSTART()
+        }
+    }
+
     /**
      * KIMTAR this is where various messages are handled from "RecordThread" and other places
      */
@@ -1559,12 +1584,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         @Override
         public void handleMessage(Message msg) {
             // MARCH if counter reaches 3 then go to WELCOME
-            if (counter == 3) {
-                _audioPlaying = THIS_IS_ROBOTUTOR;
-                toSTART();
-            }
-
             super.handleMessage(msg);
+
             switch (msg.what) {
                 case READY_TO_RECORD:
                     isPreparing = false;
