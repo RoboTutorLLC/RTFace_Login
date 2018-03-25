@@ -193,6 +193,10 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
         this.mOnClickListener = mOnClickListener;
     }
 
+    public OnItemClickListener getOnItemClickListener() {
+        return mOnClickListener;
+    }
+
     public void setCurrentImageChangeListener(CurrentImageChangeListener mListener) {
         this.mListener = mListener;
     }
