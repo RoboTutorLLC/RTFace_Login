@@ -1003,6 +1003,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
             @Override
             public void onClick(View view, int position) {
+                counter = 0;
                 //If tap on the picture while the camera is preparing to record, LOGIN will exit directly because of the exception.
                 if (isPreparing) {
                     view.setBackgroundColor(Color.YELLOW);
@@ -1135,6 +1136,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         capture.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
+                counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         capture.setImageResource(R.drawable.capture_clicked);
@@ -1178,6 +1180,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         like.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean  onTouch(View v, MotionEvent event) {
+                counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         like.setImageResource(R.drawable.like_clicked);
@@ -1235,6 +1238,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         dislike.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean  onTouch(View v, MotionEvent event) {
+                counter = 0;
                 // MARCH check if first registration
                 if (_audioPlaying == TAP_HERE_NO) {
                     firstRegistration = true;
@@ -1292,6 +1296,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         genderboy.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         //TODO set clicked gender image or maybe do nothing?
@@ -1327,6 +1332,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         gendergirl.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         //TODO set clicked gender image or maybe do nothing?
@@ -1361,6 +1367,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         iconlike.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         iconlike.setImageResource(R.drawable.like_clicked);
@@ -1405,6 +1412,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         icondislike.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         icondislike.setImageResource(R.drawable.dislike_clicked);
@@ -1436,6 +1444,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         oldnewlike.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         oldnewlike.setImageResource(R.drawable.like_clicked);
@@ -1471,6 +1480,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         oldnewdislike.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         oldnewdislike.setImageResource(R.drawable.dislike_clicked);
