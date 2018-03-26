@@ -897,7 +897,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 startFlash(FLASH_CAPTURE);
             } else {
                 //TODO add intro video
-                newUserOldNew = false;
+                //newUserOldNew = false;
                 curUser = new UserInfo();
 
                 setGenderBoyOnClickListener();
@@ -1027,7 +1027,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     stopFlash(FLASH_LIKE);
                     stopFlash(FLASH_DISLIKE);
                     //If waiting for confirm && user tap on an old one, delete the temporary new one.
-                    //thread.deleteVideoAndPicture();
+                    thread.deleteVideoAndPicture();
                 }
 
                 currentUser = userInfo.get(position);
@@ -1203,12 +1203,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         mHandler.removeCallbacksAndMessages(null);
                         if (needConfirm) {
                             if (firstAttempt) firstAttempt = false;
-                            else deleteLastUserInfo();
+                            //else deleteLastUserInfo();
                             saveUserInfo();
                             needConfirm = false;
                             newReg = true;
+                            newUserOldNew = false;
                             capture.setVisibility(View.GONE);
-                            dislike.setVisibility(View.VISIBLE);
+                            //dislike.setVisibility(View.VISIBLE);
 
                             _audioPlaying = GOOD;
                             releaseAndPlayAudioFile(playListAfterAccepting[0]);
