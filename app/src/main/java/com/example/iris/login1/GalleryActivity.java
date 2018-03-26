@@ -470,7 +470,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH [LOGIN_GALLERY 2]
                     // formerly mpStart4
                     case SLIDE_THEM_LIKE_THIS:
-                        // do nothing
+                        _audioPlaying = IF_YOU_DONT_FIND_YOUR_PICTURE;
+                        releaseAndPlayAudioFile(playListStart[4]);
                         break;
 
                     // MARCH [ENROLL_RECORD]
