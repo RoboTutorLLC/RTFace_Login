@@ -432,7 +432,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // formerly mpStart1
                     case IF_YOU_SEE_YOUR_PICTURE:
 
-                        if (capture.getVisibility() == View.VISIBLE) {
+                        if (dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE) {
                             _audioPlaying = PLEASE_TAP_ON_YOUR_PICTURE;
                             releaseAndPlayAudioFile(playListStart[1]);
                         }
@@ -443,7 +443,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     case PLEASE_TAP_ON_YOUR_PICTURE:
 
                         // formerly mpStart2
-                        if (capture.getVisibility() == View.VISIBLE) {
+                        if (dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE) {
                             if (mGalleryScrollView.exceedScreen(userInfo.size())) {
                                 _audioPlaying = TO_SEE_MORE_PICTURES;
                                 releaseAndPlayAudioFile(playListStart[2]);
@@ -459,7 +459,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // formerly mpStart3
                     // XXX this is where RoboFinger is called!
                     case TO_SEE_MORE_PICTURES:
-                        if (capture.getVisibility() == View.VISIBLE) {
+                        if (activity_gal.getVisibility() == View.VISIBLE) {
                             _audioPlaying = SLIDE_THEM_LIKE_THIS;
                             releaseAndPlayAudioFile(playListStart[3]);
                             slideRoboFinger.setVisibility(View.VISIBLE);
@@ -506,10 +506,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH [LOGIN_GALLERY 3]
                     // formerly mpStart5
                     case IF_YOU_DONT_FIND_YOUR_PICTURE:
-                        if (capture.getVisibility() == View.VISIBLE) {
+                        if (dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE) {
                             _audioPlaying = TAP_HERE_RECORD;
                             releaseAndPlayAudioFile(playListStart[5]);
-                            startFlash(FLASH_CAPTURE);
+                            startFlash(FLASH_DISLIKE);
                         }
                         // MARCH DOTHIS go to OLD_OR_NEW
                         break;
@@ -871,15 +871,18 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             setDislikeOnClickListener();
 
             if (recordAgain || newReg) {
+
+                like.setVisibility(View.GONE);
+                dislike.setVisibility(View.VISIBLE);
+                capture.setVisibility(View.GONE);
                 _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
                 releaseAndPlayAudioFile(playListStart[0]);
             } else {
-                if (capture.getVisibility() == View.VISIBLE) {
-                    newUser2 = true;
-                    mGalleryScrollView.getOnItemClickListener().onClick(mAdapter.getView(0, null, (LinearLayout) mGalleryScrollView.getChildAt(0)), 0);
+                newUser2 = true;
+                mGalleryScrollView.getOnItemClickListener().onClick(mAdapter.getView(0, null, (LinearLayout) mGalleryScrollView.getChildAt(0)), 0);
                     //_audioPlaying = IF_THIS_IS_YOU;
                     //releaseAndPlayAudioFile(playListExpected[0]);
-                }
+
                 //mpStart1.seekTo(0);
                 //mpStart1.start();
             }
@@ -1010,7 +1013,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     return;
                 }
 
-                view.setBackgroundColor(Color.YELLOW);
+                //view.setBackgroundColor(Color.YELLOW);
 
                 capture.setVisibility(View.GONE);
                 like.setVisibility(View.INVISIBLE);
@@ -1024,7 +1027,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     stopFlash(FLASH_LIKE);
                     stopFlash(FLASH_DISLIKE);
                     //If waiting for confirm && user tap on an old one, delete the temporary new one.
-                    thread.deleteVideoAndPicture();
+                    //thread.deleteVideoAndPicture();
                 }
 
                 currentUser = userInfo.get(position);
@@ -1046,7 +1049,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 // create a new EnrollmentVideo thread
                 videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
                 videoThread.start();
-                //view.setBackgroundColor(Color.YELLOW);
+                view.setBackgroundColor(Color.YELLOW);
             }
         });
     }
@@ -1204,6 +1207,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             saveUserInfo();
                             needConfirm = false;
                             newReg = true;
+                            capture.setVisibility(View.GONE);
+                            dislike.setVisibility(View.VISIBLE);
 
                             _audioPlaying = GOOD;
                             releaseAndPlayAudioFile(playListAfterAccepting[0]);
@@ -1269,9 +1274,19 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                 _audioPlaying = OKAY_LETS_TRY_AGAIN;
                                 releaseAndPlayAudioFile(playListAfterAccepting[2]);
                             } else {
+                                /*
                                 _audioPlaying = LETS_TRY_AGAIN;
                                 releaseAndPlayAudioFile(playListAfterDeciding[1]);
                                 mGalleryScrollView.clearAllBackground();
+                                */
+                                activity_gal.setVisibility(View.GONE);
+                                oldnewlay.setVisibility(View.VISIBLE);
+                                setOldNewLikeOnClickListener();
+                                setOldNewDislikeOnClickListener();
+                                pauseAllAudios();
+                                mHandler.removeCallbacksAndMessages(null);
+                                _audioPlaying = IF_YOUVE_USED_ROBOTUTOR_BEFORE;
+                                releaseAndPlayAudioFile(playListOldNew[0]);
                             }
                         } else {
                             activity_gal.setVisibility(View.GONE);
@@ -1458,7 +1473,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         oldnewlay.setVisibility(View.GONE);
 
                         activity_gal.setVisibility(View.VISIBLE);
-                        capture.setVisibility(View.VISIBLE);
+                        dislike.setVisibility(View.VISIBLE);
+                        like.setVisibility(View.GONE);
+                        capture.setVisibility(View.GONE);
                         coverSurface.setVisibility(View.VISIBLE);
 
                         //TODO go to "if you see your picture"
