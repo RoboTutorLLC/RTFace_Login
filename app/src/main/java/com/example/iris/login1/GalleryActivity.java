@@ -206,6 +206,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean iconpick2 = false;
     private boolean newUser2 = false;
     private boolean newUserOldNew = false;
+    private boolean isGalleryPick = false;
     // MARCH boolean check for first registration
     private static boolean firstRegistration = false;
 
@@ -431,7 +432,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH [LOGIN_GALLERY 1]
                     // formerly mpStart1
                     case IF_YOU_SEE_YOUR_PICTURE:
-
+                        isGalleryPick = false;
                         if (dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE) {
                             _audioPlaying = PLEASE_TAP_ON_YOUR_PICTURE;
                             releaseAndPlayAudioFile(playListStart[1]);
@@ -508,17 +509,24 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // formerly mpStart5
                     case IF_YOU_DONT_FIND_YOUR_PICTURE:
                         if (dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE) {
-                            _audioPlaying = TAP_HERE_RECORD;
+                            _audioPlaying = TAP_HERE_CANT_FIND;
                             releaseAndPlayAudioFile(playListStart[5]);
                             startFlash(FLASH_DISLIKE);
                         }
                         // MARCH DOTHIS go to OLD_OR_NEW
                         break;
 
+                    case TAP_HERE_CANT_FIND:
+                        if (dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE) {
+                            mHandler.postDelayed(toDECIDEFindPic, DELAY_TO_REPROMPT);
+                        }
+
+                        break;
                     // MARCH DOTHIS IMPLEMENT RECORD FOR FUN FUNCTIONALITY
 
                     // MARCH how does this record?
                     // formerly mpStart6
+
                     case TAP_HERE_RECORD:
                         // do nothing
                         break;
@@ -574,6 +582,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                 _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
                                 releaseAndPlayAudioFile(playListIcon[0]);
                             } else {
+                                mGalleryScrollView.clearAllBackground();
                                 setCaptureOnClickListener();
                                 setLikeOnClickListener();
                                 setDislikeOnClickListener();
@@ -865,7 +874,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             // MARCH if this is you tap here
             // MARCH if this is not you tap here
 
-        //TODO need to add boolean for case when size > 0 but newuser
         if (userInfo.size() > 0 && !newUserOldNew) {
             setCaptureOnClickListener();
             setLikeOnClickListener();
@@ -880,6 +888,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 releaseAndPlayAudioFile(playListStart[0]);
             } else {
                 newUser2 = true;
+                capture.setVisibility(View.GONE);
                 mGalleryScrollView.getOnItemClickListener().onClick(mAdapter.getView(0, null, (LinearLayout) mGalleryScrollView.getChildAt(0)), 0);
                     //_audioPlaying = IF_THIS_IS_YOU;
                     //releaseAndPlayAudioFile(playListExpected[0]);
@@ -955,6 +964,19 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
+    private Runnable toDECIDEFindPic = new Runnable(){
+
+        @Override
+        public void run() {
+            checkCount();
+            if(dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE){
+                counter += 1;
+                _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
+                releaseAndPlayAudioFile(playListStart[0]);
+            }
+        }
+    };
+
 
     private Runnable toDECIDE = new Runnable() {
         @Override
@@ -1008,6 +1030,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             @Override
             public void onClick(View view, int position) {
                 counter = 0;
+                isGalleryPick = true;
                 //If tap on the picture while the camera is preparing to record, LOGIN will exit directly because of the exception.
                 if (isPreparing) {
                     view.setBackgroundColor(Color.YELLOW);
@@ -1281,16 +1304,34 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                 releaseAndPlayAudioFile(playListAfterDeciding[1]);
                                 mGalleryScrollView.clearAllBackground();
                                 */
-                                activity_gal.setVisibility(View.GONE);
-                                oldnewlay.setVisibility(View.VISIBLE);
-                                setOldNewLikeOnClickListener();
-                                setOldNewDislikeOnClickListener();
-                                pauseAllAudios();
-                                mHandler.removeCallbacksAndMessages(null);
-                                _audioPlaying = IF_YOUVE_USED_ROBOTUTOR_BEFORE;
-                                releaseAndPlayAudioFile(playListOldNew[0]);
+                                if(isGalleryPick) {
+                                    Log.e("isGalleryPick", "here1");
+                                    mGalleryScrollView.clearAllBackground();
+                                    activity_gal.setVisibility(View.VISIBLE);
+                                    dislike.setVisibility(View.VISIBLE);
+                                    like.setVisibility(View.GONE);
+                                    capture.setVisibility(View.GONE);
+                                    coverSurface.setVisibility(View.VISIBLE);
+                                    isGalleryPick = false;
+                                    //TODO go to "if you see your picture"
+                                    _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
+                                    pauseAllAudios();
+                                    mHandler.removeCallbacksAndMessages(null);
+                                    releaseAndPlayAudioFile(playListStart[0]);
+                                } else {
+                                    Log.e("isGalleryPick", "here2");
+                                    activity_gal.setVisibility(View.GONE);
+                                    oldnewlay.setVisibility(View.VISIBLE);
+                                    setOldNewLikeOnClickListener();
+                                    setOldNewDislikeOnClickListener();
+                                    pauseAllAudios();
+                                    mHandler.removeCallbacksAndMessages(null);
+                                    _audioPlaying = IF_YOUVE_USED_ROBOTUTOR_BEFORE;
+                                    releaseAndPlayAudioFile(playListOldNew[0]);
+                                }
                             }
                         } else {
+                            Log.e("isGalleryPick", "here3");
                             activity_gal.setVisibility(View.GONE);
                             oldnewlay.setVisibility(View.VISIBLE);
                             setOldNewLikeOnClickListener();
@@ -1468,9 +1509,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
                     case MotionEvent.ACTION_UP:
                         oldnewlike.setImageResource(R.drawable.like);
+                        newUser2 = false;
+                        isGalleryPick = false;
 
                         Log.e("Robotutor used", "yes");
                         stopFlash(FLASH_LIKE);
+
+                        mGalleryScrollView.clearAllBackground();
 
                         oldnewlay.setVisibility(View.GONE);
 
