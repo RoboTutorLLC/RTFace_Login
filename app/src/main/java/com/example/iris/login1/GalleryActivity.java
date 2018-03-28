@@ -220,13 +220,23 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private long dislike_lastFlashTime = System.nanoTime();
     private long dislike_startFlashTIme = System.nanoTime();
 
+    private long boy_lastFlashTime = System.nanoTime();
+    private long boy_startFlashTIme = System.nanoTime();
+    private long girl_lastFlashTime = System.nanoTime();
+    private long girl_startFlashTIme = System.nanoTime();
+
     private boolean capture_nowClicked = false;
     private boolean like_nowClicked = false;
     private boolean dislike_nowClicked = false;
+    private boolean boy_nowClicked = false;
+    private boolean girl_nowClicked = false;
 
     private boolean capture_stopFlash = false;
     private boolean like_stopFlash = false;
     private boolean dislike_stopFlash = false;
+    private boolean boy_stopFlash = false;
+    private boolean girl_stopFlash = false;
+
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private UserInfo currentUser;
@@ -715,14 +725,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                     // MARCH NEWSTATE [ENROLL_GENDER]
 
-                    //TODO need !needConfirm?
                     case IF_YOURE_A_BOY:
                         if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
                             _audioPlaying = TAP_HERE_BOY;
                             releaseAndPlayAudioFile(playListGender[1]);
 
-                            //TODO add robofinger for this
-                            //startFlash(FLASH_LIKE);
+                            startFlash(FLASH_BOY);
                         }
                         break;
 
@@ -737,9 +745,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
                             _audioPlaying = TAP_HERE_GIRL;
                             releaseAndPlayAudioFile(playListGender[3]);
+                            startFlash(FLASH_GIRL);
 
-                            //TODO add robofinger for this
-                            //startFlash(FLASH_DISLIKE);
                         }
                         break;
 
@@ -1357,13 +1364,16 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        //TODO set clicked gender image or maybe do nothing?
+                        genderboy.setImageResource(R.drawable.gender_boy_clicked);
                         break;
                     case MotionEvent.ACTION_UP:
+                        genderboy.setImageResource(R.drawable.gender_boy);
 
                         curUser.setGender("male");
 
                         Log.e("Gender set", curUser.getGender());
+                        stopFlash(FLASH_BOY);
+                        stopFlash(FLASH_GIRL);
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
@@ -1393,12 +1403,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 counter = 0;
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        //TODO set clicked gender image or maybe do nothing?
+                        gendergirl.setImageResource(R.drawable.gender_girl_clicked);
                         break;
                     case MotionEvent.ACTION_UP:
+                        gendergirl.setImageResource(R.drawable.gender_girl);
 
                         curUser.setGender("female");
                         Log.e("Gender set", curUser.getGender());
+                        stopFlash(FLASH_GIRL);
+                        stopFlash(FLASH_BOY);
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
@@ -1836,6 +1849,24 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 }
                 break;
 
+            case FLASH_BOY:
+                boy_startFlashTIme = System.nanoTime();
+                boy_lastFlashTime = System.nanoTime();
+                boy_stopFlash = false;
+                boy_nowClicked = false;
+                genderboy.setImageResource(R.drawable.gender_boy_finger);
+                mainHandler.post(flashBoyRunnable);
+                break;
+
+            case FLASH_GIRL:
+                girl_startFlashTIme = System.nanoTime();
+                girl_lastFlashTime = System.nanoTime();
+                girl_stopFlash = false;
+                girl_nowClicked = false;
+                gendergirl.setImageResource(R.drawable.gender_girl_finger);
+                mainHandler.post(flashGirlRunnable);
+                break;
+
             case FLASH_DISLIKE:
                 dislike_startFlashTIme = System.nanoTime();
                 dislike_lastFlashTime = System.nanoTime();
@@ -1876,6 +1907,18 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 dislike_startFlashTIme = System.nanoTime();
                 dislike_lastFlashTime = System.nanoTime();
                 dislike_stopFlash = true;
+                break;
+
+            case FLASH_BOY:
+                boy_startFlashTIme = System.nanoTime();
+                boy_lastFlashTime = System.nanoTime();
+                boy_stopFlash = true;
+                break;
+
+            case FLASH_GIRL:
+                girl_startFlashTIme = System.nanoTime();
+                girl_lastFlashTime = System.nanoTime();
+                girl_stopFlash = true;
                 break;
 
             default:
@@ -2120,6 +2163,66 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             else {
                 oldnewdislike.setImageResource(R.drawable.dislike);
                 dislike_nowClicked = false;
+            }
+        }
+    };
+
+    private Runnable flashBoyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (boy_stopFlash) {
+                genderboy.setImageResource(R.drawable.gender_boy);
+                boy_nowClicked = false;
+                return;
+            }
+            //transfer nanosecond to millisecond
+            long timepass = (System.nanoTime() - boy_lastFlashTime) / 1000000;
+            if(timepass > FLASH_FREQUENCE) {
+                if(!boy_nowClicked) {
+                    genderboy.setImageResource(R.drawable.gender_boy_finger_clicked);
+                    boy_nowClicked = true;
+                } else {
+                    genderboy.setImageResource(R.drawable.gender_boy_finger);
+                    boy_nowClicked = false;
+                }
+                boy_lastFlashTime = System.nanoTime();
+            }
+
+            if ((System.nanoTime() - boy_startFlashTIme)/1000000 <= FLASH_DURATION)
+                mainHandler.postDelayed(flashBoyRunnable, FLASH_FREQUENCE);
+            else {
+                genderboy.setImageResource(R.drawable.gender_boy);
+                boy_nowClicked = false;
+            }
+        }
+    };
+
+    private Runnable flashGirlRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (girl_stopFlash) {
+                gendergirl.setImageResource(R.drawable.gender_girl);
+                girl_nowClicked = false;
+                return;
+            }
+            //transfer nanosecond to millisecond
+            long timepass = (System.nanoTime() - girl_lastFlashTime) / 1000000;
+            if(timepass > FLASH_FREQUENCE) {
+                if(!girl_nowClicked) {
+                    gendergirl.setImageResource(R.drawable.gender_girl_finger_clicked);
+                    girl_nowClicked = true;
+                } else {
+                    gendergirl.setImageResource(R.drawable.gender_girl_finger);
+                    girl_nowClicked = false;
+                }
+                girl_lastFlashTime = System.nanoTime();
+            }
+
+            if ((System.nanoTime() - girl_startFlashTIme)/1000000 <= FLASH_DURATION)
+                mainHandler.postDelayed(flashGirlRunnable, FLASH_FREQUENCE);
+            else {
+                gendergirl.setImageResource(R.drawable.gender_girl);
+                girl_nowClicked = false;
             }
         }
     };

@@ -78,6 +78,8 @@ public class Common {
     public static final int FLASH_CAPTURE = 1;
     public static final int FLASH_LIKE = 2;
     public static final int FLASH_DISLIKE = 3;
+    public static final int FLASH_BOY = 4;
+    public static final int FLASH_GIRL = 5;
 
     //indicate time when flash
     public static final int FLASH_DURATION = 2000;
