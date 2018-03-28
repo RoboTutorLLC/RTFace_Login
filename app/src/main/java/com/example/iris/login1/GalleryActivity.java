@@ -946,8 +946,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toDECIDEGender = new Runnable() {
         @Override
         public void run() {
-            checkCount();
-            if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
+            if (!checkCount() && genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
                 counter += 1;
                 _audioPlaying = IF_YOURE_A_BOY;
                 releaseAndPlayAudioFile(playListGender[0]);
@@ -957,8 +956,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toDECIDEIcon = new Runnable() {
         @Override
         public void run() {
-            checkCount();
-            if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
+            if (!checkCount() && iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
                 counter += 1;
                 if(!iconpick2) {
                     _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
@@ -975,8 +973,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         @Override
         public void run() {
-            checkCount();
-            if(dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE){
+            if(!checkCount() && dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE){
                 counter += 1;
                 _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
                 releaseAndPlayAudioFile(playListStart[0]);
@@ -988,8 +985,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toDECIDE = new Runnable() {
         @Override
         public void run() {
-            checkCount();
-            if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+            if (!checkCount() && like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
                 counter += 1;
                 _audioPlaying = IF_THIS_IS_YOU;
                 releaseAndPlayAudioFile(playListDecide[0]);
@@ -1000,8 +996,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toDECIDEOldNew = new Runnable() {
         @Override
         public void run() {
-            checkCount();
-            if (oldnewlike.getVisibility() == View.VISIBLE && oldnewdislike.getVisibility() == View.VISIBLE) {
+            if (!checkCount() && oldnewlike.getVisibility() == View.VISIBLE && oldnewdislike.getVisibility() == View.VISIBLE) {
                 counter += 1;
                 _audioPlaying = IF_YOUVE_USED_ROBOTUTOR_BEFORE;
                 releaseAndPlayAudioFile(playListOldNew[0]);
@@ -1012,8 +1007,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable toACCEPT = new Runnable() {
         @Override
         public void run() {
-            checkCount();
-            if (needConfirm) {
+            if (!checkCount() && needConfirm) {
                 counter += 1;
                 _audioPlaying = IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME;
                 releaseAndPlayAudioFile(playListAccept[0]);
@@ -1450,6 +1444,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             Log.e("Icon set", curUser.getProfileIcon());
 
                             stopFlash(FLASH_LIKE);
+                            stopFlash(FLASH_DISLIKE);
                             iconlay.setVisibility(View.GONE);
 
                             iconRegd = true;
@@ -1492,6 +1487,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         icondislike.setImageResource(R.drawable.dislike);
 
                         stopFlash(FLASH_DISLIKE);
+                        stopFlash(FLASH_LIKE);
                         //TODO pick less used
 
                         String icntext = Common.ANIMAL_NAMES[new Random().nextInt(Common.ANIMAL_NAMES.length)];
@@ -1527,6 +1523,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                         Log.e("Robotutor used", "yes");
                         stopFlash(FLASH_LIKE);
+                        stopFlash(FLASH_DISLIKE);
 
                         mGalleryScrollView.clearAllBackground();
 
@@ -1567,6 +1564,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                         Log.e("Robotutor used", "no");
                         stopFlash(FLASH_DISLIKE);
+                        stopFlash(FLASH_LIKE);
 
                         oldnewlay.setVisibility(View.GONE);
 
@@ -1648,8 +1646,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         //mGalleryScrollView.shrinkPicture(mAdapter, surfaceview.getWidth(), surfaceview.getHeight());
     }
 
-    public void checkCount(){
-        if (this.counter == 2) {
+    public boolean checkCount(){
+        if (this.counter == 3) {
             this.counter = 0;
 
             //TODO since we're going to WELCOME anyway, just restart app?
@@ -1657,8 +1655,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     .getLaunchIntentForPackage( getBaseContext().getPackageName() );
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
-
+            return true;
             //toSTART()
+        } else {
+            return false;
         }
     }
 
