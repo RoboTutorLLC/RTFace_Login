@@ -131,7 +131,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             {R.raw.swa_pleasetapheretogoon,
                     R.raw.swa_ifyouwanttoseeadifferentpicture, R.raw.swa_pleasetaphere7};
     private int[] mediaListLoginIconEng =
-            {R.raw.eng_ifyouwanttogoon, R.raw.eng_tapheregoon,
+            {R.raw.eng_pleasetapheretogoon,
                     R.raw.eng_ifyouwanttoseeadifferentpicture, R.raw.eng_pleasetaphere7};
 
     /* ---------------------------------------- */
@@ -611,8 +611,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     case OKAY_LETS_TRY_AGAIN:
                         if(iconRepeat) {
                             if(iconpick2){
-                                _audioPlaying = IF_YOU_WANT_TO_GO_ON;
+                                _audioPlaying = PLEASE_TAP_HERE_TO_GO_ON;
                                 releaseAndPlayAudioFile(playListLoginIcon[0]);
+                                stopFlash(FLASH_LIKE);
+                                startFlash(FLASH_LIKE);
                             } else {
                                 _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
                                 releaseAndPlayAudioFile(playListIcon[0]);
@@ -799,26 +801,17 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
 
                     // MARCH NEWSTATE [LOGIN_ICON]
-                    case IF_YOU_WANT_TO_GO_ON:
-                        if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
-                            _audioPlaying = TAP_HERE_YES_LOGIN_ICON;
-                            releaseAndPlayAudioFile(playListLoginIcon[1]);
-                            startFlash(FLASH_LIKE);
-                        }
-                        break;
-
-                    // MARCH CASE A
-                    case TAP_HERE_YES_LOGIN_ICON:
+                    case PLEASE_TAP_HERE_TO_GO_ON:
                         if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
                             _audioPlaying = IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE_LOGIN;
-                            releaseAndPlayAudioFile(playListLoginIcon[2]);
+                            releaseAndPlayAudioFile(playListLoginIcon[1]);
                         }
                         break;
 
                     case IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE_LOGIN:
                         if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
                             _audioPlaying = TAP_HERE_NO_LOGIN_ICON;
-                            releaseAndPlayAudioFile(playListLoginIcon[3]);
+                            releaseAndPlayAudioFile(playListLoginIcon[2]);
                             startFlash(FLASH_DISLIKE);
                         }
                         break;
@@ -962,8 +955,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
                     releaseAndPlayAudioFile(playListIcon[0]);
                 } else {
-                    _audioPlaying = IF_YOU_WANT_TO_GO_ON;
+                    _audioPlaying = PLEASE_TAP_HERE_TO_GO_ON;
                     releaseAndPlayAudioFile(playListLoginIcon[0]);
+                    stopFlash(FLASH_LIKE);
+                    startFlash(FLASH_LIKE);
                 }
             }
         }
@@ -1249,9 +1244,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             iconlay.setVisibility(View.VISIBLE);
                             setIconLikeOnClickListener();
                             setIconDislikeOnClickListener();
-                            _audioPlaying = IF_YOU_WANT_TO_GO_ON;
-                            pauseAllAudios();
+                            _audioPlaying = PLEASE_TAP_HERE_TO_GO_ON;
                             releaseAndPlayAudioFile(playListLoginIcon[0]);
+                            stopFlash(FLASH_LIKE);
+                            startFlash(FLASH_LIKE);
                         }
                         break;
                     default:
@@ -1837,7 +1833,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 like_lastFlashTime = System.nanoTime();
                 like_stopFlash = false;
                 like_nowClicked = false;
-                if(_audioPlaying == TAP_HERE_YES_ICON || _audioPlaying == TAP_HERE_YES_LOGIN_ICON){
+                if(_audioPlaying == TAP_HERE_YES_ICON || _audioPlaying == PLEASE_TAP_HERE_TO_GO_ON){
                     iconlike.setImageResource(R.drawable.like_finger);
                     mainHandler.post(flashLikeRunnableIcon);
                 } else if (_audioPlaying == TAP_HERE_YES) {
