@@ -15,7 +15,7 @@ public class Common {
         YOU_SAID, IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME, TAP_HERE_LIKE_PICTURE,
         TAP_HERE_DISLIKE_PICTURE, GOOD, NOW, OKAY_LETS_TRY_AGAIN, IF_THIS_IS_YOU,
         TAP_HERE_IF_IS_YOU, IF_THIS_IS_NOT_YOU, TAP_HERE_IF_IS_NOT_YOU, LETS_GET_STARTED,
-        LETS_TRY_AGAIN, THIS_IS_ROBOTUTOR,PLEASE_TAP_HERE_TO_GO_ON,
+        LETS_TRY_AGAIN, THIS_IS_ROBOTUTOR,PLEASE_TAP_HERE_TO_GO_ON, TAP_HERE_RECORD_REC, TO_TAKE_ANOTHER_PICTURE,
         // MARCH NEW STATES
         IF_YOUVE_USED_ROBOTUTOR_BEFORE, TAP_HERE_YES, IF_YOUVE_NEVER_USED_ROBOTUTOR_BEFORE,
         TAP_HERE_NO, IF_YOURE_A_BOY, TAP_HERE_BOY, IF_YOURE_A_GIRL, TAP_HERE_GIRL,
@@ -24,26 +24,38 @@ public class Common {
         IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE_LOGIN, TAP_HERE_NO_LOGIN_ICON, TAP_HERE_CANT_FIND
     }
 
-    public static final String[] ANIMAL_NAMES = {"bat", "bear", "bee", "bird", "bug", "butterfly",
-        "camel", "cat", "cheetah", "chicken", "cow", "crocodile", "dinosaur", "dog", "dolphin", "dove",
+    public static final String[] ANIMAL_NAMES_ENG = {"bat", "bear", "bee", "bird", "bug", "butterfly",
+        "camel", "cat", "cheetah", "chicken", "cow", "crocodile", "dog", "dove",
         "duck", "eagle", "elephant", "fish", "flamingo", "fox", "frog", "giraffe", "gorilla", "horse",
-        "kangaroo", "koala", "leopard", "lion", "monkey", "mouse", "palm", "panda", "parrot", "penguin",
-        "shark", "sheep", "snake", "spider", "squirrel", "starfish", "tiger", "turtle", "wolf", "zebra"};
+        "kangaroo", "leopard", "lion", "monkey", "mouse", "palm", "parrot",
+            "sheep", "snake", "spider", "squirrel", "turtle", "wolf", "zebra"};
+
+    public static final String[] ANIMAL_NAMES_SWA = {"popo", "dubu", "nyuki", "ndege", "mdudu", "kipepeo",
+            "ngamia", "paka", "duma", "kuku", "ng'ombe", "mamba", "mbwa", "njiwa",
+            "bata", "tai", "tembo", "samaki", "korongo", "mbweha", "chupa", "twiga", "sokwe", "farasi",
+            "kangaruu", "chui", "simba", "tumbili", "panya", "mtende", "kasuku",
+            "kondoo", "nyoka", "buibui", "kuchakuro", "kobe", "Mbwa mwitu", "punda"};
 
     public static final int[] ANIMAL_PATHS = {R.drawable.bat, R.drawable.bear, R.drawable.bee, R.drawable.bird,
             R.drawable.bug, R.drawable.butterfly, R.drawable.camel, R.drawable.cat, R.drawable.cheetah,
-            R.drawable.chicken, R.drawable.cow, R.drawable.crocodile, R.drawable.dinosaur, R.drawable.dog,
-            R.drawable.dolphin, R.drawable.dove, R.drawable.duck, R.drawable.eagle, R.drawable.elephant,
+            R.drawable.chicken, R.drawable.cow, R.drawable.crocodile, R.drawable.dog,
+            R.drawable.dove, R.drawable.duck, R.drawable.eagle, R.drawable.elephant,
             R.drawable.fish, R.drawable.flamingo, R.drawable.fox, R.drawable.frog, R.drawable.giraffe,
-            R.drawable.gorilla, R.drawable.horse, R.drawable.kangaroo, R.drawable.koala, R.drawable.leopard,
-            R.drawable.lion, R.drawable.monkey, R.drawable.mouse, R.drawable.palm, R.drawable.panda,
-            R.drawable.parrot, R.drawable.penguin, R.drawable.shark, R.drawable.sheep, R.drawable.snake,
-            R.drawable.spider, R.drawable.squirrel, R.drawable.starfish, R.drawable.tiger, R.drawable.turtle,
+            R.drawable.gorilla, R.drawable.horse, R.drawable.kangaroo, R.drawable.leopard,
+            R.drawable.lion, R.drawable.monkey, R.drawable.mouse, R.drawable.palm,
+            R.drawable.parrot, R.drawable.sheep, R.drawable.snake,
+            R.drawable.spider, R.drawable.squirrel, R.drawable.turtle,
             R.drawable.wolf, R.drawable.zebra};
 
-    public static final Map<String, Integer> ANIMALS = new HashMap<String, Integer>() {{
-        for(int i = 0; i < ANIMAL_NAMES.length; i++){
-            put(ANIMAL_NAMES[i], ANIMAL_PATHS[i]);
+    public static final Map<String, Integer> ANIMALS_ENG = new HashMap<String, Integer>() {{
+        for(int i = 0; i < ANIMAL_NAMES_ENG.length; i++){
+            put(ANIMAL_NAMES_ENG[i], ANIMAL_PATHS[i]);
+        }
+    }};
+
+    public static final Map<String, Integer> ANIMALS_SWA = new HashMap<String, Integer>() {{
+        for(int i = 0; i < ANIMAL_NAMES_SWA.length; i++){
+            put(ANIMAL_NAMES_SWA[i], ANIMAL_PATHS[i]);
         }
     }};
 

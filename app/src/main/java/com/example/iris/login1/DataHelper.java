@@ -110,6 +110,22 @@ public class DataHelper {
         return uid;
     }
 
+    public int updateIconVideo(UserInfo user){
+
+        ContentValues values_time = new ContentValues();
+        values_time.put(UserInfo.USERICON, user.getUserIcon());
+        values_time.put(UserInfo.USERVIDEO, user.getUserVideo());
+        values_time.put(UserInfo.RECORDTIME, user.getRecordTime());
+
+        String where = UserInfo.ID + "=?";
+        String[] whereArgs = new String[] {String.valueOf(user.getID())};
+        int uid = db.update(SqliteHelper.TB_NAME, values_time, where, whereArgs);
+        Log.e("updateIconVideo", uid + "");
+        Log.e("recen table uiconvid: ", this.getTableAsString(SqliteHelper.REC_NAME));
+        return uid;
+
+    }
+
     public int updateUserTime(UserInfo user) {
         ContentValues values_time = new ContentValues();
         values_time.put(UserInfo.LAST_LOGIN_TIME, user.getLastLoginTime());
