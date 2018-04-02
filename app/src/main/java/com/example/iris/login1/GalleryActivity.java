@@ -1222,6 +1222,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         } else {
                             //TODO add intro video
                             genderlay.setVisibility(View.VISIBLE);
+                            curUser = new UserInfo(); //incase press before prompt over
                         }
 
                         mpAll.start();
