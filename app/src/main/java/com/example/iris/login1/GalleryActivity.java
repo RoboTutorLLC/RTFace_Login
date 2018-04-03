@@ -221,6 +221,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean newUserOldNew = false;
     private boolean isGalleryPick = false;
     private boolean recordRec = false;
+    private boolean pauseWhileRecord = false;
     // MARCH boolean check for first registration
     private static boolean firstRegistration = false;
 
@@ -283,6 +284,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         mpAll.seekTo(0);
         mpAll.start();
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -2512,6 +2514,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        if(pauseWhileRecord) {
+            pauseWhileRecord = false;
+            Intent i = getBaseContext().getPackageManager()
+                    .getLaunchIntentForPackage(getBaseContext().getPackageName());
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
+        }
+
         Log.i("RecordDemoActivity", "onResume()");
     }
 
@@ -2519,6 +2530,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
+        pauseAllAudios();
+        if(thread != null){
+            if(thread.isRecording || thread.isPlaying) {
+                pauseWhileRecord = true;
+                thread.stopRecord();
+                thread.stopPlayingVideo();
+                thread.interrupt();
+            }
+        }
         Log.i("RecordDemoActivity", "onPause()");
     }
 
@@ -2527,6 +2547,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         // TODO Auto-generated method stub
         super.onDestroy();
         pauseAllAudios();
+        if(thread != null){
+            if(thread.isRecording || thread.isPlaying) {
+                thread.stopRecord();
+                thread.stopPlayingVideo();
+                thread.interrupt();
+            }
+        }
         Log.i("RecordDemoActivity", "onDestroy()");
 
     }
