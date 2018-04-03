@@ -1143,6 +1143,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     view.setBackgroundColor(Color.YELLOW);
                     return;
                 }
+                pauseAllAudios();
 
                 //view.setBackgroundColor(Color.YELLOW);
 
@@ -1165,7 +1166,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 v = currentUser.getUserVideo();
                 p = currentUser.getUserIcon();
                 realStartTime = Integer.parseInt(userInfo.get(position).getRecordTime());
-                pauseAllAudios();
 
                 //if it is recoding or replaying, now stop it
                 if (thread != null) {

@@ -165,13 +165,15 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
 //			Log.e(TAG, getScrollX() + "");
 
                 int scrollY = getScrollY();
-                if (scrollY >= mChildHeight)
-                {
-                    loadNextImg();
-                }
-                if (scrollY == 0)
-                {
-                    loadPreImg();
+
+                // only do this when there are profiles there, else will crash
+                if(mContainer.getChildCount() > 0) {
+                    if (scrollY >= mChildHeight) {
+                        loadNextImg();
+                    }
+                    if (scrollY == 0) {
+                        loadPreImg();
+                    }
                 }
                 break;
         }
