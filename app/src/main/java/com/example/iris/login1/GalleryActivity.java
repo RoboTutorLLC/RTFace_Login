@@ -222,6 +222,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean isGalleryPick = false;
     private boolean recordRec = false;
     private boolean pauseWhileRecord = false;
+    private Integer RT_STARTED = 12345;
     // MARCH boolean check for first registration
     private static boolean firstRegistration = false;
 
@@ -709,9 +710,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         sessionBundle.putString(Common.STUDENT_ID_VAR, uniqueUserID);
                         sessionBundle.putString(Common.SESSION_ID_VAR, newSessId);
                         launchIntent.putExtras(sessionBundle);
+                        launchIntent.setFlags(0);
 
                         if (launchIntent != null) {
-                            startActivity(launchIntent);
+                            startActivityForResult(launchIntent, RT_STARTED);
                         } else {
                             Log.e("ACTIVITY", "New Activity failed to start!");
                         }
@@ -885,6 +887,17 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         };
         mpAll.setOnCompletionListener(onCompletionListener);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == RT_STARTED){
+            Log.e("onActivityResult", "called");
+            Intent i = getBaseContext().getPackageManager()
+                    .getLaunchIntentForPackage(getBaseContext().getPackageName());
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+        }
     }
 
     public void removeOldVideos(){
