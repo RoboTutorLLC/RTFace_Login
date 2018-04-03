@@ -17,6 +17,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -179,7 +180,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private SurfaceHolder surfaceHolder;
     private ImageView coverSurface;
     private RecordThread thread;
-    private List<Bitmap> mDatas =  new ArrayList<Bitmap>();     //list of user's icon
+
+    //list of user's icon and profile pic
+    private List<Pair<Bitmap, Integer>> mDatas =  new ArrayList<Pair<Bitmap, Integer>>();
+
     private DataHelper dbHelper;
     private List<UserInfo> userInfo = new ArrayList<UserInfo>();
     private ImageView capture;
@@ -1186,8 +1190,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         userInfo = dbHelper.getUserList();
         for (int i = 0; i < userInfo.size(); i++) {
             String tempUrl = userInfo.get(i).getUserIcon();
+            String profIconName = userInfo.get(i).getProfileIcon().toLowerCase();
+
+            Integer profIcon = (language.equals(LANG_EN) ? ANIMALS_ENG.get(profIconName) : ANIMALS_SWA.get(profIconName));
+
             Bitmap bmp = BitmapFactory.decodeFile(tempUrl);
-            mDatas.add(bmp);
+            mDatas.add(Pair.create(bmp, profIcon));
         }
         mAdapter.accountNumber = userInfo.size();
         accountsNumber = userInfo.size();
@@ -1388,7 +1396,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                                 String icntext = currentUser.getProfileIcon();
                                 icontext.setText(icntext.toUpperCase());
-                                iconpic.setImageDrawable(getResources().getDrawable((language == LANG_EN ?
+                                iconpic.setImageDrawable(getResources().getDrawable((language.equals(LANG_EN) ?
                                         Common.ANIMALS_ENG.get(icntext.toLowerCase()) : Common.ANIMALS_SWA.get(icntext.toLowerCase()))));
 
                                 iconlay.setVisibility(View.VISIBLE);
@@ -1519,11 +1527,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
-                        String[] ANIMAL_NAMES = (language == LANG_EN ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                        String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
                         String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
                         icontext.setText(icntext.toUpperCase());
-                        iconpic.setImageDrawable(getResources().getDrawable((language == LANG_EN ?
+                        iconpic.setImageDrawable(getResources().getDrawable((language.equals(LANG_EN) ?
                                 ANIMALS_ENG.get(icntext) : ANIMALS_SWA.get(icntext))));
                         iconlay.setVisibility(View.VISIBLE);
 
@@ -1560,11 +1568,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
-                        String[] ANIMAL_NAMES = (language == LANG_EN ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                        String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
                         String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
                         icontext.setText(icntext.toUpperCase());
-                        iconpic.setImageDrawable(getResources().getDrawable((language == LANG_EN ?
+                        iconpic.setImageDrawable(getResources().getDrawable((language.equals(LANG_EN) ?
                                 ANIMALS_ENG.get(icntext) : ANIMALS_SWA.get(icntext))));
                         iconlay.setVisibility(View.VISIBLE);
 
@@ -1644,11 +1652,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         stopFlash(FLASH_LIKE);
                         //TODO pick less used
 
-                        String[] ANIMAL_NAMES = (language == LANG_EN ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                        String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
                         String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
                         icontext.setText(icntext.toUpperCase());
-                        iconpic.setImageDrawable(getResources().getDrawable((language == LANG_EN ?
+                        iconpic.setImageDrawable(getResources().getDrawable((language.equals(LANG_EN) ?
                                 ANIMALS_ENG.get(icntext) : ANIMALS_SWA.get(icntext))));
                         iconRepeat = true;
                         _audioPlaying = OKAY_LETS_TRY_AGAIN;
@@ -1724,11 +1732,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         stopFlash(FLASH_LIKE);
 
                         oldnewlay.setVisibility(View.GONE);
-
+                        pauseAllAudios();
                         genderlay.setVisibility(View.VISIBLE);
                         newUserOldNew = true;
                         _audioPlaying = THIS_IS_ROBOTUTOR;
-                        pauseAllAudios();
+                        curUser = new UserInfo();
+
                         //mHandler.removeCallbacksAndMessages(null);
                         releaseAndPlayAudioFile(playListRT[0]);
 
@@ -1786,7 +1795,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         initUserInfo();
         mAdapter = new ScrollViewAdapter(this, mDatas);
         mGalleryScrollView.initDatas(mAdapter, needConfirm);
-        mGalleryScrollView.emphasizeNewPicture();
+        //mGalleryScrollView.emphasizeNewPicture();
     }
 
     /**
@@ -1796,7 +1805,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         Bitmap bmp = BitmapFactory.decodeFile(thread.pPath);
         mDatas.clear();
         initUserInfo();
-        mDatas.add(0, bmp);
+        String profIconName = currentUser.getProfileIcon(); //TODO when this is used, put check for curUser
+        //TODO  or currentUser
+
+        Integer profIcon = (language.equals(LANG_EN) ? ANIMALS_ENG.get(profIconName) : ANIMALS_SWA.get(profIconName));
+
+        mDatas.add(0, Pair.create(bmp, profIcon));
         if(userInfo.size() == 0) mAdapter = new ScrollViewAdapter(this, mDatas);
 
         mAdapter.setMDatas(mDatas);

@@ -9,6 +9,7 @@ import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -41,14 +42,14 @@ public class RecordThread extends Thread{
     private int accountsNumber;
     private UserInfo curUser;
     private DataHelper dbHelper;
-    private List<Bitmap> mDatas;
+    private List<Pair<Bitmap, Integer>> mDatas;
     private Handler mHandler;
     private int chosenCamera;
     public boolean isRecording = false;
     public boolean isPlaying = false;
 
     public RecordThread(int recordTime, SurfaceView surfaceview,
-                        SurfaceHolder surfaceHolder, int accountsNumber_, DataHelper dbHelper_, List<Bitmap> mDatas_, Handler mhandler_) {
+                        SurfaceHolder surfaceHolder, int accountsNumber_, DataHelper dbHelper_, List<Pair<Bitmap, Integer>> mDatas_, Handler mhandler_) {
         this.recordTime = recordTime;
         this.surfaceview = surfaceview;
         this.surfaceHolder = surfaceHolder;
