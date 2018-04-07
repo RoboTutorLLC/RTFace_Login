@@ -1158,7 +1158,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     view.setBackgroundColor(Color.YELLOW);
                     return;
                 }
-                pauseAllAudios();
 
                 //view.setBackgroundColor(Color.YELLOW);
 
@@ -1189,6 +1188,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     thread.interrupt();
                 }
 
+                pauseAllAudios();
                 //play clicked video
                 if (videoThread != null) videoThread.stopPlayingVideo();
                 int startTimeWithSilence = realStartTime - (language.equals(LANG_EN) ? Common.TRAILING_SILENCE_EN : Common.TRAILING_SILENCE_SW);
@@ -1235,10 +1235,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     case MotionEvent.ACTION_UP:
                         Log.d("SPLASH", "ACTION_UP");
                         depressLogoAction();
-                        logo.setVisibility(View.INVISIBLE);
-                        logoShadow.setVisibility(View.INVISIBLE);
-                        splash.setVisibility(View.INVISIBLE);
-                        splashRoboFinger.setVisibility(View.INVISIBLE);
+                        logo.setVisibility(View.GONE);
+                        logoShadow.setVisibility(View.GONE);
+                        splash.setVisibility(View.GONE);
+                        splashRoboFinger.setVisibility(View.GONE);
+                        mainHandler.removeCallbacks(splashRoboFingerSlideRunnable);
 
                         if (userInfo.size() > 0) {
                             activity_gal.setVisibility(View.VISIBLE);
@@ -1415,6 +1416,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                         Common.ANIMALS_ENG.get(icntext.toLowerCase()) : Common.ANIMALS_SWA.get(icntext.toLowerCase()))));
 
                                 iconlay.setVisibility(View.VISIBLE);
+                                iconpic.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        iconpic.setVisibility(View.VISIBLE);
+                                    }
+                                }, 1000);
                                 setIconLikeOnClickListener();
                                 setIconDislikeOnClickListener();
                                 _audioPlaying = PLEASE_TAP_HERE_TO_GO_ON;
@@ -1550,6 +1557,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                 ANIMALS_ENG.get(icntext) : ANIMALS_SWA.get(icntext))));
                         iconlay.setVisibility(View.VISIBLE);
 
+                        iconpic.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                iconpic.setVisibility(View.VISIBLE);
+                            }
+                        }, 1000);
+
                         genderRegd = true;
                         _audioPlaying = GOOD;
                         pauseAllAudios();
@@ -1591,6 +1605,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                 ANIMALS_ENG.get(icntext) : ANIMALS_SWA.get(icntext))));
                         iconlay.setVisibility(View.VISIBLE);
 
+                        iconpic.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                iconpic.setVisibility(View.VISIBLE);
+                            }
+                        }, 1000);
+
                         genderRegd = true;
                         _audioPlaying = GOOD;
                         pauseAllAudios();
@@ -1623,6 +1644,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             stopFlash(FLASH_LIKE);
                             stopFlash(FLASH_DISLIKE);
                             iconlay.setVisibility(View.GONE);
+                            iconpic.setVisibility(View.INVISIBLE);
 
                             iconRegd = true;
                             iconRepeat = false;
@@ -1673,6 +1695,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         icontext.setText(icntext.toUpperCase());
                         iconpic.setImageDrawable(getResources().getDrawable((language.equals(LANG_EN) ?
                                 ANIMALS_ENG.get(icntext) : ANIMALS_SWA.get(icntext))));
+                        iconpic.setVisibility(View.INVISIBLE);
+
+                        iconpic.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                iconpic.setVisibility(View.VISIBLE);
+                            }
+                        }, 1000);
+
                         iconRepeat = true;
                         _audioPlaying = OKAY_LETS_TRY_AGAIN;
                         pauseAllAudios();
@@ -2529,6 +2560,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         super.onResume();
         if(pauseWhileRecord) {
             pauseWhileRecord = false;
+            pauseAllAudios();
             Intent i = getBaseContext().getPackageManager()
                     .getLaunchIntentForPackage(getBaseContext().getPackageName());
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

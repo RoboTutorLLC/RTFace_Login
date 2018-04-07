@@ -24,26 +24,26 @@ public class Common {
         IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE_LOGIN, TAP_HERE_NO_LOGIN_ICON, TAP_HERE_CANT_FIND
     }
 
-    public static final String[] ANIMAL_NAMES_ENG = {"bat", "bear", "bee", "bird", "bug", "butterfly",
-        "camel", "cat", "cheetah", "chicken", "cow", "crocodile", "dog", "dove",
-        "duck", "eagle", "elephant", "fish", "flamingo", "fox", "frog", "giraffe", "gorilla", "horse",
-        "kangaroo", "leopard", "lion", "monkey", "mouse", "palm", "parrot",
+    public static final String[] ANIMAL_NAMES_ENG = {"bat", "bear", "bee", "buffalo", "butterfly",
+        "camel", "cat", "cheetah", "chicken", "chimpanzee", "cow", "crocodile", "dog", "donkey", "dove",
+        "duck", "eagle", "elephant", "fish", "flamingo", "fox", "frog", "giraffe", "goat", "gorilla", "hippo", "horse",
+        "hyena", "kangaroo", "leopard", "lion", "monkey", "mouse", "ostrich", "parrot","rabbit",
             "sheep", "snake", "spider", "squirrel", "turtle", "wolf", "zebra"};
 
-    public static final String[] ANIMAL_NAMES_SWA = {"popo", "dubu", "nyuki", "ndege", "mdudu", "kipepeo",
-            "ngamia", "paka", "duma", "kuku", "ng'ombe", "mamba", "mbwa", "njiwa",
-            "bata", "tai", "tembo", "samaki", "korongo", "mbweha", "chupa", "twiga", "sokwe", "farasi",
-            "kangaruu", "chui", "simba", "tumbili", "panya", "mtende", "kasuku",
+    public static final String[] ANIMAL_NAMES_SWA = {"popo", "dubu", "nyuki", "nyati", "kipepeo",
+            "ngamia", "paka", "duma", "kuku", "chimpanzi", "ng'ombe", "mamba", "mbwa", "punda", "njiwa",
+            "bata", "tai", "tembo", "samaki", "korongo", "mbweha", "chupa", "twiga", "mbuzi", "sokwe", "kiboko", "farasi",
+            "fisi", "kangaruu", "chui", "simba", "tumbili", "panya", "mbuni", "kasuku","sungura",
             "kondoo", "nyoka", "buibui", "kuchakuro", "kobe", "Mbwa mwitu", "punda"};
 
-    public static final int[] ANIMAL_PATHS = {R.drawable.bat, R.drawable.bear, R.drawable.bee, R.drawable.bird,
-            R.drawable.bug, R.drawable.butterfly, R.drawable.camel, R.drawable.cat, R.drawable.cheetah,
-            R.drawable.chicken, R.drawable.cow, R.drawable.crocodile, R.drawable.dog,
-            R.drawable.dove, R.drawable.duck, R.drawable.eagle, R.drawable.elephant,
+    public static final int[] ANIMAL_PATHS = {R.drawable.bat, R.drawable.bear, R.drawable.bee, R.drawable.buffalo,
+            R.drawable.butterfly, R.drawable.camel, R.drawable.cat, R.drawable.cheetah,
+            R.drawable.chicken, R.drawable.chimpanzee, R.drawable.cow, R.drawable.crocodile, R.drawable.dog,
+            R.drawable.donkey, R.drawable.dove, R.drawable.duck, R.drawable.eagle, R.drawable.elephant,
             R.drawable.fish, R.drawable.flamingo, R.drawable.fox, R.drawable.frog, R.drawable.giraffe,
-            R.drawable.gorilla, R.drawable.horse, R.drawable.kangaroo, R.drawable.leopard,
-            R.drawable.lion, R.drawable.monkey, R.drawable.mouse, R.drawable.palm,
-            R.drawable.parrot, R.drawable.sheep, R.drawable.snake,
+            R.drawable.goat, R.drawable.gorilla, R.drawable.hippo, R.drawable.horse, R.drawable.hyena, R.drawable.kangaroo, R.drawable.leopard,
+            R.drawable.lion, R.drawable.monkey, R.drawable.mouse,
+            R.drawable.ostrich, R.drawable.parrot, R.drawable.rabbit, R.drawable.sheep, R.drawable.snake,
             R.drawable.spider, R.drawable.squirrel, R.drawable.turtle,
             R.drawable.wolf, R.drawable.zebra};
 
