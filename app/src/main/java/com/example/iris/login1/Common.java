@@ -30,11 +30,14 @@ public class Common {
         "hyena", "kangaroo", "leopard", "lion", "monkey", "mouse", "ostrich", "parrot","rabbit",
             "sheep", "snake", "spider", "squirrel", "turtle", "wolf", "zebra"};
 
+    // chimp and gorilla => sokwe
+    // zebra and donkey => punda
+
     public static final String[] ANIMAL_NAMES_SWA = {"popo", "dubu", "nyuki", "nyati", "kipepeo",
-            "ngamia", "paka", "duma", "kuku", "chimpanzi", "ng'ombe", "mamba", "mbwa", "punda", "njiwa",
-            "bata", "tai", "tembo", "samaki", "korongo", "mbweha", "chupa", "twiga", "mbuzi", "sokwe", "kiboko", "farasi",
+            "ngamia", "paka", "duma", "kuku", "sokwe (chimpanzee)", "ng'ombe", "mamba", "mbwa", "punda (donkey)", "njiwa",
+            "bata", "tai", "tembo", "samaki", "korongo", "mbweha", "chupa", "twiga", "mbuzi", "sokwe (gorilla)", "kiboko", "farasi",
             "fisi", "kangaruu", "chui", "simba", "tumbili", "panya", "mbuni", "kasuku","sungura",
-            "kondoo", "nyoka", "buibui", "kuchakuro", "kobe", "Mbwa mwitu", "punda"};
+            "kondoo", "nyoka", "buibui", "kuchakuro", "kobe", "mbwa mwitu", "punda (zebra)"};
 
     public static final int[] ANIMAL_PATHS = {R.drawable.bat, R.drawable.bear, R.drawable.bee, R.drawable.buffalo,
             R.drawable.butterfly, R.drawable.camel, R.drawable.cat, R.drawable.cheetah,
