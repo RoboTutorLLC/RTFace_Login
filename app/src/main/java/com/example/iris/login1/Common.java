@@ -1,5 +1,7 @@
 package com.example.iris.login1;
 
+import android.util.Pair;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,15 +52,22 @@ public class Common {
             R.drawable.spider, R.drawable.squirrel, R.drawable.turtle,
             R.drawable.wolf, R.drawable.zebra};
 
-    public static final Map<String, Integer> ANIMALS_ENG = new HashMap<String, Integer>() {{
+    public static final int[] ANIMAL_SOUNDS = {R.raw.popo, R.raw.dubu, R.raw.nyuki, R.raw.nyati, R.raw.kipepeo,
+            R.raw.ngamia, R.raw.paka, R.raw.duma, R.raw.kuku, R.raw.sokwe, R.raw.ng_ombe, R.raw.mamba, R.raw.mbwa,
+            R.raw.punda, R.raw.njiwa, R.raw.bata, R.raw.tai, R.raw.tembo, R.raw.samaki, R.raw.korongo, R.raw.mbweha,
+            R.raw.chupa, R.raw.twiga, R.raw.mbuzi, R.raw.sokwe, R.raw.kiboko, R.raw.farasi, R.raw.fisi, R.raw.kangaruu,
+            R.raw.chui, R.raw.simba, R.raw.tumbili, R.raw.panya, R.raw.mbuni, R.raw.kasuku, R.raw.sungura, R.raw.kondoo,
+            R.raw.nyoka, R.raw.buibui, R.raw.kuchakuro, R.raw.kobe, R.raw.mbwa_mwitu, R.raw.punda};
+
+    public static final Map<String, Pair<Integer, Integer>> ANIMALS_ENG = new HashMap<String, Pair<Integer, Integer>>() {{
         for(int i = 0; i < ANIMAL_NAMES_ENG.length; i++){
-            put(ANIMAL_NAMES_ENG[i], ANIMAL_PATHS[i]);
+            put(ANIMAL_NAMES_ENG[i], Pair.create(ANIMAL_PATHS[i], ANIMAL_SOUNDS[i]));
         }
     }};
 
-    public static final Map<String, Integer> ANIMALS_SWA = new HashMap<String, Integer>() {{
+    public static final Map<String, Pair<Integer, Integer>> ANIMALS_SWA = new HashMap<String, Pair<Integer,Integer>>() {{
         for(int i = 0; i < ANIMAL_NAMES_SWA.length; i++){
-            put(ANIMAL_NAMES_SWA[i], ANIMAL_PATHS[i]);
+            put(ANIMAL_NAMES_SWA[i], Pair.create(ANIMAL_PATHS[i], ANIMAL_SOUNDS[i]));
         }
     }};
 
