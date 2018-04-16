@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -570,6 +571,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // formerly mpStart6
 
                     case TAP_HERE_RECORD:
+                        mHandler.postDelayed(toDECIDERecord, DELAY_TO_REPROMPT);
                         // do nothing
                         break;
 
@@ -640,9 +642,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                                 //TODO multiple occurrences of this due to clashing audio: simplify it
                                 //mHandler.removeCallbacksAndMessages(null);
-                                _audioPlaying = TAP_HERE_RECORD;
-                                releaseAndPlayAudioFile(playListStart[5]);
-                                startFlash(FLASH_CAPTURE);
+                                mHandler.post(toDECIDERecord);
                             }
                         } else {
                             toSTART();
@@ -1047,6 +1047,22 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         //}
     }
 
+    private MotionEvent getDefaultResponseMotionEvent(){
+        long downTime = SystemClock.uptimeMillis();
+        long eventTime = SystemClock.uptimeMillis() + 100;
+        float x = 0.0f;
+        float y = 0.0f;
+
+        int metaState = 0;
+        return MotionEvent.obtain(
+                downTime,
+                eventTime,
+                MotionEvent.ACTION_UP,
+                x,
+                y,
+                metaState
+        );
+    }
     private Runnable toDECIDEGender = new Runnable() {
         @Override
         public void run() {
@@ -1054,10 +1070,34 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mHandler.removeCallbacks(this);
                 return;
             }
-            if (!checkCount() && genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
-                counter += 1;
-                _audioPlaying = IF_YOURE_A_BOY;
-                releaseAndPlayAudioFile(playListGender[0]);
+            if (!checkCount()) {
+                if (genderboy.getVisibility() == View.VISIBLE && gendergirl.getVisibility() == View.VISIBLE) {
+                    counter += 1;
+                    _audioPlaying = IF_YOURE_A_BOY;
+                    releaseAndPlayAudioFile(playListGender[0]);
+                }
+            } else {
+                mHandler.removeCallbacks(this);
+                curUser.setGender("unspecified");
+                Log.e("Gender set", curUser.getGender());
+                stopFlash(FLASH_GIRL);
+                stopFlash(FLASH_BOY);
+                genderlay.setVisibility(View.GONE);
+
+                //TODO pick less used
+                String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
+                String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
+                icontext.setText(icntext.toUpperCase());
+                iconpic.setImageDrawable(getResources().getDrawable((language.equals(LANG_EN) ?
+                        ANIMALS_ENG.get(icntext).first : ANIMALS_SWA.get(icntext).first)));
+                iconlay.setVisibility(View.VISIBLE);
+
+                genderRegd = true;
+                _audioPlaying = GOOD;
+                pauseAllAudios();
+                //mHandler.removeCallbacksAndMessages(null);
+                releaseAndPlayAudioFile(playListAfterAccepting[0]);
             }
         }
     };
@@ -1069,20 +1109,49 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mHandler.removeCallbacks(this);
                 return;
             }
-            if (!checkCount() && iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
-                counter += 1;
-                if(!iconpick2) {
-                    _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
-                    releaseAndPlayAudioFile(playListIcon[0]);
-                } else {
-                    _audioPlaying = PLEASE_TAP_HERE_TO_GO_ON;
-                    releaseAndPlayAudioFile(playListLoginIcon[0]);
-                    stopFlash(FLASH_LIKE);
-                    startFlash(FLASH_LIKE);
+            if (!checkCount()) {
+                if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
+                    counter += 1;
+                    if (!iconpick2) {
+                        _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
+                        releaseAndPlayAudioFile(playListIcon[0]);
+                    } else {
+                        _audioPlaying = PLEASE_TAP_HERE_TO_GO_ON;
+                        releaseAndPlayAudioFile(playListLoginIcon[0]);
+                        stopFlash(FLASH_LIKE);
+                        startFlash(FLASH_LIKE);
+                    }
                 }
+            } else {
+                mHandler.removeCallbacks(this);
+
+                iconlike.dispatchTouchEvent(getDefaultResponseMotionEvent());
             }
         }
     };
+
+    private Runnable toDECIDERecord = new Runnable() {
+        @Override
+        public void run() {
+            if(mpAll.isPlaying()){
+                mHandler.removeCallbacks(this);
+                return;
+            }
+
+            if (!checkCount()) {
+                if (!checkCount() && capture.getVisibility() == View.VISIBLE) {
+                    counter += 1;
+                    _audioPlaying = TAP_HERE_RECORD;
+                    releaseAndPlayAudioFile(playListStart[5]);
+                    startFlash(FLASH_CAPTURE);
+                }
+            } else {
+                mHandler.removeCallbacks(this);
+                capture.dispatchTouchEvent(getDefaultResponseMotionEvent());
+            }
+        }
+    };
+
 
     private Runnable toDECIDERecordRec = new Runnable() {
         @Override
@@ -1091,12 +1160,18 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mHandler.removeCallbacks(this);
                 return;
             }
-            if (!checkCount() && like.getVisibility() == View.VISIBLE && capture.getVisibility() == View.VISIBLE) {
-                counter += 1;
-                _audioPlaying = PLEASE_TAP_HERE_TO_GO_ON;
-                releaseAndPlayAudioFile(playListRecordRec[0]);
-                stopFlash(FLASH_LIKE);
-                startFlash(FLASH_LIKE);
+
+            if (!checkCount()) {
+                if (!checkCount() && like.getVisibility() == View.VISIBLE && capture.getVisibility() == View.VISIBLE) {
+                    counter += 1;
+                    _audioPlaying = PLEASE_TAP_HERE_TO_GO_ON;
+                    releaseAndPlayAudioFile(playListRecordRec[0]);
+                    stopFlash(FLASH_LIKE);
+                    startFlash(FLASH_LIKE);
+                }
+            } else {
+                mHandler.removeCallbacks(this);
+                like.dispatchTouchEvent(getDefaultResponseMotionEvent());
             }
         }
     };
@@ -1109,10 +1184,20 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mHandler.removeCallbacks(this);
                 return;
             }
-            if(!checkCount() && dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE){
-                counter += 1;
-                _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
-                releaseAndPlayAudioFile(playListStart[0]);
+            if(!checkCount()) {
+                if (dislike.getVisibility() == View.VISIBLE && activity_gal.getVisibility() == View.VISIBLE) {
+                    counter += 1;
+                    _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
+                    releaseAndPlayAudioFile(playListStart[0]);
+                }
+            } else {
+                mHandler.removeCallbacks(this);
+                if(newReg){
+                    dislike.setVisibility(View.GONE);
+                    mGalleryScrollView.getOnItemClickListener().onClick(mAdapter.getView(0, null, (LinearLayout) mGalleryScrollView.getChildAt(0)), 0);
+                } else {
+                    dislike.dispatchTouchEvent(getDefaultResponseMotionEvent());
+                }
             }
         }
     };
@@ -1125,10 +1210,19 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mHandler.removeCallbacks(this);
                 return;
             }
-            if (!checkCount() && like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
-                counter += 1;
-                _audioPlaying = IF_THIS_IS_YOU;
-                releaseAndPlayAudioFile(playListDecide[0]);
+            if (!checkCount()) {
+                if (like.getVisibility() == View.VISIBLE && dislike.getVisibility() == View.VISIBLE && !needConfirm) {
+                    counter += 1;
+                    _audioPlaying = IF_THIS_IS_YOU;
+                    releaseAndPlayAudioFile(playListDecide[0]);
+                }
+            } else {
+                mHandler.removeCallbacks(this);
+                if(newUser2){
+                    dislike.dispatchTouchEvent(getDefaultResponseMotionEvent());
+                } else {
+                    like.dispatchTouchEvent(getDefaultResponseMotionEvent());
+                }
             }
         }
     };
@@ -1140,10 +1234,19 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mHandler.removeCallbacks(this);
                 return;
             }
-            if (!checkCount() && oldnewlike.getVisibility() == View.VISIBLE && oldnewdislike.getVisibility() == View.VISIBLE) {
-                counter += 1;
-                _audioPlaying = IF_YOUVE_USED_ROBOTUTOR_BEFORE;
-                releaseAndPlayAudioFile(playListOldNew[0]);
+            if (!checkCount()) {
+                if (oldnewlike.getVisibility() == View.VISIBLE && oldnewdislike.getVisibility() == View.VISIBLE) {
+                    counter += 1;
+                    _audioPlaying = IF_YOUVE_USED_ROBOTUTOR_BEFORE;
+                    releaseAndPlayAudioFile(playListOldNew[0]);
+                }
+            } else {
+                mHandler.removeCallbacks(this);
+                if(!newUser2) {
+                    oldnewdislike.dispatchTouchEvent(getDefaultResponseMotionEvent());
+                } else {
+                    oldnewlike.dispatchTouchEvent(getDefaultResponseMotionEvent());
+                }
             }
         }
     };
@@ -1155,10 +1258,17 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 mHandler.removeCallbacks(this);
                 return;
             }
-            if (!checkCount() && needConfirm) {
-                counter += 1;
-                _audioPlaying = IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME;
-                releaseAndPlayAudioFile(playListAccept[0]);
+            if (!checkCount()) {
+                if (needConfirm) {
+                    counter += 1;
+                    _audioPlaying = IF_YOU_LIKE_YOUR_PICTURE_AND_HOW_YOU_SAID_YOUR_NAME;
+                    releaseAndPlayAudioFile(playListAccept[0]);
+                }
+            } else {
+                if(needConfirm) {
+                    mHandler.removeCallbacks(this);
+                    like.dispatchTouchEvent(getDefaultResponseMotionEvent());
+                }
             }
         }
     };
@@ -1412,7 +1522,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         //mHandler.removeCallbacksAndMessages(null);
                         if (needConfirm) {
                             if (firstAttempt) firstAttempt = false;
-                            //else deleteLastUserInfo();
+                            else deleteLastUserInfo();
                             saveUserInfo();
                             needConfirm = false;
                             newReg = true;
@@ -1432,7 +1542,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             } else{
                                 recordRec = false;
 
-                                dbHelper.updateIconVideo(currentUser);
+                                //dbHelper.updateIconVideo(currentUser);
 
                                 activity_gal.setVisibility(View.GONE);
                                 iconpick2 = true;
@@ -1787,7 +1897,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         Log.e("Robotutor used", "no");
                         stopFlash(FLASH_DISLIKE);
                         stopFlash(FLASH_LIKE);
-
+                        newUser2 = false;
                         oldnewlay.setVisibility(View.GONE);
                         pauseAllAudios();
                         genderlay.setVisibility(View.VISIBLE);
@@ -1885,14 +1995,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     }
 
     public boolean checkCount(){
-        if (this.counter == 3) {
+        if (this.counter == 2) {
             this.counter = 0;
-
-            //TODO since we're going to WELCOME anyway, just restart app?
-            Intent i = getBaseContext().getPackageManager()
-                    .getLaunchIntentForPackage( getBaseContext().getPackageName() );
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
             return true;
             //toSTART()
         } else {
@@ -1963,7 +2067,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     if(!recordRec) {
                         like.setVisibility(View.VISIBLE);
                         dislike.setVisibility(View.VISIBLE);
-
                         mHandler.post(toDECIDE);
                         // MARCH reset counter to 0
                         counter = 0;
@@ -2214,6 +2317,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                 //if user hesitate, play the video of good tapping
                 //mainHandler.postDelayed(playVideoOfGoodTappingRunnable, DELAY_TO_SHOW_VIDEO);
+
             }
         }
     };
