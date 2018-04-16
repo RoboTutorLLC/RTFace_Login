@@ -737,6 +737,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                         String uniqueUserID = currentUser.getBirthDate() + "_" + String.valueOf(currentUser.getID()) + "_" +
                                 currentUser.getBirthDevice();
+
+                        Log.e("uniqueUserID", uniqueUserID);
                         sessionBundle.putString(Common.STUDENT_ID_VAR, uniqueUserID);
                         sessionBundle.putString(Common.SESSION_ID_VAR, newSessId);
                         launchIntent.putExtras(sessionBundle); 
