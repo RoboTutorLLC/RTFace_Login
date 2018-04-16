@@ -733,10 +733,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         Intent launchIntent = getPackageManager().getLaunchIntentForPackage(ROBOTUTOR_PACKAGE_ADDRESS);
                         Bundle sessionBundle = new Bundle();
                         Log.w("BUNDLE", currentUser.getUserIcon());
-                        String uniqueUserID = generateUniqueIdFromFilename(currentUser.getUserIcon());
+                        //String uniqueUserID = generateUniqueIdFromFilename(currentUser.getUserIcon());
+
+                        String uniqueUserID = currentUser.getBirthDate() + "_" + String.valueOf(currentUser.getID()) + "_" +
+                                currentUser.getBirthDevice();
                         sessionBundle.putString(Common.STUDENT_ID_VAR, uniqueUserID);
                         sessionBundle.putString(Common.SESSION_ID_VAR, newSessId);
-                        launchIntent.putExtras(sessionBundle);
+                        launchIntent.putExtras(sessionBundle); 
                         launchIntent.setFlags(0);
 
                         if (launchIntent != null) {
