@@ -735,7 +735,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         Log.w("BUNDLE", currentUser.getUserIcon());
                         //String uniqueUserID = generateUniqueIdFromFilename(currentUser.getUserIcon());
 
-                        String uniqueUserID = currentUser.getBirthDate() + "_" + String.valueOf(currentUser.getID()) + "_" +
+                        String uniqueUserID = currentUser.getBirthDate() + "-" + String.valueOf(currentUser.getID()) + "-" +
                                 currentUser.getBirthDevice();
 
                         Log.e("uniqueUserID", uniqueUserID);
