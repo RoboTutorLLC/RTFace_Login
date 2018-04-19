@@ -68,6 +68,11 @@ public class PlayTappingVideo extends PlayVideoThread {
     }
 
     @Override
+    public boolean isPlayingVideo() {
+        return isPlaying;
+    }
+
+    @Override
     public void stopPlayingVideo() {
         if (mPlayer != null) {
             mPlayer.release();

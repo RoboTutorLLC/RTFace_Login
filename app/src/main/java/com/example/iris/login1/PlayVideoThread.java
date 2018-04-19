@@ -6,6 +6,7 @@ package com.example.iris.login1;
 
 public abstract class PlayVideoThread extends Thread{
 
+    public abstract boolean isPlayingVideo();
     public abstract void stopPlayingVideo();
 
 }

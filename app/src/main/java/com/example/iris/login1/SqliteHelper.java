@@ -10,7 +10,7 @@ import android.util.Log;
 /**
  * Created by Iris on 16/7/20.
  */
-    /*TODO create column to store icon (although it seems like it's there already so not sure what icon is in this sense)
+    /*
     TODO update database during enrollment only once student has picked a photo and icon AND has entered Robotutor. Otherwise should store a "provisional" enrollment
     TODO migrate to JSON in future for sync convenience*/
 

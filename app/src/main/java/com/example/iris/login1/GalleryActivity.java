@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
@@ -26,7 +25,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,11 +34,8 @@ import android.widget.TextView;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import static com.example.iris.login1.Common.*;
@@ -2713,13 +2708,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
         }
         Log.i("RecordDemoActivity", "onPause()");
+        cancelThreads();
     }
 
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        pauseAllAudios();
         if(thread != null){
             if(thread.isRecording || thread.isPlaying) {
                 thread.stopRecord();
@@ -2728,11 +2723,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
         }
         Log.i("RecordDemoActivity", "onDestroy()");
+        pauseAllAudios();
 
     }
-
+    private void cancelThreads() {
+                mainHandler.removeCallbacks(playVideoOfGoodTappingRunnable);
+    }
     private void pauseAllAudios() {
-        if (mpAll.isPlaying()) mpAll.pause();
+        if (mpAll.isPlaying() || (thread != null && (thread.isRecording || thread.isPlaying)) ||
+                (videoThread != null && videoThread.isPlayingVideo())) mpAll.pause();
     }
 
 }

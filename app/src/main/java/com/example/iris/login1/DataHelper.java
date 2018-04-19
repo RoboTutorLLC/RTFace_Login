@@ -7,11 +7,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static com.example.iris.login1.Common.ANIMAL_NAMES_ENG;
+import static com.example.iris.login1.Common.ANIMAL_NAMES_SWA;
+import static com.example.iris.login1.Common.FACE_LOGIN_PATH;
 
 /**
  * Created by Iris on 16/7/20.
@@ -40,10 +46,38 @@ public class DataHelper {
         dbHelper.close();
     }
 
+    public boolean checkNullOrMissing(UserInfo user){
+        if(user.getUserIcon() == null || user.getProfileIcon() == null || user.getGender() == null ||
+                user.getUserVideo() == null || user.getRecordTime() == null){
+            return true;
+        }
+
+        if(!Arrays.asList(ANIMAL_NAMES_ENG).contains(user.getProfileIcon().toLowerCase()) &&
+                !Arrays.asList(ANIMAL_NAMES_SWA).contains(user.getProfileIcon().toLowerCase())){
+            return true;
+        }
+
+        File folder = new File(FACE_LOGIN_PATH);
+
+        File[] fileList = folder.listFiles();
+
+        ArrayList<String> fileNames = new ArrayList<String>();
+
+        for (File f: fileList){
+            fileNames.add(f.getName());
+        }
+
+        String iconpath = user.getUserIcon().split(FACE_LOGIN_PATH + "/")[1];
+        String videopath = user.getUserVideo().split(FACE_LOGIN_PATH + "/")[1];
+
+        return !fileNames.contains(iconpath) || !fileNames.contains(videopath);
+    }
+
     public List<UserInfo> getUserList(){
         List<UserInfo> userList = new ArrayList<UserInfo>();
         Cursor cursor = db.query(SqliteHelper.TB_NAME, null, null, null, null, null, UserInfo.ID + " DESC");
         cursor.moveToFirst();
+        int count = 0;
         while(!cursor.isAfterLast() && (cursor.getString(0) != null)) {
             UserInfo user = new UserInfo();
             user.setID(Integer.parseInt(cursor.getString(0)));
@@ -62,11 +96,18 @@ public class DataHelper {
             } else {
                 user.setLastLoginTime(cursor2.getString(0));
             }
-            userList.add(user);
+            if(!checkNullOrMissing(user)) {
+                userList.add(user);
+            } else {
+                this.deletUserInfo(String.valueOf(user.getID()));
+                Log.e("getUserInfo", "deleted User with ID = " + String.valueOf(user.getID()));
+            }
+            count += 1;
             cursor2.close();
             cursor.moveToNext();
         }
         Collections.sort(userList, new LoginTimeComparator());
+        Log.e("getUserInfo", "count = " + count + ", retrieved = " + userList.size());
         cursor.close();
         Log.e("users table getulist: ", this.getTableAsString(SqliteHelper.TB_NAME));
         Log.e("recen table getulist: ", this.getTableAsString(SqliteHelper.REC_NAME));

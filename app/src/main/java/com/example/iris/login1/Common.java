@@ -37,7 +37,7 @@ public class Common {
 
     public static final String[] ANIMAL_NAMES_SWA = {"popo", "dubu", "nyuki", "nyati", "kipepeo",
             "ngamia", "paka", "duma", "kuku", "sokwe (chimpanzee)", "ng'ombe", "mamba", "mbwa", "punda (donkey)", "njiwa",
-            "bata", "tai", "tembo", "samaki", "korongo", "mbweha", "chupa", "twiga", "mbuzi", "sokwe (gorilla)", "kiboko", "farasi",
+            "bata", "tai", "tembo", "samaki", "korongo", "mbweha", "chura", "twiga", "mbuzi", "sokwe (gorilla)", "kiboko", "farasi",
             "fisi", "kangaruu", "chui", "simba", "tumbili", "panya", "mbuni", "kasuku","sungura",
             "kondoo", "nyoka", "buibui", "kuchakuro", "kobe", "mbwa mwitu", "punda (zebra)"};
 
@@ -55,7 +55,7 @@ public class Common {
     public static final int[] ANIMAL_SOUNDS = {R.raw.popo, R.raw.dubu, R.raw.nyuki, R.raw.nyati, R.raw.kipepeo,
             R.raw.ngamia, R.raw.paka, R.raw.duma, R.raw.kuku, R.raw.sokwe, R.raw.ng_ombe, R.raw.mamba, R.raw.mbwa,
             R.raw.punda, R.raw.njiwa, R.raw.bata, R.raw.tai, R.raw.tembo, R.raw.samaki, R.raw.korongo, R.raw.mbweha,
-            R.raw.chupa, R.raw.twiga, R.raw.mbuzi, R.raw.sokwe, R.raw.kiboko, R.raw.farasi, R.raw.fisi, R.raw.kangaruu,
+            R.raw.chura, R.raw.twiga, R.raw.mbuzi, R.raw.sokwe, R.raw.kiboko, R.raw.farasi, R.raw.fisi, R.raw.kangaruu,
             R.raw.chui, R.raw.simba, R.raw.tumbili, R.raw.panya, R.raw.mbuni, R.raw.kasuku, R.raw.sungura, R.raw.kondoo,
             R.raw.nyoka, R.raw.buibui, R.raw.kuchakuro, R.raw.kobe, R.raw.mbwa_mwitu, R.raw.punda};
 
