@@ -290,6 +290,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         super.onCreate(savedInstanceState);
 
+        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());
+
         initVarsOfViews();
         initVarsOfMediaPlayer();
         setScrollViewListeners();
