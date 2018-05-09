@@ -66,7 +66,8 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
     }
 
     protected void loadNextImg() {
-        if (mCurrentIndex == mAdapter.getCount() - 1) return;
+        int count = !mAdapter.isIcon() ? mAdapter.getCount() : mAdapter.getCountIcons();
+        if (mCurrentIndex == count - 1) return;
 
         scrollTo(0, 0);
         mViewPos.remove(mContainer.getChildAt(0));
@@ -83,7 +84,6 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
     }
 
     protected void loadPreImg() {
-        //TODO: need to add icon of child to the screen! (currently only displays photo)
         //already the first img
         if (mFristIndex == 0)
             return;
@@ -117,7 +117,8 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
     public void initDatas(ScrollViewAdapter mAdapter, Boolean needConfirm) {
         this.mAdapter = mAdapter;
         mContainer = (LinearLayout) getChildAt(0);
-        final View view = mAdapter.getCount() > 0 ? mAdapter.getView(0, null, mContainer) : null;
+        int count = !mAdapter.isIcon() ? mAdapter.getCount() : mAdapter.getCountIcons();
+        final View view = count > 0 ? mAdapter.getView(0, null, mContainer) : null;
         if (view == null) {
             mCountOneScreen = 0;
             mChildHeight = 0;
@@ -144,7 +145,9 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
         mContainer.removeAllViews();
         mViewPos.clear();
 
-        for (int i = 0; i < mAdapter.accountNumber; i++) {
+        int count = !mAdapter.isIcon() ? mAdapter.accountNumber : mAdapter.iconNumber;
+
+        for (int i = 0; i < count; i++) {
             View view = mAdapter.getView(i, null, mContainer);
             view.setOnClickListener(this);
             mContainer.addView(view);
@@ -187,7 +190,9 @@ public class MyScrollView extends ScrollView implements View.OnClickListener {
                 mContainer.getChildAt(i).setBackgroundColor(Color.WHITE);
 
             mOnClickListener.onClick(v, mViewPos.get(v));
-            mAdapter.accountChosen = mViewPos.get(v);
+            if(!mAdapter.isIcon()) {
+                mAdapter.accountChosen = mViewPos.get(v);
+            }
         }
     }
 

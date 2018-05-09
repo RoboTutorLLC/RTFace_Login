@@ -34,6 +34,7 @@ import android.widget.TextView;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -118,10 +119,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     // MARCH [ENROLL_ICON] MEDIA LIST
     private int[] mediaListIconSwa =
             {R.raw.swa_ifyoulikethispicture, R.raw.swa_pleasetaphere6,
-                    R.raw.swa_ifyouwanttoseeadifferentpicture, R.raw.swa_pleasetaphere7};
+                    R.raw.swa_ifyouwanttoseeadifferentpictureicon, R.raw.swa_pleasetaponyouricon,
+            R.raw.swa_toseemorepictures, R.raw.swa_slidethemlikethis};
     private int[] mediaListIconEng =
-            {R.raw.eng_ifyoulikethispicture, R.raw.eng_pleasetaphere6,
-                    R.raw.eng_ifyouwanttoseeadifferentpicture, R.raw.eng_pleasetaphere7};
+            {R.raw.swa_ifyoulikethispicture, R.raw.swa_pleasetaphere6,
+                    R.raw.swa_ifyouwanttoseeadifferentpictureicon, R.raw.swa_pleasetaponyouricon,
+                    R.raw.swa_toseemorepictures, R.raw.swa_slidethemlikethis};
 
     // MARCH [LOGIN_ICON] MEDIA LIST
     private int[] mediaListLoginIconSwa =
@@ -170,8 +173,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private View splash;
     private View centerAnchor;
     private ImageView splashRoboFinger;
+    private ImageView slideRoboFingerIcon;
 
     private MyScrollView mGalleryScrollView;
+    private MyScrollView mIconScrollView;
     private ScrollViewAdapter mAdapter;
     private SurfaceView surfaceview;
     private SurfaceHolder surfaceHolder;
@@ -180,6 +185,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     //list of user's icon and profile pic
     private List<Pair<Bitmap, Integer>> mDatas =  new ArrayList<Pair<Bitmap, Integer>>();
+    private List<Integer> mIcons = new ArrayList<Integer>();
 
     private DataHelper dbHelper;
     private List<UserInfo> userInfo = new ArrayList<UserInfo>();
@@ -200,6 +206,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private ImageView oldnewlike;
     private ImageView oldnewdislike;
     private TextView icontext;
+    private TextView vnum;
+    private LinearLayout icongall;
+    private LinearLayout included_icons;
+    private ImageView iconlike_enroll;
+    private ImageView icondislike_enroll;
+    private ImageView iconpic_enroll;
+    private TextView icontext_enroll;
     /* RoboFinger */
     private ImageView slideRoboFinger;
     private int accountsNumber;
@@ -220,6 +233,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private boolean recordRec = false;
     private boolean pauseWhileRecord = false;
     private Integer RT_STARTED = 12345;
+    private boolean iconpicgall = false;
+
     // MARCH boolean check for first registration
     private static boolean firstRegistration = false;
 
@@ -303,6 +318,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             mGalleryScrollView.clearAllBackground();
         }
 
+        mIconScrollView.initDatas(new ScrollViewAdapter(this, mIcons, true), false);
+        mIconScrollView.clearAllBackground();
+
+
         // KIMTAR, _audioPlaying this is the state that specifies which part of "onCompletionListener" is played
         // MARCH START WITH THIS_IS_ROBOTUTOR
         _audioPlaying = THIS_IS_ROBOTUTOR;
@@ -339,12 +358,18 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         masterLayout = (RelativeLayout) findViewById(R.id.masterLayout);
 
         /* Find the Splash screen Views */
+        icongall = (LinearLayout) findViewById(R.id.iconenroll);
+        included_icons = (LinearLayout) findViewById(R.id.included_rec);
+
         surfaceviewFullScreen = (SurfaceView) findViewById(R.id.show_full_screen);
         logo = (ImageButton) findViewById(R.id.logo);
         logoShadow = (ImageView) findViewById(R.id.logoShadow);
         splash = (View) findViewById(R.id.splash);
         centerAnchor = (View) findViewById(R.id.centerAnchor);
         splashRoboFinger = (ImageView) findViewById(R.id.splash_finger);
+        vnum = (TextView) findViewById(R.id.vnum);
+
+        vnum.setText("v" + BuildConfig.VERSION_NAME);
 
 
         // in order to set View locations programmatically, we must wait for RelativeLayout to finish setting up
@@ -369,18 +394,26 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         like = (ImageView) findViewById(R.id.like);
         dislike = (ImageView) findViewById(R.id.dislike);
         slideRoboFinger = (ImageView)findViewById(R.id.slide_finger);
+        slideRoboFingerIcon = (ImageView) findViewById(R.id.slide_finger_icons);
 
         mGalleryScrollView = (MyScrollView) findViewById(R.id.id_scrollView);
+        mIconScrollView = (MyScrollView) findViewById(R.id.id_scrollView_icons);
 
         genderboy = (ImageView) findViewById(R.id.genderboy);
         gendergirl = (ImageView) findViewById(R.id.gendergirl);
         genderlay = (LinearLayout) findViewById(R.id.genderlay);
         activity_gal = (LinearLayout) findViewById(R.id.activity_gallery);
         iconlay = (LinearLayout) findViewById(R.id.iconlay);
-        iconpic = (ImageView) findViewById(R.id.iconpic);
-        icondislike = (ImageView) findViewById(R.id.icondislike);
-        iconlike = (ImageView) findViewById(R.id.iconlike);
-        icontext = (TextView) findViewById(R.id.icontext);
+        iconpic = (ImageView) iconlay.findViewById(R.id.iconpic);
+        icondislike = (ImageView) iconlay.findViewById(R.id.icondislike);
+        iconlike = (ImageView) iconlay.findViewById(R.id.iconlike);
+        icontext = (TextView) iconlay.findViewById(R.id.icontext);
+
+        iconpic_enroll = (ImageView) included_icons.findViewById(R.id.iconpic);
+        icondislike_enroll = (ImageView) included_icons.findViewById(R.id.icondislike);
+        iconlike_enroll = (ImageView) included_icons.findViewById(R.id.iconlike);
+        icontext_enroll = (TextView) included_icons.findViewById(R.id.icontext);
+
         oldnewlay = (LinearLayout) findViewById(R.id.oldnewlay);
         oldnewlike = (ImageView) findViewById(R.id.oldnewlike);
         oldnewdislike = (ImageView) findViewById(R.id.oldnewdislike);
@@ -620,13 +653,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                         if (genderRegd) {
                             if (!iconRegd) {
-                                String icntext = icontext.getText().toString();
+                                String icntext = icontext_enroll.getText().toString();
                                 releaseAndPlayAudioFileAnimal(language.equals(LANG_EN) ?
                                                 Common.ANIMALS_ENG.get(icntext.toLowerCase()).second : Common.ANIMALS_SWA.get(icntext.toLowerCase()).second,
                                         new MediaPlayer.OnCompletionListener() {
                                             @Override
                                             public void onCompletion(MediaPlayer mp) {
-                                                iconpic.setVisibility(View.VISIBLE);
+                                                iconpic_enroll.setVisibility(View.VISIBLE);
                                                 _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
                                                 releaseAndPlayAudioFile(playListIcon[0]);
                                             }
@@ -826,9 +859,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     // MARCH NEWSTATE [ENROLL_ICON]
                     //TODO need !needConfirm?
                     case IF_YOU_LIKE_THIS_PICTURE:
-                        if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
-                            setIconLikeOnClickListener();
-                            setIconDislikeOnClickListener();
+                        setIconLikeOnClickListener();
+                        setIconDislikeOnClickListener();
+
+                        if (iconlike_enroll.getVisibility() == View.VISIBLE) {
                             _audioPlaying = TAP_HERE_YES_ICON;
                             releaseAndPlayAudioFile(playListIcon[1]);
                             startFlash(FLASH_LIKE);
@@ -837,23 +871,38 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                     // MARCH CASE A
                     case TAP_HERE_YES_ICON:
-                        if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
+                        if (iconlike_enroll.getVisibility() == View.VISIBLE) {
                             _audioPlaying = IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE;
                             releaseAndPlayAudioFile(playListIcon[2]);
                         }
                         break;
 
                     case IF_YOU_WANT_TO_SEE_A_DIFFERENT_PICTURE:
-                        if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
+                        if (iconlike_enroll.getVisibility() == View.VISIBLE) {
                             _audioPlaying = TAP_HERE_NO_ICON;
                             releaseAndPlayAudioFile(playListIcon[3]);
-                            startFlash(FLASH_DISLIKE);
                         }
                         break;
 
                     // MARCH CASE B
-                    case TAP_HERE_NO_ICON:
-                        if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
+                    case TAP_HERE_NO_ICON: // same as tap on your picture
+                        if (iconlike_enroll.getVisibility() == View.VISIBLE) {
+                            _audioPlaying = TO_SEE_MORE_ICONS;
+                            releaseAndPlayAudioFile(playListIcon[4]);
+                        }
+                        break;
+
+                    case TO_SEE_MORE_ICONS:
+                        if (iconlike_enroll.getVisibility() == View.VISIBLE) {
+                            _audioPlaying = SLIDE_ICONS_LIKE_THIS;
+                            releaseAndPlayAudioFile(playListIcon[5]);
+                            slideRoboFingerIcon.setVisibility(View.VISIBLE);
+                            mainHandler.postDelayed(slideGalleryRunnableIcon, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+                        }
+                        break;
+
+                    case SLIDE_ICONS_LIKE_THIS:
+                        if (iconlike_enroll.getVisibility() == View.VISIBLE) {
                             //counter += 1;
                             mHandler.postDelayed(toDECIDEIcon, DELAY_TO_REPROMPT);
                             // MARCH DOTHIS IF TAP YES go to ENROLL_RECORD 1
@@ -1112,7 +1161,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 return;
             }
             if (!checkCount()) {
-                if (iconlike.getVisibility() == View.VISIBLE && icondislike.getVisibility() == View.VISIBLE) {
+                if (iconlike_enroll.getVisibility() == View.VISIBLE || (iconlike.getVisibility() == View.VISIBLE
+                    && icondislike.getVisibility() == View.VISIBLE)) {
                     counter += 1;
                     if (!iconpick2) {
                         _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
@@ -1127,7 +1177,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             } else {
                 mHandler.removeCallbacks(this);
 
-                iconlike.dispatchTouchEvent(getDefaultResponseMotionEvent());
+                if (iconlike_enroll.getVisibility() == View.VISIBLE) {
+                    iconlike_enroll.dispatchTouchEvent(getDefaultResponseMotionEvent());
+                } else {
+                    iconlike.dispatchTouchEvent(getDefaultResponseMotionEvent());
+                }
             }
         }
     };
@@ -1286,6 +1340,42 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
         });
 
+        mIconScrollView.setOnItemClickListener(new MyScrollView.OnItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                counter = 0;
+                iconpicgall = true;
+                //view.setBackgroundColor(Color.YELLOW);
+
+                String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
+                Integer icnpic = mIcons.get(position);
+                String icntext = ANIMAL_NAMES[position];
+
+                icontext_enroll.setText(icntext.toUpperCase());
+                iconpic_enroll.setImageDrawable(getResources().getDrawable(icnpic));
+                iconpic_enroll.setVisibility(View.INVISIBLE);
+                view.setBackgroundColor(Color.YELLOW);
+
+                iconRepeat = true;
+                _audioPlaying = OKAY_LETS_TRY_AGAIN;
+                pauseAllAudios();
+
+                releaseAndPlayAudioFileAnimal(language.equals(LANG_EN) ?
+                                Common.ANIMALS_ENG.get(icntext.toLowerCase()).second : Common.ANIMALS_SWA.get(icntext.toLowerCase()).second,
+                        new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                iconpic_enroll.setVisibility(View.VISIBLE);
+                                _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
+                                releaseAndPlayAudioFile(playListIcon[0]);
+                            }
+                        });
+                //releaseAndPlayAudioFile(playListAfterAccepting[2]);
+
+            }
+        });
+
         mGalleryScrollView.setOnItemClickListener(new MyScrollView.OnItemClickListener() {
 
             @Override
@@ -1351,7 +1441,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             Bitmap bmp = BitmapFactory.decodeFile(tempUrl);
             mDatas.add(Pair.create(bmp, profIcon));
         }
+        for (int path: ANIMAL_PATHS){
+            mIcons.add(path);
+        }
         mAdapter.accountNumber = userInfo.size();
+        mAdapter.iconNumber = mIcons.size();
         accountsNumber = userInfo.size();
     }
 
@@ -1378,6 +1472,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         logoShadow.setVisibility(View.GONE);
                         splash.setVisibility(View.GONE);
                         splashRoboFinger.setVisibility(View.GONE);
+                        vnum.setVisibility(View.GONE);
                         mainHandler.removeCallbacks(splashRoboFingerSlideRunnable);
 
                         if (userInfo.size() > 0) {
@@ -1692,11 +1787,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         //TODO pick less used
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
-                        String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
-                        icontext.setText(icntext.toUpperCase());
-                        iconpic.setImageDrawable(getResources().getDrawable((language.equals(LANG_EN) ?
-                                ANIMALS_ENG.get(icntext).first : ANIMALS_SWA.get(icntext).first)));
-                        iconlay.setVisibility(View.VISIBLE);
+                        Integer icnpic = mIcons.get(0);
+                        String icntext = ANIMAL_NAMES[0];
+
+                        icontext_enroll.setText(icntext.toUpperCase());
+                        iconpic_enroll.setImageDrawable(getResources().getDrawable(icnpic));
+                        iconpic_enroll.setVisibility(View.INVISIBLE);
+                        icondislike_enroll.setVisibility(View.GONE);
+                        icongall.setVisibility(View.VISIBLE);
+                        included_icons.setVisibility(View.VISIBLE);
 
                         genderRegd = true;
                         _audioPlaying = GOOD;
@@ -1733,11 +1832,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         //TODO pick less used
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
-                        String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
-                        icontext.setText(icntext.toUpperCase());
-                        iconpic.setImageDrawable(getResources().getDrawable((language.equals(LANG_EN) ?
-                                ANIMALS_ENG.get(icntext).first : ANIMALS_SWA.get(icntext).first)));
-                        iconlay.setVisibility(View.VISIBLE);
+                        Integer icnpic = mIcons.get(0);
+                        String icntext = ANIMAL_NAMES[0];
+
+                        icontext_enroll.setText(icntext.toUpperCase());
+                        iconpic_enroll.setImageDrawable(getResources().getDrawable(icnpic));
+                        iconpic_enroll.setVisibility(View.INVISIBLE);
+                        icondislike_enroll.setVisibility(View.GONE);
+                        icongall.setVisibility(View.VISIBLE);
+                        included_icons.setVisibility(View.VISIBLE);
 
                         genderRegd = true;
                         _audioPlaying = GOOD;
@@ -1754,6 +1857,42 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     }
 
     private void setIconLikeOnClickListener(){
+        iconlike_enroll.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                counter = 0;
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        iconlike_enroll.setImageResource(R.drawable.like_clicked);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        iconlike_enroll.setImageResource(R.drawable.like);
+                        curUser.setProfileIcon(icontext_enroll.getText().toString().trim());
+                        Log.e("Icon set", curUser.getProfileIcon());
+
+                        stopFlash(FLASH_LIKE);
+                        stopFlash(FLASH_DISLIKE);
+                        icongall.setVisibility(View.GONE);
+                        iconpic_enroll.setVisibility(View.INVISIBLE);
+
+                        iconRegd = true;
+                        iconRepeat = false;
+                        activity_gal.setVisibility(View.VISIBLE);
+                        capture.setVisibility(View.VISIBLE);
+                        coverSurface.setVisibility(View.VISIBLE);
+                        _audioPlaying = GOOD;
+                        pauseAllAudios();
+                        //mHandler.removeCallbacksAndMessages(null);
+                        releaseAndPlayAudioFile(playListAfterAccepting[0]);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+
+
         iconlike.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -1764,36 +1903,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
                     case MotionEvent.ACTION_UP:
                         iconlike.setImageResource(R.drawable.like);
-                        if (!iconpick2) {
-                            curUser.setProfileIcon(icontext.getText().toString().trim());
-                            Log.e("Icon set", curUser.getProfileIcon());
-
-                            stopFlash(FLASH_LIKE);
-                            stopFlash(FLASH_DISLIKE);
-                            iconlay.setVisibility(View.GONE);
-                            iconpic.setVisibility(View.INVISIBLE);
-
-                            iconRegd = true;
-                            iconRepeat = false;
-                            activity_gal.setVisibility(View.VISIBLE);
-                            capture.setVisibility(View.VISIBLE);
-                            coverSurface.setVisibility(View.VISIBLE);
-                            _audioPlaying = GOOD;
-                            pauseAllAudios();
-                            //mHandler.removeCallbacksAndMessages(null);
-                            releaseAndPlayAudioFile(playListAfterAccepting[0]);
-                        } else {
-
-                            // currently disabled recreational icon update
-
-                            //currentUser.setProfileIcon(icontext.getText().toString().trim());
-                            //Log.e("Icon set again", currentUser.getProfileIcon());
-                            //dbHelper.updateProfileIcon(currentUser);
-                            pauseAllAudios();
-                            //mHandler.removeCallbacksAndMessages(null);
-                            _audioPlaying = LETS_GET_STARTED;
-                            releaseAndPlayAudioFile(playListAfterDeciding[0]);
-                        }
+                        pauseAllAudios();
+                        //mHandler.removeCallbacksAndMessages(null);
+                        _audioPlaying = LETS_GET_STARTED;
+                        releaseAndPlayAudioFile(playListAfterDeciding[0]);
                         break;
                     default:
                         break;
@@ -2199,7 +2312,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 like_stopFlash = false;
                 like_nowClicked = false;
                 if(!recordRec && (_audioPlaying == TAP_HERE_YES_ICON || _audioPlaying == PLEASE_TAP_HERE_TO_GO_ON)){
-                    iconlike.setImageResource(R.drawable.like_finger);
+                    if (_audioPlaying == TAP_HERE_YES_ICON) {
+                        iconlike_enroll.setImageResource(R.drawable.like_finger);
+                    } else {
+                        iconlike.setImageResource(R.drawable.like_finger);
+                    }
                     mainHandler.post(flashLikeRunnableIcon);
                 } else if (_audioPlaying == TAP_HERE_YES) {
                     oldnewlike.setImageResource(R.drawable.like_finger);
@@ -2379,8 +2496,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private Runnable flashLikeRunnableIcon = new Runnable() {
         @Override
         public void run() {
+            ImageView btn = (_audioPlaying == TAP_HERE_YES_ICON) ? iconlike_enroll : iconlike;
             if (like_stopFlash) {
-                iconlike.setImageResource(R.drawable.like);
+                btn.setImageResource(R.drawable.like);
                 like_nowClicked = false;
                 return;
             }
@@ -2388,11 +2506,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             long timepass = (System.nanoTime() - like_lastFlashTime) / 1000000;
             if(timepass > FLASH_FREQUENCE) {
                 if(!like_nowClicked) {
-                    iconlike.setImageResource(R.drawable.like_finger_clicked);
+                    btn.setImageResource(R.drawable.like_finger_clicked);
                     like_nowClicked = true;
                 } else {
                     like_nowClicked = false;
-                    iconlike.setImageResource(R.drawable.like_finger);
+                    btn.setImageResource(R.drawable.like_finger);
                 }
                 like_lastFlashTime = System.nanoTime();
             }
@@ -2400,7 +2518,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             if ((System.nanoTime() - like_startFlashTIme)/1000000 <= FLASH_DURATION)
                 mainHandler.postDelayed(flashLikeRunnableIcon, FLASH_FREQUENCE);
             else {
-                iconlike.setImageResource(R.drawable.like);
+                btn.setImageResource(R.drawable.like);
                 like_nowClicked = false;
             }
         }
@@ -2629,6 +2747,42 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
     };
 
+    private Runnable slideGalleryRunnableIcon = new Runnable() {
+        @Override
+        public void run() {
+            // XXX aha, so this is where the RoboFinger does the sliding
+            slideRoboFingerIcon.setImageResource(R.drawable.robofinger_press);
+            int dy = mIconScrollView.mScreenHeight / 2;
+            ObjectAnimator anim = ObjectAnimator.ofFloat(slideRoboFingerIcon, "translationY", 0, -dy, 0);
+            anim.setDuration(2000);
+            anim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    slideRoboFingerIcon.setImageResource(R.drawable.robofinger_extend);
+                    mainHandler.postDelayed(hideSlideFingerRunnableIcon, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+                    //mainHandler.postDelayed(promptIfNotFindPictureRunnable, DELAY_AFTER_SHOWING_SLIDE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    slideRoboFingerIcon.setImageResource(R.drawable.robofinger_extend);
+                    mainHandler.postDelayed(hideSlideFingerRunnableIcon, DELAY_TO_SHOW_CHANGE_OF_FINGER);
+                    //mainHandler.postDelayed(promptIfNotFindPictureRunnable, DELAY_AFTER_SHOWING_SLIDE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+
+            anim.start();
+        }
+    };
+
     private Runnable promptIfNotFindPictureRunnable = new Runnable() {
         @Override
         public void run() {
@@ -2647,6 +2801,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         @Override
         public void run() {
             slideRoboFinger.setVisibility(View.INVISIBLE);
+        }
+    };
+
+    private Runnable hideSlideFingerRunnableIcon = new Runnable() {
+        @Override
+        public void run() {
+            slideRoboFingerIcon.setVisibility(View.INVISIBLE);
         }
     };
 

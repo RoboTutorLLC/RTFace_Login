@@ -19,9 +19,12 @@ import java.util.List;
 public class ScrollViewAdapter {
     static protected int accountNumber;
     static protected int accountChosen;
+    static protected int iconNumber;
     private Context mContext;
     private LayoutInflater mInflater;
     private List<Pair<Bitmap, Integer>> mDatas;
+    private List<Integer> mIcons;
+    private Boolean isIcon = false;
 
     public ScrollViewAdapter(Context context, List<Pair<Bitmap, Integer>> mDatas) {
         this.mContext = context;
@@ -29,8 +32,24 @@ public class ScrollViewAdapter {
         this.mDatas = mDatas;
     }
 
+    public ScrollViewAdapter(Context context, List<Integer> mIcons, Boolean isIcon) {
+        this.mContext = context;
+        mInflater = LayoutInflater.from(context);
+        this.mIcons = mIcons;
+        this.isIcon = isIcon;
+    }
+
+
     public int getCount() {
         return mDatas.size();
+    }
+
+    public boolean isIcon(){
+        return isIcon;
+    }
+
+    public int getCountIcons(){
+        return mIcons.size();
     }
 
     public Pair<Bitmap, Integer> getItem(int position) {
@@ -49,22 +68,33 @@ public class ScrollViewAdapter {
         ViewHolder viewHolder = null;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = mInflater.inflate(
-                    R.layout.activity_index_gallery_item, parent, false);
-            viewHolder.mImg = (ImageView) convertView
-                    .findViewById(R.id.id_index_gallery_item_image);
-            viewHolder.mIcon = (ImageView) convertView.findViewById(R.id.gallery_icon);
-
+            if(!isIcon) {
+                convertView = mInflater.inflate(
+                        R.layout.activity_index_gallery_item, parent, false);
+                viewHolder.mImg = (ImageView) convertView
+                        .findViewById(R.id.id_index_gallery_item_image);
+                viewHolder.mIcon = (ImageView) convertView.findViewById(R.id.gallery_icon);
+            } else {
+                convertView = mInflater.inflate(
+                        R.layout.icons_gallery_item, parent, false);
+                viewHolder.mImg = (ImageView) convertView
+                        .findViewById(R.id.id_index_icons_item_image);
+            }
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Pair<Bitmap, Integer> userinf = mDatas.get(position);
+        if(!isIcon) {
+            Pair<Bitmap, Integer> userinf = mDatas.get(position);
 
 
-        viewHolder.mImg.setImageBitmap(userinf.first);
-        viewHolder.mIcon.setImageDrawable(mContext.getResources().getDrawable(userinf.second));
+            viewHolder.mImg.setImageBitmap(userinf.first);
+            viewHolder.mIcon.setImageDrawable(mContext.getResources().getDrawable(userinf.second));
+        } else {
+            Integer icon = mIcons.get(position);
+            viewHolder.mImg.setImageDrawable(mContext.getResources().getDrawable(icon));
+        }
 
         return convertView;
     }
