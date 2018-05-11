@@ -680,6 +680,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         break;
 
                     case OKAY_LETS_TRY_AGAIN:
+                        //TODO: fix this
                         if(iconRepeat) {
                             String icntext = icontext.getText().toString();
                             if(iconpick2){
@@ -693,17 +694,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                                 releaseAndPlayAudioFile(playListLoginIcon[0]);
                                                 stopFlash(FLASH_LIKE);
                                                 startFlash(FLASH_LIKE);
-                                            }
-                                        });
-                            } else {
-                                releaseAndPlayAudioFileAnimal(language.equals(LANG_EN) ?
-                                                Common.ANIMALS_ENG.get(icntext.toLowerCase()).second : Common.ANIMALS_SWA.get(icntext.toLowerCase()).second,
-                                        new MediaPlayer.OnCompletionListener() {
-                                            @Override
-                                            public void onCompletion(MediaPlayer mp) {
-                                                iconpic.setVisibility(View.VISIBLE);
-                                                _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
-                                                releaseAndPlayAudioFile(playListIcon[0]);
                                             }
                                         });
                             }
@@ -1138,11 +1128,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 //TODO pick less used
                 String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
-                String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
-                icontext.setText(icntext.toUpperCase());
-                iconpic.setImageDrawable(getResources().getDrawable((language.equals(LANG_EN) ?
-                        ANIMALS_ENG.get(icntext).first : ANIMALS_SWA.get(icntext).first)));
-                iconlay.setVisibility(View.VISIBLE);
+                Integer icnpic = mIcons.get(0);
+                String icntext = ANIMAL_NAMES[0];
+
+                icontext_enroll.setText(icntext.toUpperCase());
+                iconpic_enroll.setImageDrawable(getResources().getDrawable(icnpic));
+                iconpic_enroll.setVisibility(View.INVISIBLE);
+                icondislike_enroll.setVisibility(View.GONE);
+                icongall.setVisibility(View.VISIBLE);
+                included_icons.setVisibility(View.VISIBLE);
 
                 genderRegd = true;
                 _audioPlaying = GOOD;
@@ -1358,7 +1352,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 view.setBackgroundColor(Color.YELLOW);
 
                 iconRepeat = true;
-                _audioPlaying = OKAY_LETS_TRY_AGAIN;
+                _audioPlaying = OKAY_LETS_TRY_AGAIN; //TODO: is this reqd?
                 pauseAllAudios();
 
                 releaseAndPlayAudioFileAnimal(language.equals(LANG_EN) ?
