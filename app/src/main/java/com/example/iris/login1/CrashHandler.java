@@ -30,9 +30,6 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         }
         report += "-------------------------------\n\n";
 
-        // If the exception was thrown in a background thread inside
-        // AsyncTask, then the actual exception can be found with getCause
-
         report += "--------- Cause ---------\n\n";
         Throwable cause = e.getCause();
         if(cause != null) {
@@ -47,11 +44,11 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         try {
             String deviceId = Build.SERIAL;
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            File logFileDir = new File(Common.FACE_LOGIN_PATH + "/crashlogs");
+            File logFileDir = new File(Common.RT_PATH + "/facelogin_crashlogs");
             if(!logFileDir.exists()){
-                logFileDir.mkdir();
+                logFileDir.mkdirs(); // incase RoboTutor folder is nonexistent
             }
-            File logFile = new File(Common.FACE_LOGIN_PATH + "/crashlogs/" + deviceId + "_" + timestamp + ".trace");
+            File logFile = new File(Common.RT_PATH + "/facelogin_crashlogs/" + deviceId + "_" + timestamp + "_" + BuildConfig.VERSION_NAME + ".trace");
             logFile.createNewFile();
             FileOutputStream trace = new FileOutputStream(logFile, false);
             trace.write(report.getBytes());

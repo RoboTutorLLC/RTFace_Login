@@ -120,6 +120,8 @@ public class Common {
 
     // File-naming conventions
     public static final String FACE_LOGIN_PATH = "/sdcard/FaceLogin";
+    public static final String RT_PATH = "/sdcard/RoboTutor";
+
     public static final String IMAGE_FILE_PREFIX = "IMAGE_";
     public static final String IMAGE_FILE_SUFFIX = ".jpg";
 }
