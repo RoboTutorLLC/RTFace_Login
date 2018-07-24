@@ -48,7 +48,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             if(!logFileDir.exists()){
                 logFileDir.mkdirs(); // incase RoboTutor folder is nonexistent
             }
-            File logFile = new File(Common.RT_PATH + "/facelogin_crashlogs/" + deviceId + "_" + timestamp + "_" + BuildConfig.VERSION_NAME + ".trace");
+            File logFile = new File(Common.RT_PATH + "/facelogin_crashlogs/CRASH_" + timestamp + "_" + deviceId + "_" + BuildConfig.BUILD_TYPE + "_" + BuildConfig.VERSION_NAME + ".txt");
             logFile.createNewFile();
             FileOutputStream trace = new FileOutputStream(logFile, false);
             trace.write(report.getBytes());
