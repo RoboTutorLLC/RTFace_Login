@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -957,6 +959,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     }
 
+    public void killPackage(View view) {
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.killBackgroundProcesses(ROBOTUTOR_PACKAGE_ADDRESS);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == RT_STARTED){
@@ -2838,6 +2844,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        killPackage(null);
         if(pauseWhileRecord) {
             pauseWhileRecord = false;
             pauseAllAudios();
