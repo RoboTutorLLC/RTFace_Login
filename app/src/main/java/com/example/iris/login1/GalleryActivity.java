@@ -37,8 +37,11 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import static com.example.iris.login1.Common.*;
@@ -766,6 +769,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         launchIntent.putExtras(sessionBundle); 
                         launchIntent.setFlags(0);
 
+                        LogHandler logHandler = new LogHandler(currentUser);
+                        logHandler.log(Pair.create("Student ID", uniqueUserID), Pair.create("Session ID", newSessId));
+
                         if (launchIntent != null) {
                             startActivityForResult(launchIntent, RT_STARTED);
                         } else {
@@ -1432,6 +1438,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private void initUserInfo(){
         dbHelper = new DataHelper(this);
         userInfo = dbHelper.getUserList();
+
+        final List <Integer> pathlist = new ArrayList<Integer>();
         for (int i = 0; i < userInfo.size(); i++) {
             String tempUrl = userInfo.get(i).getUserIcon();
             String profIconName = userInfo.get(i).getProfileIcon().toLowerCase();
@@ -1440,10 +1448,19 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
             Bitmap bmp = BitmapFactory.decodeFile(tempUrl);
             mDatas.add(Pair.create(bmp, profIcon));
+            pathlist.add(profIcon);
         }
         for (int path: ANIMAL_PATHS){
             mIcons.add(path);
         }
+        /*
+        Collections.sort(mIcons, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer lhs, Integer rhs) {
+                return Integer.valueOf(Collections.frequency(pathlist, lhs)).compareTo(Integer.valueOf(Collections.frequency(pathlist, rhs)));
+            }
+        });
+        */
         mAdapter.accountNumber = userInfo.size();
         mAdapter.iconNumber = mIcons.size();
         accountsNumber = userInfo.size();
