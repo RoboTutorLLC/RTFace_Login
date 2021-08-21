@@ -39,7 +39,7 @@ git clone --quiet --branch=apk https://robotutor:$GH_TOKEN@github.com/RoboTutorL
 cd apk
 
 echo `ls`
-find ../app/build/outputs/apk/debug -type f -name '*.apk' -exec mv -v {} temp.apk \;
+find ../build -type f -name '*.apk' -exec mv -v {} temp.apk \;
 
 
 mv temp.apk RTFace_Login-${TRAVIS_PULL_REQUEST_BRANCH}-${DATE_TODAY}.apk
