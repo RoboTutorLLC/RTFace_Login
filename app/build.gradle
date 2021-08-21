@@ -62,11 +62,11 @@ android {
         variant.outputs.all { output ->
             def project = "facelogin"
             def SEP = "."
-            def buildType = variant.variantData.variantConfiguration.buildType.name
+            def buildType = variant.buildType.name
             def version = variant.versionName
 
             def newApkName = project + SEP + buildType + SEP + version + ".apk"
-            outputFileName = new File(output.outputFile.parent, newApkName)
+            outputFileName = new File("./../../../../../build/", newApkName)
         }
     }
 
