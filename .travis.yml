@@ -2,31 +2,32 @@ language: android
 dist: trusty
 sudo: false
 jdk:
-  - oraclejdk8
+- oraclejdk8
 android:
   components:
-    - tools
-    - android-23
-    - build-tools-26.0.2
-    - build-tools-29.0.2
-    - platform-tools
+  - tools
+  - android-23
+  - build-tools-26.0.2
+  - build-tools-29.0.2
+  - platform-tools
 before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
   directories:
-    - "${TRAVIS_BUILD_DIR}/gradle/caches/"
-    - "${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/"
-    - "$HOME/.gradle/caches/"
-    - "$HOME/.gradle/wrapper/"
+  - "${TRAVIS_BUILD_DIR}/gradle/caches/"
+  - "${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/"
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
 script:
-  - cp -v sample_config_files/sample_keystore.properties keystore.properties
-  - keytool -genkeypair -dname "cn=TravisCI, ou=TravisCI, o=Sun, c=US" -alias business
-    -keypass kpi135 -keystore android.keystore -storepass ab987c -validity 20000
+- cp -v sample_config_files/sample_keystore.properties keystore.properties
+- keytool -genkeypair -dname "cn=TravisCI, ou=TravisCI, o=Sun, c=US" -alias business
+  -keypass kpi135 -keystore android.keystore -storepass ab987c -validity 20000
 after_success:
-  - bash scripts/update_apk.sh
+- bash scripts/update_apk.sh
 branches:
   only:
-    - master
-    - development
+  - master
+  - development
 env:
   global:
+    secure: mDt/2WHz19v0wVWX0q80ZIPbLo/k2TlksyDr8qZ0A7XEb6njeS2mKOLyRFM6vld05jCa6MaNqvVPSFQXx5f/exVs+wLthZrYNi1nTptl8vAO9z6L+jX+uxUIyCJqnXxdg+2dpBJyK/a7KjbU/DSl0H+wgMCSBXKcNECI8rF+81AVqJVGq3midlUaAgQ8W1VABd621SrU/fEM+r7dLiE3yhR6If5k4dwmzyPCAiftK4h67s2QoOsUEUYgzPmQk1WufpKGllU1hA6h1EW39vAt+2AwhWEDEbZ+Qe7uQ1r9hhARFwuJ6NTVa8csRbJSrq+OK1haP2Tcn7qDfT1uB5jcGfj+tgaRBKhww2OMu+i+E4mdJI9JCpWzfbfwsRsqbQcPIkjfZcxE8EcP9m+kv4iMhyRslZ5ixh5Vf4ZqFD1rQWzrdFqSK88Zx3H6LJYi+0SK5kTLJhyW22rct5MAKdXnM2lsNGQfBJR1b7sS28qLuBU+4Rhla/wt5rvCMF/RH8w8hT8d9OqRZSFESzU+4UPNemG95Qbr6dZHlV/58+Jr/kToOm22KfrLGZwz8OeHo9YmCwlOhv8rT6zCI8/jQ/cU8NFMCtqJ5Sexlr93Y5v7C4WCpnNlrrqO7uQHcT/abZEtJj3viHAVnzRkzGrTHwzVcDRTXBUkNipfstIAL0qp9KU=
