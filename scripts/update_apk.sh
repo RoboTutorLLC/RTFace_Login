@@ -35,7 +35,7 @@ fi
 
 
 
-git clone --quiet --branch=apk https://${process.env.GH_TOKEN}@github.com/RoboTutorLLC/RTFace_Login.git apk > /dev/null
+git clone --quiet --branch=apk https://${GH_TOKEN}@github.com/RoboTutorLLC/RTFace_Login.git apk > /dev/null
 cd apk
 
 echo `ls`
