@@ -23,7 +23,9 @@ script:
 - keytool -genkeypair -dname "cn=TravisCI, ou=TravisCI, o=Sun, c=US" -alias business
   -keypass kpi135 -keystore android.keystore -storepass ab987c -validity 20000
 after_success:
-- bash scripts/update_apk.sh
+  - git config credential.helper "store --file=.git/credentials"
+  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+  - bash scripts/update_apk.sh
 branches:
   only:
   - master
