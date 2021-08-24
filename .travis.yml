@@ -23,13 +23,13 @@ script:
 - keytool -genkeypair -dname "cn=TravisCI, ou=TravisCI, o=Sun, c=US" -alias business
   -keypass kpi135 -keystore android.keystore -storepass ab987c -validity 20000
 after_success:
-  - git config credential.helper "store --file=.git/credentials"
-  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
-  - bash scripts/update_apk.sh
+- git config credential.helper "store --file=.git/credentials"
+- echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+- bash scripts/update_apk.sh
 branches:
   only:
   - master
   - development
 env:
   global:
-    secure: LPcDdY1CWOxfAFCKnDusmhF+LRIsN3wViDvNiRTEap7x2r7tqEnx/KhKwFz6tdEIP8kE2KWkTjPP+JObz+2nmOidzfmxQQMghBPgvADs5rUh0ZZOL/QioUoja8qITxp8ajzSjw5Vl9LzXaoO44a9+QotUt2xCsRwHDXwweoXYVLwGta46fvNEl0WjRhb7CVCxypOOYRnOOEYgR91Vwx9uZq6cD9VWG56mga7Qj4ejv0HXgXfRUNX4/S/YDDRcD1kPsY4BmYvYn0QFuLEzqAuTGfLHfHqRb47dBaHAR/JlcZwezl6BFVYTf3C+eKtHB7US/TOLHUpu7zCsJpcl16vEP9rII6TaHhIRa/J+5wEpCwVj867PpXTdX/K8pCguCm97PLJrzzFr+yo0KOv+YnyoRoYR+571t/ofrKZgEc+VPQD5DFiRFbgeG2MxamzNV6LPFO7F++fdzQvNXQ5CuGhrroMpauRkYqQPv/c1QrC3HAlimN+BQReaC1Kk+mVZflEx6NCvop4Fk0b3R10yTahSMDbpEXY1pYkMyDahDlKAFtniV0bdtd69ED3RVN9zTiqTPTH0SEbr4GvA2qV6UwFaUwEQKzudqtP/MA9kRJjadaha2a9xDGJti/rNxFNFLrdfEU2zj4dGUEfs8nsbIPpLLN4AHPZUKkbuR/4//OZOrY=
+    secure: AYpB2o/8He7V7wRsXZZ24Qc9xdmqjj3fhGHk79AQiSgSeWTDb1ABtebAL2Dun/jU2EQe7GMd+JPedPvOEFQ753YzjwhX29ZfCYoy0e+fRZW0/rfpZ67lMsoymC3FRiVeXShQo9SUeHRwSwO8zdcq7G7G4INhxWACnVTLViVLKvY4i3+mCycJ+yQb6eXOF6+W8YAZYF+uIN6JJUtFRxDTMORI0sPRzQRnRq/iwToRisS6muUS1N309dThd5DUSjxNSjuh0Su7pJwKOgNLs7R+xXj/+cho2+Y4ETWk/A+Mp6NBbGgpWZy3ZMJo9nZJgn8gjxVE58XVBuVrJQSbZ2AEEuGyk/H2nq1DvIGINHSsRNvrQ2ksAHysRFELkUu6CNovQa6Rj3lp28QBQbZZpACyjSVVvojSg9OCP8VCoWqVHcBKVCBaaNsR4dWjG5w6gJSLmHCarV18yrYdkhmMavr6kzFDORL25482ng6dUNMIc9LYgSSv/kkVBEcXeXz6QlpbDU1jFOZai6dbP/T+Qlt1UCyLvqR/udwXBgtcTl7WWi8ls5q6fnnJzMdUEMmOxwEjJGDKfKEeF7Ehw4WfRQ0cR6lqCBFoFXA09prkfu+LO5f0BPPoM1vferc6XJqEuaY940a2KomTl03Z2JwDH/BQcpxYet7mEWGaldE8j39iFNY=
