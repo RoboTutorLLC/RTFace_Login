@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 if [ "${TRAVIS_PULL_REQUEST_BRANCH}" == "" ]; then
