@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 28
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.example.iris.login1"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
-        versionName "1.7.5.5"
+        versionName "1.7.5.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
