@@ -1,11 +1,14 @@
 package com.example.iris.login1;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
+
+import java.sql.ResultSet;
 
 /**
  * Created by Iris on 16/7/20.

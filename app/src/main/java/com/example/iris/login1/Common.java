@@ -1,6 +1,7 @@
 package com.example.iris.login1;
 
 import android.util.Pair;
+import com.example.iris.login1.DataHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,12 @@ import java.util.Map;
 public class Common {
 
     // different app states
+
+
+
+
+
+
     public enum STATE {
         IF_YOU_SEE_YOUR_PICTURE, PLEASE_TAP_ON_YOUR_PICTURE, TO_SEE_MORE_PICTURES,
         IF_YOU_DONT_FIND_YOUR_PICTURE, SLIDE_THEM_LIKE_THIS, TAP_HERE_RECORD, PLEASE_SAY_YOUR_NAME,

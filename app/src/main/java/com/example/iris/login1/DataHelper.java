@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.example.iris.login1.Common.ANIMAL_NAMES_ENG;
 import static com.example.iris.login1.Common.ANIMAL_NAMES_SWA;
@@ -213,6 +214,59 @@ public class DataHelper {
         }
 
         return tableString;
+    }
+
+    public String[] getImageOrder() {
+        Log.d("DataHelper","getImageOrder called");
+
+        //users
+        String tableName = SqliteHelper.TB_NAME;
+        //profileIcon
+        String userIcon = UserInfo.PROFILEICON;
+
+
+
+        Cursor values = db.rawQuery("SELECT Count(_id), profileIcon from users Group by profileicon order By Count(_id) ASC", null);
+
+        ArrayList<String> animal_names = new ArrayList<String>();
+        values.moveToFirst();
+
+        while(!values.isAfterLast()){
+            String val = values.getString(values.getColumnIndex("profileIcon"));
+            animal_names.add(val.toLowerCase(Locale.ROOT));
+            values.moveToNext();
+        }
+
+        for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
+
+            boolean is_in_list = true;
+
+            for (int k = 0; k < animal_names.size(); k++) {
+
+                if (animal_names.get(k).equals(ANIMAL_NAMES_ENG[i])) {
+                    is_in_list = false;
+                    break;
+                }
+            }
+            if(is_in_list){
+                animal_names.add(0,ANIMAL_NAMES_ENG[i]);
+            }
+
+
+        }
+
+
+
+
+//
+
+        String[] response = new String[animal_names.size()];
+        response = animal_names.toArray(response);
+
+        return response;
+
+
+
     }
 
 }

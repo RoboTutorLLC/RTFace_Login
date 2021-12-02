@@ -193,6 +193,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private List<Integer> mIcons = new ArrayList<Integer>();
 
     private DataHelper dbHelper;
+
+
+
     private List<UserInfo> userInfo = new ArrayList<UserInfo>();
     private ImageView capture;
     private ImageView like;
@@ -332,6 +335,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         _audioPlaying = THIS_IS_ROBOTUTOR;
 
         SurfaceHolder holder = this.surfaceview.getHolder();// get holder
+        //Test Below
+        surfaceHolder = holder;
+        //Test Above
         holder.addCallback(this);    //add the callback interface to the holder
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
@@ -749,6 +755,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         firstAttempt = true;
                         String newSessId = generateSessionID();
                         currentUser.setLastLoginTime(newSessId.split("_", 2)[1]);
+
                         dbHelper.updateUserTime(currentUser);
 
                         // when the Confirm button is tapped, launch RoboTutor
@@ -1138,7 +1145,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 genderlay.setVisibility(View.GONE);
 
                 //TODO pick less used
-                String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                //String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                String[] ANIMAL_NAMES = dbHelper.getImageOrder();
 
                 Integer icnpic = mIcons.get(0);
                 String icntext = ANIMAL_NAMES[0];
@@ -1804,7 +1812,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
-                        String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                        //String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                        String[] ANIMAL_NAMES = dbHelper.getImageOrder();
 
                         Integer icnpic = mIcons.get(0);
                         String icntext = ANIMAL_NAMES[0];
@@ -1849,7 +1858,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
-                        String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                        //String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                        String[] ANIMAL_NAMES = dbHelper.getImageOrder();
 
                         Integer icnpic = mIcons.get(0);
                         String icntext = ANIMAL_NAMES[0];
@@ -1951,7 +1961,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         stopFlash(FLASH_LIKE);
                         //TODO pick less used
 
-                        String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                        //String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+                        String[] ANIMAL_NAMES = dbHelper.getImageOrder();
 
                         String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
                         icontext.setText(icntext.toUpperCase());
