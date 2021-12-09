@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
+import android.util.Pair;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -16,8 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static com.example.iris.login1.Common.ANIMALS_ENG;
 import static com.example.iris.login1.Common.ANIMAL_NAMES_ENG;
 import static com.example.iris.login1.Common.ANIMAL_NAMES_SWA;
+import static com.example.iris.login1.Common.ANIMAL_PATHS;
+import static com.example.iris.login1.Common.ANIMAL_SOUNDS;
 import static com.example.iris.login1.Common.FACE_LOGIN_PATH;
 
 /**
@@ -218,14 +222,6 @@ public class DataHelper {
 
     public String[] getImageOrder() {
         Log.d("DataHelper","getImageOrder called");
-
-        //users
-        String tableName = SqliteHelper.TB_NAME;
-        //profileIcon
-        String userIcon = UserInfo.PROFILEICON;
-
-
-
         Cursor values = db.rawQuery("SELECT Count(_id), profileIcon from users Group by profileicon order By Count(_id) ASC", null);
 
         ArrayList<String> animal_names = new ArrayList<String>();
@@ -236,6 +232,8 @@ public class DataHelper {
             animal_names.add(val.toLowerCase(Locale.ROOT));
             values.moveToNext();
         }
+
+        int startingListLength = animal_names.size();
 
         for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
 
@@ -255,14 +253,37 @@ public class DataHelper {
 
         }
 
+        for (int i = 0; i < (int)(ANIMAL_NAMES_ENG.length-startingListLength)/2; i++) {
+            String placeholder = animal_names.get(i);
 
+            animal_names.set(i,animal_names.get(ANIMAL_NAMES_ENG.length-startingListLength-i));
+
+            animal_names.set(ANIMAL_NAMES_ENG.length-startingListLength-i,placeholder);
+
+        }
+
+
+
+
+        for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
+
+            ANIMAL_NAMES_ENG[i] = animal_names.get(i);
+
+            String tempName = animal_names.get(i);
+
+            Pair<Integer, Integer> animalData = ANIMALS_ENG.get(tempName);
+
+            ANIMAL_PATHS[i] = animalData.first;
+            ANIMAL_SOUNDS[i] = animalData.second;
+
+        }
+
+        //Common.reMap();
 
 
 //
-
         String[] response = new String[animal_names.size()];
         response = animal_names.toArray(response);
-
         return response;
 
 
