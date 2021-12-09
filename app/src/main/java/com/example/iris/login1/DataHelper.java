@@ -278,9 +278,6 @@ public class DataHelper {
 
         }
 
-        //Common.reMap();
-
-
 //
         String[] response = new String[animal_names.size()];
         response = animal_names.toArray(response);
