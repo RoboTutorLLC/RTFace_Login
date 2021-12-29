@@ -1437,10 +1437,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 if (videoThread != null) videoThread.stopPlayingVideo();
                 int startTimeWithSilence = realStartTime - (language.equals(LANG_EN) ? Common.TRAILING_SILENCE_EN : Common.TRAILING_SILENCE_SW);
                 // create a new EnrollmentVideo thread
-                if (surfaceHolder != null) {
-                    videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
-                    videoThread.start();
-                }
+                videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
+                videoThread.start();
+
                 view.setBackgroundColor(Color.YELLOW);
             }
         });

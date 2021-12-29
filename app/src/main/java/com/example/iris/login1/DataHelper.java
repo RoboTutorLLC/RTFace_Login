@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.example.iris.login1.Common.ANIMALS_ENG;
+import static com.example.iris.login1.Common.ANIMALS_Link;
 import static com.example.iris.login1.Common.ANIMAL_NAMES_ENG;
 import static com.example.iris.login1.Common.ANIMAL_NAMES_SWA;
 import static com.example.iris.login1.Common.ANIMAL_PATHS;
@@ -225,6 +226,7 @@ public class DataHelper {
         Cursor values = db.rawQuery("SELECT Count(_id), profileIcon from users Group by profileicon order By Count(_id) ASC", null);
 
         ArrayList<String> animal_names = new ArrayList<String>();
+        ArrayList<String> animal_names_swa = new ArrayList<String>();
         values.moveToFirst();
 
         while(!values.isAfterLast()){
@@ -263,18 +265,21 @@ public class DataHelper {
         }
 
 
-
-
         for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
-
+            String tempName = animal_names.get(i);
             ANIMAL_NAMES_ENG[i] = animal_names.get(i);
 
-            String tempName = animal_names.get(i);
+
+
+            ;
 
             Pair<Integer, Integer> animalData = ANIMALS_ENG.get(tempName);
 
             ANIMAL_PATHS[i] = animalData.first;
             ANIMAL_SOUNDS[i] = animalData.second;
+
+
+            ANIMAL_NAMES_SWA[i] = ANIMALS_Link.get(tempName);
 
         }
 

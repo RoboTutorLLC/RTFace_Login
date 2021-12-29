@@ -69,6 +69,14 @@ public class Common {
             R.raw.chui, R.raw.simba, R.raw.tumbili, R.raw.panya, R.raw.mbuni, R.raw.kasuku, R.raw.sungura, R.raw.kondoo,
             R.raw.nyoka, R.raw.buibui, R.raw.kuchakuro, R.raw.kobe, R.raw.mbwa_mwitu, R.raw.punda};
 
+    public static Map<String, String> ANIMALS_Link = new HashMap<String, String>() {{
+        for(int i = 0; i < ANIMAL_NAMES_ENG.length; i++){
+            put(ANIMAL_NAMES_ENG[i],ANIMAL_NAMES_SWA[i]);
+        }
+    }};
+
+
+
     public static Map<String, Pair<Integer, Integer>> ANIMALS_ENG = new HashMap<String, Pair<Integer, Integer>>() {{
         for(int i = 0; i < ANIMAL_NAMES_ENG.length; i++){
             put(ANIMAL_NAMES_ENG[i], Pair.create(ANIMAL_PATHS[i], ANIMAL_SOUNDS[i]));
