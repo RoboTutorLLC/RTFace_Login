@@ -193,6 +193,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private List<Integer> mIcons = new ArrayList<Integer>();
 
     private DataHelper dbHelper;
+
+
+
     private List<UserInfo> userInfo = new ArrayList<UserInfo>();
     private ImageView capture;
     private ImageView like;
@@ -332,6 +335,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         _audioPlaying = THIS_IS_ROBOTUTOR;
 
         SurfaceHolder holder = this.surfaceview.getHolder();// get holder
+        //Test Below
+        surfaceHolder = holder;
+        //Test Above
         holder.addCallback(this);    //add the callback interface to the holder
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
@@ -749,6 +755,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         firstAttempt = true;
                         String newSessId = generateSessionID();
                         currentUser.setLastLoginTime(newSessId.split("_", 2)[1]);
+
                         dbHelper.updateUserTime(currentUser);
 
                         // when the Confirm button is tapped, launch RoboTutor
@@ -1138,7 +1145,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 genderlay.setVisibility(View.GONE);
 
                 //TODO pick less used
+                dbHelper.getImageOrder();
                 String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
 
                 Integer icnpic = mIcons.get(0);
                 String icntext = ANIMAL_NAMES[0];
@@ -1430,6 +1439,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 // create a new EnrollmentVideo thread
                 videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
                 videoThread.start();
+
                 view.setBackgroundColor(Color.YELLOW);
             }
         });
@@ -1443,6 +1453,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         for (int i = 0; i < userInfo.size(); i++) {
             String tempUrl = userInfo.get(i).getUserIcon();
             String profIconName = userInfo.get(i).getProfileIcon().toLowerCase();
+
+            dbHelper.getImageOrder();
 
             Integer profIcon = (language.equals(LANG_EN) ? ANIMALS_ENG.get(profIconName).first : ANIMALS_SWA.get(profIconName).first);
 
@@ -1802,7 +1814,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
+                        dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
 
                         Integer icnpic = mIcons.get(0);
                         String icntext = ANIMAL_NAMES[0];
@@ -1847,7 +1861,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
+                        dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
 
                         Integer icnpic = mIcons.get(0);
                         String icntext = ANIMAL_NAMES[0];
@@ -1948,8 +1964,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         stopFlash(FLASH_DISLIKE);
                         stopFlash(FLASH_LIKE);
                         //TODO pick less used
-
+                        dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
 
                         String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
                         icontext.setText(icntext.toUpperCase());
