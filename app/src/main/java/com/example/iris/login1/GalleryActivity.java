@@ -314,7 +314,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         initVarsOfViews();
         initVarsOfMediaPlayer();
-        setScrollViewListeners();
+
         initUserInfo();
 
         if(userInfo.size() != 0) {
@@ -330,10 +330,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         // KIMTAR, _audioPlaying this is the state that specifies which part of "onCompletionListener" is played
         // MARCH START WITH THIS_IS_ROBOTUTOR
         _audioPlaying = THIS_IS_ROBOTUTOR;
-
-        SurfaceHolder holder = this.surfaceview.getHolder();// get holder
-        holder.addCallback(this);    //add the callback interface to the holder
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         setLogoOnTouchListener();
 
@@ -2861,6 +2857,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        setScrollViewListeners();
+        SurfaceHolder holder = this.surfaceview.getHolder();// get holder
+        holder.addCallback(this);    //add the callback interface to the holder
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         killPackage(null);
         if(pauseWhileRecord) {
             pauseWhileRecord = false;
