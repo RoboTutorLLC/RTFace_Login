@@ -7,7 +7,7 @@ android:
   components:
     - tools
     - android-26
-    - build-tools-26.0.2
+
     - build-tools-29.0.2
     - platform-tools
 before_cache:
@@ -28,6 +28,4 @@ branches:
   only:
     - master
     - development
-env:
-  global:
-    secure: KppMieCLcSsCGRLccTQ53wRtyNEhVKTtpKgLGknm1P8BL2bjIRSmfzNzTskSzmw17JclkUdenPkt4jOz50TF9e5n7IVH+fcixaHyzyH5AmnYqhgi+mVIEa6dQiPChd13oP/QPEn/IODTA9oRgb3f9+9qQSM6nFlft7XpPNBG7mQdrZj6EeEOdoRvB3ntR02YiUaDARve/otLH9OCxtaDclV4GaT5QWH0uQ9nSiJsDUstLLxIefE+mbePKTUOCY1N9NC/mqpqWFfoNz+nl7DZXov60MHAzf8W5xn0wvcrtL8G4SW+sxtf40WWmoLCO2yhXiq+OoyxNxHCN12R0rIx9GUfqeDcMOxcU7u6+meonZ4opWcKcg8xkdjwzNnqrQmqbXeY5YyHBpPxEFhEFQfyk189QF6T6RI/awUXLyJfZ4JKoE+r4ZSRMLxk2suVs9V4IzciIIeMifgZIdIusW3awE9RgLTAB/oEEQJkFsuRuXfD8+c4TmzSSN4SMqER0leEYGJDhcivNRkfyhLU90WiGOM2SH3JBs0M4MLDy/MSTAbjJqClPXWZa3fPDP4+MEa2Xus0EkRHd3VdtLMhNTzsoLNIxqJpPVlmJNJF0RBLIjfjYS51/9Xgyw3T6PBUs1HfOZMEkQjKpLvZnm4UN/IqJXLULKgnOokc6b1Od6BbbA8=
+
