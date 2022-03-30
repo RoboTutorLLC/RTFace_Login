@@ -1,51 +1,53 @@
-package com.example.iris.login1;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.MediaPlayer;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+        package com.example.iris.login1;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+        import android.animation.Animator;
+        import android.animation.AnimatorSet;
+        import android.animation.ObjectAnimator;
+        import android.annotation.SuppressLint;
+        import android.app.ActivityManager;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.graphics.Bitmap;
+        import android.graphics.BitmapFactory;
+        import android.graphics.Color;
+        import android.media.MediaPlayer;
+        import android.os.Build;
+        import android.os.Handler;
+        import android.os.Looper;
+        import android.os.Message;
+        import android.os.SystemClock;
+        import android.support.v7.app.AppCompatActivity;
+        import android.os.Bundle;
+        import android.util.Log;
+        import android.util.Pair;
+        import android.view.MotionEvent;
+        import android.view.SurfaceHolder;
+        import android.view.SurfaceView;
+        import android.view.View;
+        import android.view.ViewTreeObserver;
+        import android.view.Window;
+        import android.view.WindowManager;
+        import android.widget.ImageButton;
+        import android.widget.ImageView;
+        import android.widget.LinearLayout;
+        import android.widget.RelativeLayout;
+        import android.widget.TextView;
 
-import static com.example.iris.login1.Common.*;
-import static com.example.iris.login1.Common.STATE.*;
+        import java.io.File;
+        import java.text.SimpleDateFormat;
+        import java.util.ArrayList;
+        import java.util.Arrays;
+        import java.util.Collections;
+        import java.util.Comparator;
+        import java.util.Date;
+        import java.util.List;
+        import java.util.Locale;
+        import java.util.Map;
+        import java.util.Random;
+
+        import static com.example.iris.login1.Common.*;
+        import static com.example.iris.login1.Common.STATE.*;
 
 public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -125,7 +127,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private int[] mediaListIconSwa =
             {R.raw.swa_ifyoulikethispicture, R.raw.swa_pleasetaphere6,
                     R.raw.swa_ifyouwanttoseeadifferentpictureicon, R.raw.swa_pleasetaponyouricon,
-            R.raw.swa_toseemorepictures, R.raw.swa_slidethemlikethis};
+                    R.raw.swa_toseemorepictures, R.raw.swa_slidethemlikethis};
     private int[] mediaListIconEng =
             {R.raw.swa_ifyoulikethispicture, R.raw.swa_pleasetaphere6,
                     R.raw.swa_ifyouwanttoseeadifferentpictureicon, R.raw.swa_pleasetaponyouricon,
@@ -193,6 +195,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private List<Integer> mIcons = new ArrayList<Integer>();
 
     private DataHelper dbHelper;
+
+
+
     private List<UserInfo> userInfo = new ArrayList<UserInfo>();
     private ImageView capture;
     private ImageView like;
@@ -332,6 +337,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         _audioPlaying = THIS_IS_ROBOTUTOR;
 
         SurfaceHolder holder = this.surfaceview.getHolder();// get holder
+        //Test Below
+        surfaceHolder = holder;
+        //Test Above
         holder.addCallback(this);    //add the callback interface to the holder
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
@@ -749,6 +757,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         firstAttempt = true;
                         String newSessId = generateSessionID();
                         currentUser.setLastLoginTime(newSessId.split("_", 2)[1]);
+
                         dbHelper.updateUserTime(currentUser);
 
                         // when the Confirm button is tapped, launch RoboTutor
@@ -766,7 +775,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         Log.e("uniqueUserID", uniqueUserID);
                         sessionBundle.putString(Common.STUDENT_ID_VAR, uniqueUserID);
                         sessionBundle.putString(Common.SESSION_ID_VAR, newSessId);
-                        launchIntent.putExtras(sessionBundle); 
+                        launchIntent.putExtras(sessionBundle);
                         launchIntent.setFlags(0);
 
                         LogHandler logHandler = new LogHandler(currentUser);
@@ -1035,8 +1044,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private void toSTART() {
         //if (capture.getVisibility() == View.VISIBLE) {
-            // MARCH if this is you tap here
-            // MARCH if this is not you tap here
+        // MARCH if this is you tap here
+        // MARCH if this is not you tap here
 
         if (userInfo.size() > 0 && !newUserOldNew) {
             setCaptureOnClickListener();
@@ -1054,8 +1063,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 newUser2 = true;
                 capture.setVisibility(View.GONE);
                 mGalleryScrollView.getOnItemClickListener().onClick(mAdapter.getView(0, null, (LinearLayout) mGalleryScrollView.getChildAt(0)), 0);
-                    //_audioPlaying = IF_THIS_IS_YOU;
-                    //releaseAndPlayAudioFile(playListExpected[0]);
+                //_audioPlaying = IF_THIS_IS_YOU;
+                //releaseAndPlayAudioFile(playListExpected[0]);
 
                 //mpStart1.seekTo(0);
                 //mpStart1.start();
@@ -1082,7 +1091,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
             //startFlash(FLASH_CAPTURE);
         }
-            // OLD
+        // OLD
             /*
             if (userInfo.size() > 0) {
                 //If you see your picture, please tap on it, otherwise tap here.
@@ -1138,7 +1147,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 genderlay.setVisibility(View.GONE);
 
                 //TODO pick less used
+                dbHelper.getImageOrder();
                 String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
 
                 Integer icnpic = mIcons.get(0);
                 String icntext = ANIMAL_NAMES[0];
@@ -1168,7 +1179,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             }
             if (!checkCount()) {
                 if (iconlike_enroll.getVisibility() == View.VISIBLE || (iconlike.getVisibility() == View.VISIBLE
-                    && icondislike.getVisibility() == View.VISIBLE)) {
+                        && icondislike.getVisibility() == View.VISIBLE)) {
                     counter += 1;
                     if (!iconpick2) {
                         _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
@@ -1367,8 +1378,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 _audioPlaying = OKAY_LETS_TRY_AGAIN; //TODO: is this reqd?
                 pauseAllAudios();
 
+                Pair<Integer, Integer> tmpAnimalData = Common.ANIMALS_ENG.get(icntext.toLowerCase(Locale.ROOT));
+                if (tmpAnimalData == null){
+                    tmpAnimalData = Common.ANIMALS_SWA.get(icntext.toLowerCase(Locale.ROOT));
+                }
+
                 releaseAndPlayAudioFileAnimal(language.equals(LANG_EN) ?
-                                Common.ANIMALS_ENG.get(icntext.toLowerCase()).second : Common.ANIMALS_SWA.get(icntext.toLowerCase()).second,
+                                tmpAnimalData.second : tmpAnimalData.second,
                         new MediaPlayer.OnCompletionListener() {
                             @Override
                             public void onCompletion(MediaPlayer mp) {
@@ -1428,8 +1444,10 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 if (videoThread != null) videoThread.stopPlayingVideo();
                 int startTimeWithSilence = realStartTime - (language.equals(LANG_EN) ? Common.TRAILING_SILENCE_EN : Common.TRAILING_SILENCE_SW);
                 // create a new EnrollmentVideo thread
-                videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
-                videoThread.start();
+                if (surfaceHolder != null) {
+                    videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
+                    videoThread.start();
+                }
                 view.setBackgroundColor(Color.YELLOW);
             }
         });
@@ -1444,7 +1462,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             String tempUrl = userInfo.get(i).getUserIcon();
             String profIconName = userInfo.get(i).getProfileIcon().toLowerCase();
 
-            Integer profIcon = (language.equals(LANG_EN) ? ANIMALS_ENG.get(profIconName).first : ANIMALS_SWA.get(profIconName).first);
+            dbHelper.getImageOrder();
+
+            Pair<Integer, Integer> tempUsrData = Common.ANIMALS_ENG.get(profIconName);
+
+            if (tempUsrData == null){
+                tempUsrData = ANIMALS_SWA.get(profIconName);
+            }
+
+            Integer profIcon = (language.equals(LANG_EN) ? tempUsrData.first : tempUsrData.first);
 
             Bitmap bmp = BitmapFactory.decodeFile(tempUrl);
             mDatas.add(Pair.create(bmp, profIcon));
@@ -1802,7 +1828,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
+                        dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
 
                         Integer icnpic = mIcons.get(0);
                         String icntext = ANIMAL_NAMES[0];
@@ -1847,7 +1875,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
+                        dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
 
                         Integer icnpic = mIcons.get(0);
                         String icntext = ANIMAL_NAMES[0];
@@ -1948,8 +1978,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         stopFlash(FLASH_DISLIKE);
                         stopFlash(FLASH_LIKE);
                         //TODO pick less used
-
+                        dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
+
 
                         String icntext = ANIMAL_NAMES[new Random().nextInt(ANIMAL_NAMES.length)];
                         icontext.setText(icntext.toUpperCase());
@@ -2850,7 +2881,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         //release the resources
 /*        surfaceview = null;
         surfaceHolder = null;*/
-		/* mediarecorder mCamera */
+        /* mediarecorder mCamera */
         if (thread!=null) {
             thread.stopRecord();
             thread=null;
@@ -2908,7 +2939,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     }
     private void cancelThreads() {
-                mainHandler.removeCallbacks(playVideoOfGoodTappingRunnable);
+        mainHandler.removeCallbacks(playVideoOfGoodTappingRunnable);
     }
     private void pauseAllAudios() {
         if (mpAll.isPlaying() || (thread != null && (thread.isRecording || thread.isPlaying)) ||
@@ -2916,3 +2947,4 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     }
 
 }
+

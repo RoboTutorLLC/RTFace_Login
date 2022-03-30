@@ -18,6 +18,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".GalleryActivity"
+            android:exported="true"
             android:screenOrientation="landscape"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>

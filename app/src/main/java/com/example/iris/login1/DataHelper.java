@@ -1,11 +1,13 @@
 package com.example.iris.login1;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
+import android.util.Pair;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -14,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.example.iris.login1.Common.ANIMAL_NAMES_ENG;
 import static com.example.iris.login1.Common.ANIMAL_NAMES_SWA;
@@ -214,5 +217,127 @@ public class DataHelper {
 
         return tableString;
     }
+    public String[] getImageOrder() {
+        Log.d("DataHelper","getImageOrder called");
+        Cursor values = db.rawQuery("SELECT Count(_id), profileIcon from users Group by profileicon order By Count(_id) ASC", null);
+
+        ArrayList<String> animal_names = new ArrayList<String>();
+        ArrayList<String> animal_names_swa = new ArrayList<String>();
+        values.moveToFirst();
+
+        while(!values.isAfterLast()){
+            @SuppressLint("Range") String val = values.getString(values.getColumnIndex("profileIcon"));
+            animal_names.add(val.toLowerCase(Locale.ROOT));
+            try {
+                animal_names_swa.add(Common.ANIMALS_LINK_ENG_TO_SWA.get(val).toLowerCase(Locale.ROOT));
+            }
+            catch (Exception e){
+                animal_names_swa.add(val.toLowerCase(Locale.ROOT));
+            }
+            values.moveToNext();
+        }
+
+        int startingListLength = animal_names.size();
+
+        for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
+
+            boolean is_in_list = true;
+
+            for (int k = 0; k < animal_names.size(); k++) {
+
+                if (animal_names.get(k).equals(ANIMAL_NAMES_ENG[i])) {
+                    is_in_list = false;
+                    break;
+                }
+            }
+            if(is_in_list){
+                animal_names.add(0,ANIMAL_NAMES_ENG[i]);
+            }
+        }
+
+        for (int i = 0; i < ANIMAL_NAMES_SWA.length; i++) {
+
+            boolean is_in_list = true;
+
+            for (int k = 0; k < animal_names_swa.size(); k++) {
+
+                if (animal_names_swa.get(k).equals(ANIMAL_NAMES_SWA[i])) {
+                    is_in_list = false;
+                    break;
+                }
+            }
+            if(is_in_list){
+                animal_names_swa.add(0,ANIMAL_NAMES_SWA[i]);
+            }
+        }
+
+        for (int i = 0; i < (int)(ANIMAL_NAMES_ENG.length-startingListLength)/2; i++) {
+            String placeholder = animal_names.get(i);
+
+            animal_names.set(i,animal_names.get(ANIMAL_NAMES_ENG.length-startingListLength-i));
+
+            animal_names.set(ANIMAL_NAMES_ENG.length-startingListLength-i,placeholder);
+
+        }
+        for (int i = 0; i < (int)(ANIMAL_NAMES_SWA.length-startingListLength)/2; i++) {
+            String placeholder = animal_names_swa.get(i);
+
+            animal_names_swa.set(i,animal_names_swa.get(ANIMAL_NAMES_SWA.length-startingListLength-i));
+
+            animal_names_swa.set(ANIMAL_NAMES_SWA.length-startingListLength-i,placeholder);
+
+        }
+
+
+if (BuildConfig.LANGUAGE_FEATURE_ID == "LANG_ENG") {
+
+    for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
+
+        ANIMAL_NAMES_ENG[i] = animal_names.get(i);
+
+        String tempName = animal_names.get(i);
+
+        Pair<Integer, Integer> animalData = Common.ANIMALS_ENG.get(tempName);
+
+
+        if (animalData == null) {
+            animalData = Common.ANIMALS_SWA.get(tempName);
+        }
+
+        Common.ANIMAL_PATHS[i] = animalData.first;
+        Common.ANIMAL_SOUNDS[i] = animalData.second;
+
+    }
+}
+else {
+    for (int i = 0; i < ANIMAL_NAMES_SWA.length; i++) {
+
+        ANIMAL_NAMES_SWA[i] = animal_names_swa.get(i);
+
+        String tempName = animal_names_swa.get(i);
+
+        Pair<Integer, Integer> animalData = Common.ANIMALS_SWA.get(tempName);
+
+
+        if (animalData == null) {
+            animalData = Common.ANIMALS_ENG.get(tempName);
+        }
+        Common.ANIMAL_PATHS[i] = animalData.first;
+        Common.ANIMAL_SOUNDS[i] = animalData.second;
+
+    }
+}
+        //Common.reMap();
+
+
+//
+        String[] response = new String[animal_names.size()];
+        response = animal_names.toArray(response);
+        return response;
+
+
+
+    }
+
 
 }
