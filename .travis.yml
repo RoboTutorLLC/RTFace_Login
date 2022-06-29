@@ -22,8 +22,8 @@ script:
 - cp -v sample_config_files/sample_keystore.properties keystore.properties
 - keytool -genkeypair -dname "cn=TravisCI, ou=TravisCI, o=Sun, c=US" -alias business
   -keypass kpi135 -keystore android.keystore -storepass ab987c -validity 20000
-before_install:
-  - yes | sdkmanager --licenses
+#before_install:
+#  - yes | sdkmanager --licenses
 after_success:
 - git config credential.helper "store --file=.git/credentials"
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials

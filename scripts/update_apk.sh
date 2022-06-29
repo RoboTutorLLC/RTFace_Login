@@ -29,7 +29,7 @@ debug_apk_build () {
 
 #echo "pwd: `pwd`"
 #
-#yes | sdkmanager --licenses
+yes | sdkmanager --licenses
 #yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
 
 if [ "${TRAVIS_BRANCH}" == "${PUBLISH_BRANCH}" ]; then
