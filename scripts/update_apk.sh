@@ -28,6 +28,8 @@ debug_apk_build () {
 }
 
 # yes | sdkmanager --licenses
+yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
+
 if [ "${TRAVIS_BRANCH}" == "${PUBLISH_BRANCH}" ]; then
     release_apk_build
 else
