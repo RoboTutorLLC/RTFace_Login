@@ -27,8 +27,8 @@ debug_apk_build () {
     ./gradlew assembleDebug;
 }
 
-yes | sdkmanager --licenses
-#yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
+# yes | sdkmanager --licenses
+yes | ~/Library/Android/Sdk/tools/bin/sdkmanager --licenses
 
 if [ "${TRAVIS_BRANCH}" == "${PUBLISH_BRANCH}" ]; then
     release_apk_build
