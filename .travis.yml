@@ -5,11 +5,11 @@ jdk:
 - oraclejdk11
 android:
   components:
-  - tools
-  - android-23
-  - build-tools-26.0.2
-  - build-tools-29.0.2
-  - platform-tools
+    - tools
+    - android-26
+    - build-tools-29.0.2
+    - platform-tools
+
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
