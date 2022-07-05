@@ -27,8 +27,8 @@ debug_apk_build () {
     ./gradlew assembleDebug;
 }
 
-sudo chmod -R 0777 .
-yes | sdkmanager --licenses
+yes | sdkmanager "platforms;android-30"
+yes | sdkmanager "build-tools;30.0.3"
 #yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
 pwd
 if [ "${TRAVIS_BRANCH}" == "${PUBLISH_BRANCH}" ]; then
