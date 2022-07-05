@@ -27,10 +27,10 @@ debug_apk_build () {
     ./gradlew assembleDebug;
 }
 
-#yes | sdkmanager "platforms;android-29"
+yes | sdkmanager "platforms;android-29"
 #yes | sdkmanager "platforms;android-30"
-#yes | sdkmanager "build-tools;26.0.1"
-#yes | sdkmanager "build-tools;29.0.2"
+yes | sdkmanager "build-tools;26.0.1"
+yes | sdkmanager "build-tools;29.0.2"
 #yes | sdkmanager "build-tools;30.0.3"
 #android update sdk --no-ui --all
 #yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses

@@ -9,6 +9,7 @@ android {
     defaultConfig {
         applicationId "com.example.iris.login1"
         minSdkVersion 19
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
         versionCode 1
 
