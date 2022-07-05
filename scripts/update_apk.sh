@@ -27,6 +27,8 @@ debug_apk_build () {
     ./gradlew assembleDebug;
 }
 
+#echo "pwd: `pwd`"
+#
 yes | sdkmanager --licenses
 #yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
 pwd
