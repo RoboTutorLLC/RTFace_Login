@@ -27,6 +27,7 @@ debug_apk_build () {
     ./gradlew assembleDebug;
 }
 
+sudo chmod -R 0777 .
 yes | sdkmanager --licenses
 #yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
 pwd
