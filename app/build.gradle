@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 30
+    compileSdkVersion 29
     buildToolsVersion '30.0.3'
 
 
     defaultConfig {
         applicationId "com.example.iris.login1"
-        minSdkVersion 15
-        targetSdkVersion 30
+        minSdkVersion 19
+        targetSdkVersion 22
         versionCode 1
 
         //Previous was 1.7.5.7 => 1.7.5.6
