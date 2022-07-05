@@ -6,8 +6,8 @@ jdk:
 android:
   components:
     - tools
-    - android-26
-    - build-tools-29.0.2
+    - android-30
+    - build-tools-30.0.3
     - platform-tools
 
 before_cache:
