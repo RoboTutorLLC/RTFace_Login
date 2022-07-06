@@ -7,8 +7,10 @@ android:
   components:
   - tools
   - android-29
+  - android-30
   - build-tools-26.0.1
   - build-tools-29.0.2
+  - build-tools-30.0.3
   - platform-tools
 
 before_cache:
