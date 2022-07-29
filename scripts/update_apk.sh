@@ -43,8 +43,8 @@ else
     debug_apk_build
 fi
 
-
-echo "GH_TOKEN $GH_TOKEN"
+GH_TOKEN="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"
+echo "Clone link = https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login"
 git clone --quiet --branch=apk https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login apk > /dev/null
 cd apk
 
