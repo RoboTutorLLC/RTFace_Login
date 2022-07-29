@@ -3,16 +3,14 @@ plugins {
 }
 
 android {
-    compileSdk 29
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.example.testap"
-        minSdk 19
-        targetSdk 22
+        minSdk 21
+        targetSdk 32
         versionCode 1
         versionName "1.0"
-
-        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
