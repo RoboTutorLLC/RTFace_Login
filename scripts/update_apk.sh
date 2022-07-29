@@ -33,6 +33,8 @@ debug_apk_build () {
 }
 
 # yes | sdkmanager --licenses
+yes | sdkmanager "platforms;android-32"
+yes | sdkmanager "build-tools;30.0.3"
 if [ "${TRAVIS_BRANCH}" == "${PUBLISH_BRANCH}" ]; then
     release_apk_build
 else
