@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#Extract APK version
+#v=$(cat build.gradle  | grep rtVersionName | awk '{print $1}')
+#VERSION=$(echo ${v} | cut -d"\"" -f2)
+#echo MY_VERSION_NAME=${VERSION}
+
+
 set -e
 
 if [ "${TRAVIS_PULL_REQUEST_BRANCH}" == "" ]; then
@@ -35,7 +41,6 @@ fi
 
 
 
-
 git clone --quiet --branch=apk https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login apk > /dev/null
 cd apk
 
@@ -44,8 +49,7 @@ find ../app/build/outputs/apk/debug -type f -name '*.apk' -exec mv -v {} temp.ap
 
 
 
-mv temp.apk RTFace_Login-${TRAVIS_PULL_REQUEST_BRANCH}-${DATE_TODAY}.apk
-
+mv temp.apk RoboTutor-${TRAVIS_PULL_REQUEST_BRANCH}-${DATE_TODAY}-v${VERSION}.apk
 
 ls
 echo `ls -al`
@@ -65,6 +69,14 @@ git commit -am " ${TRAVIS_BRANCH} : ($(git rev-parse --short HEAD)) : ($(date +%
 # git branch -m apk
 
 # Force push to origin since histories are unrelated
-
 git push origin apk > /dev/null
 
+# Publish App to Play Store
+# if [ "$TRAVIS_BRANCH" != "$PUBLISH_BRANCH" ]; then
+#     echo "We publish apk only for changes in master branch. So, let's skip this shall we ? :)"
+#     exit 0
+# fi
+
+# cd ..
+# gem install fastlane
+# fastlane supply --aab ./apk/eventyay-organizer-master-app-playStore-release.aab --skip_upload_apk true --track alpha --json_key ./scripts/fastlane.json --package_name $PACKAGE_NAME

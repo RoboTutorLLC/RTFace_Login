@@ -2,30 +2,32 @@ language: android
 dist: trusty
 sudo: false
 jdk:
-  - oraclejdk8
+- oraclejdk8
 android:
   components:
-    - tools
-    - android-26
-
-    - build-tools-29.0.2
-    - platform-tools
+  - tools
+  - android-29
+  - build-tools-26.0.1
+  - build-tools-29.0.2
+  - platform-tools
 before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
   directories:
-    - "${TRAVIS_BUILD_DIR}/gradle/caches/"
-    - "${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/"
-    - "$HOME/.gradle/caches/"
-    - "$HOME/.gradle/wrapper/"
+  - "${TRAVIS_BUILD_DIR}/gradle/caches/"
+  - "${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/"
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
 script:
-  - cp -v sample_config_files/sample_keystore.properties keystore.properties
-  - keytool -genkeypair -dname "cn=TravisCI, ou=TravisCI, o=Sun, c=US" -alias business
-    -keypass kpi135 -keystore android.keystore -storepass ab987c -validity 20000
+- cp -v app/src/sample_config_files/sample_keystore.properties keystore.properties
+- keytool -genkeypair -dname "cn=TravisCI, ou=TravisCI, o=Sun, c=US" -alias business
+  -keypass kpi135 -keystore android.keystore -storepass ab987c -validity 20000
 after_success:
-  - bash scripts/update_apk.sh
+- bash scripts/update_apk.sh
 branches:
   only:
-    - master
-    - development
-
+  - master
+  - development
+env:
+  global:
+    secure: Zaoo/+KmZdJeyF8FzOtUdV4t08ejlTAMfUH+DdnpVYlcpijdabb1iVX+U+R70rEspnC/MyUMza0YFE5a7j345eT9CPPd202TaBRbL6utlbXN112bG8Aihx1XmOif0JtHvgmkz191HmL29bmM5HVh/Krhv1pxoM1GX0DwaiMzbNwZHUx11dKa1AOkV62gybPxKZcjf2uGa3OQWpnBrzUuplDZ/uLHg6274YG28I0Nt1uJp0R0AHCWV/qsPOeMsVp6/c8BFInJeDOD1gaEUGUbLKNv2CiXP27bfJmguiL/0hXfDtODS5cvfnH8U7WPC6B8vLxm2PTRWPsR6KaeGI1eiZM8mj41PN0x6OxlT9g0UxCOUV6laovCxXkAKrgMxEjEheqmxEoQiTK4XRWTIaIrSI0uywscjDdjXhM6ZI3HlO3ueOabkAAI/RGQjbovMEko/tTDT8/MOYhj/GDzIKs9qHIGEr2DoTo/kP7FVFHK8XxofbOUA1bFNct+F8fsABXN/wJvjMnXIGEg/bqNqnp316FbpuLbHUCQ0m1KhtkTyoDvN0rURwbRuCX0u/FR9a/5CCRXoiAdRk+yvnHALX95MsUnm0VeK6Kj8yjPM719BIYo8AQ7IyLKAZHgLWEmD4Sas3VVFHCMkfbuKgV9FT/FbHre3rwAfBMfVRYAC4wVhNA=
