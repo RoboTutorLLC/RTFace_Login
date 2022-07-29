@@ -44,7 +44,7 @@ else
 fi
 
 
-
+echo "GH_TOKEN $GH_TOKEN"
 git clone --quiet --branch=apk https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login apk > /dev/null
 cd apk
 
