@@ -73,7 +73,8 @@ git commit -am " ${TRAVIS_BRANCH} : ($(git rev-parse --short HEAD)) : ($(date +%
 # git branch -m apk
 
 # Force push to origin since histories are unrelated
-git remote add origin https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login > /dev/null
+echo $(git remote -v)
+git remote set-url origin https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login > /dev/null
 git push origin apk > /dev/null
 
 # Publish App to Play Store
