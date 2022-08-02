@@ -43,8 +43,6 @@ else
     debug_apk_build
 fi
 
-GH_TOKEN="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"
-echo "Clone link = https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login"
 git clone --quiet --branch=apk https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login apk > /dev/null
 cd apk
 
@@ -53,7 +51,7 @@ find ../app/build/outputs/apk/debug -type f -name '*.apk' -exec mv -v {} temp.ap
 
 
 
-mv temp.apk RoboTutor-${TRAVIS_PULL_REQUEST_BRANCH}-${DATE_TODAY}-v${VERSION}.apk
+mv temp.apk RTFaceLogin-${TRAVIS_PULL_REQUEST_BRANCH}-${DATE_TODAY}-v${VERSION}.apk
 
 ls
 echo `ls -al`
@@ -74,7 +72,6 @@ git commit -am " ${TRAVIS_BRANCH} : ($(git rev-parse --short HEAD)) : ($(date +%
 
 # Force push to origin since histories are unrelated
 echo "Remote links=$(git remote -v)"
-#git remote set-url origin https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login > /dev/null
 git push origin apk > /dev/null
 
 # Publish App to Play Store
