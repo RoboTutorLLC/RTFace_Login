@@ -72,9 +72,10 @@ git commit -am " ${TRAVIS_BRANCH} : ($(git rev-parse --short HEAD)) : ($(date +%
 
 # Force push to origin since histories are unrelated
 echo "Remote links=$(git remote -v)"
-echo "user.name = ${git config user.name}"
-echo "user.email = ${git config user.email}"
+echo "user.name = $(git config user.name)"
+echo "user.email = $(git config user.email)"
 git push origin apk > /dev/null
+ssh -T git@github.com
 
 # Publish App to Play Store
 # if [ "$TRAVIS_BRANCH" != "$PUBLISH_BRANCH" ]; then
