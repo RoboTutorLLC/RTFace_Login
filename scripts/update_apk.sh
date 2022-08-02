@@ -13,8 +13,8 @@ if [ "${TRAVIS_PULL_REQUEST_BRANCH}" == "" ]; then
     exit 0;
 fi
 
-git config --global user.name "Travis CI"
-git config --global user.email "noreply+travis@robotutor.org"
+git config --global user.name "gargVader"
+git config --global user.email "girishgargcool@gmail.com"
 
 export DEPLOY_BRANCH=${DEPLOY_BRANCH:-development}
 export PUBLISH_BRANCH=${PUBLISH_BRANCH:-master}
