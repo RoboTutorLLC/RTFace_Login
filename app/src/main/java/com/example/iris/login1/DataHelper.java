@@ -230,10 +230,6 @@ public class DataHelper {
             animal_names.add(val.toLowerCase(Locale.ROOT));
             try {
                 String swa_name = Common.build_conn().get(val.toLowerCase(Locale.ROOT));
-
-
-
-
                 if(swa_name != null) {
                     animal_names_swa.add(swa_name);
                 }

@@ -42,16 +42,9 @@ public class Common {
             "fisi", "kangaruu", "chui", "simba", "tumbili", "panya", "mbuni", "kasuku","sungura",
             "kondoo", "nyoka", "buibui", "kuchakuro", "kobe", "mbwa mwitu", "punda (zebra)"};
 
-//    public static final Map<String, String> ANIMALS_LINK_ENG_TO_SWA = new HashMap<String, String>() {{
-//        for(int i = 0; i < ANIMAL_NAMES_ENG.length; i++){
-//            put(ANIMAL_NAMES_ENG[i], ANIMAL_NAMES_SWA[i]);
-//        }
-//    }};
-   // Map<String, String> ANIMALS_LINK_ENG_TO_SWA = null;
 
     public static Map<String, String> build_conn(){
         Map<String, String> ANIMALS_LINK_ENG_TO_SWA = new HashMap<String, String>();
-
                     for(int i = 0; i < ANIMAL_NAMES_ENG.length; i++){
             ANIMALS_LINK_ENG_TO_SWA.put(ANIMAL_NAMES_ENG[i], ANIMAL_NAMES_SWA[i]);
 
