@@ -4,7 +4,6 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
 /**
  * Created by kevindeland on 1/6/18.

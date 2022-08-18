@@ -37,13 +37,9 @@
         import java.io.File;
         import java.text.SimpleDateFormat;
         import java.util.ArrayList;
-        import java.util.Arrays;
-        import java.util.Collections;
-        import java.util.Comparator;
         import java.util.Date;
         import java.util.List;
         import java.util.Locale;
-        import java.util.Map;
         import java.util.Random;
 
         import static com.example.iris.login1.Common.*;
@@ -1147,7 +1143,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 genderlay.setVisibility(View.GONE);
 
                 //TODO pick less used
-                dbHelper.getImageOrder();
+                //dbHelper.getImageOrder();
                 String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
@@ -1455,14 +1451,15 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private void initUserInfo(){
         dbHelper = new DataHelper(this);
-        userInfo = dbHelper.getUserList();
+        //userInfo = dbHelper.getUserList();
+        dbHelper.getImageOrder();
 
         final List <Integer> pathlist = new ArrayList<Integer>();
         for (int i = 0; i < userInfo.size(); i++) {
             String tempUrl = userInfo.get(i).getUserIcon();
             String profIconName = userInfo.get(i).getProfileIcon().toLowerCase();
 
-            dbHelper.getImageOrder();
+            //dbHelper.getImageOrder();
 
             Pair<Integer, Integer> tempUsrData = Common.ANIMALS_ENG.get(profIconName);
 
@@ -1828,7 +1825,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
-                        dbHelper.getImageOrder();
+                        //dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
@@ -1875,7 +1872,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
-                        dbHelper.getImageOrder();
+                        //dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
@@ -1978,7 +1975,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         stopFlash(FLASH_DISLIKE);
                         stopFlash(FLASH_LIKE);
                         //TODO pick less used
-                        dbHelper.getImageOrder();
+                        //dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 

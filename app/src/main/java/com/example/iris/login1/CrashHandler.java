@@ -1,7 +1,5 @@
 package com.example.iris.login1;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 
 import java.io.File;
