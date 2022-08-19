@@ -1451,7 +1451,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private void initUserInfo(){
         dbHelper = new DataHelper(this);
-        //userInfo = dbHelper.getUserList();
+        userInfo = dbHelper.getUserList();
         dbHelper.getImageOrder();
 
         final List <Integer> pathlist = new ArrayList<Integer>();
