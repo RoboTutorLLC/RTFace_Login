@@ -223,6 +223,7 @@ public class DataHelper {
         Log.d("DataHelper" , "sql query: "+values.toString());
         ArrayList<String> animal_names = new ArrayList<String>();
         ArrayList<String> animal_names_swa = new ArrayList<String>();
+
         values.moveToFirst();
 
         while(!values.isAfterLast()){
@@ -239,6 +240,9 @@ public class DataHelper {
                 //animal_names_swa.add(val.toLowerCase(Locale.ROOT));
             }
             values.moveToNext();
+        }
+        if (animal_names_swa.size() == 0){
+            return null;
         }
 
         int startingListLength = animal_names.size();

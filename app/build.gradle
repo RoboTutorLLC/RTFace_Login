@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.example.iris.login1"
         minSdkVersion 15
-        targetSdkVersion 31
+        targetSdkVersion 22
         versionCode 1
 
         //Bug Fix, new version is 1.8.1.1 => 1.8.1.2
