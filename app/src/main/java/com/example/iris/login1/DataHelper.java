@@ -241,9 +241,10 @@ public class DataHelper {
             }
             values.moveToNext();
         }
-        if (animal_names_swa.size() == 0){
+        if (animal_names.size() == 0){
             return null;
         }
+        Log.e("DataHelper", String.valueOf(animal_names.size()));
 
         int startingListLength = animal_names.size();
 
