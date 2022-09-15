@@ -1,5 +1,6 @@
 package com.example.iris.login1;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -17,12 +18,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.example.iris.login1.Common.ANIMALS_ENG;
-import static com.example.iris.login1.Common.ANIMALS_Link;
 import static com.example.iris.login1.Common.ANIMAL_NAMES_ENG;
 import static com.example.iris.login1.Common.ANIMAL_NAMES_SWA;
-import static com.example.iris.login1.Common.ANIMAL_PATHS;
-import static com.example.iris.login1.Common.ANIMAL_SOUNDS;
 import static com.example.iris.login1.Common.FACE_LOGIN_PATH;
 
 /**
@@ -220,68 +217,126 @@ public class DataHelper {
 
         return tableString;
     }
-
     public String[] getImageOrder() {
         Log.d("DataHelper","getImageOrder called");
         Cursor values = db.rawQuery("SELECT Count(_id), profileIcon from users Group by profileicon order By Count(_id) ASC", null);
+        
+ /* 
+ // replace with: order icons by # kids with that icon 
+    Cursor values = db.rawQuery(
+    SELECT icon from animal_names a ORDER BY
+        (SELECT Count(_id) from users u WHERE (u.profileIcon = a.icon)),
+        RAND()
+    , null);
 
+ */
+        
+// Jack:  what portion if any of the following code do we still need?
+        
+        Log.d("DataHelper" , "sql query: "+values.toString());
         ArrayList<String> animal_names = new ArrayList<String>();
         ArrayList<String> animal_names_swa = new ArrayList<String>();
+
         values.moveToFirst();
 
         while(!values.isAfterLast()){
-            String val = values.getString(values.getColumnIndex("profileIcon"));
+            @SuppressLint("Range") String val = values.getString(values.getColumnIndex("profileIcon"));
             animal_names.add(val.toLowerCase(Locale.ROOT));
+            try {
+                String swa_name = Common.build_conn().get(val.toLowerCase(Locale.ROOT));
+                if(swa_name != null) {
+                    animal_names_swa.add(swa_name);
+                }
+            }
+            catch (Exception e){
+                Log.e("DataHelper", e.toString());
+                //animal_names_swa.add(val.toLowerCase(Locale.ROOT));
+            }
             values.moveToNext();
         }
+        if (animal_names.size() == 0){
+            Log.e("DataHelper", "animal_names.size() == 0");
+            return null;
+        }
+        Log.e("DataHelper", String.valueOf(animal_names.size()));
 
         int startingListLength = animal_names.size();
 
-        for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
+//        for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
+//
+//            boolean is_in_list = true;
+//
+//            for (int k = 0; k < animal_names.size(); k++) {
+//
+//                if (animal_names.get(k).equals(ANIMAL_NAMES_ENG[i])) {
+//                    is_in_list = false;
+//                    break;
+//                }
+//            }
+//            if(is_in_list){
+//                animal_names.add(0,ANIMAL_NAMES_ENG[i]);
+//            }
+//        }
+
+        for (int i = 0; i < ANIMAL_NAMES_SWA.length; i++) {
 
             boolean is_in_list = true;
 
-            for (int k = 0; k < animal_names.size(); k++) {
+            for (int k = 0; k < animal_names_swa.size(); k++) {
+                Log.println(Log.ERROR,"DataHelper", String.valueOf(k));
 
-                if (animal_names.get(k).equals(ANIMAL_NAMES_ENG[i])) {
+                String swa_name = animal_names_swa.get(k);
+
+                if (swa_name.equals(ANIMAL_NAMES_SWA[i])) {
                     is_in_list = false;
                     break;
                 }
             }
             if(is_in_list){
-                animal_names.add(0,ANIMAL_NAMES_ENG[i]);
+                animal_names_swa.add(0,ANIMAL_NAMES_SWA[i]);
             }
+        }
+//
+//        for (int i = 0; i < (int)(ANIMAL_NAMES_ENG.length-startingListLength)/2; i++) {
+//            String placeholder = animal_names.get(i);
+//
+//            animal_names.set(i,animal_names.get(ANIMAL_NAMES_ENG.length-startingListLength-i));
+//
+//            animal_names.set(ANIMAL_NAMES_ENG.length-startingListLength-i,placeholder);
+//
+//        }
+        
+// Jack doesn't understand /2, so delete this loop and hope we don't need it: 
+   /*
+        for (int i = 0; i < (int)(ANIMAL_NAMES_SWA.length-startingListLength)/2; i++) {
+            String placeholder = animal_names_swa.get(i);
 
+            animal_names_swa.set(i,animal_names_swa.get(ANIMAL_NAMES_SWA.length-startingListLength-i));
+
+            animal_names_swa.set(ANIMAL_NAMES_SWA.length-startingListLength-i,placeholder);
 
         }
+    */
 
-        for (int i = 0; i < (int)(ANIMAL_NAMES_ENG.length-startingListLength)/2; i++) {
-            String placeholder = animal_names.get(i);
+    for (int i = 0; i < ANIMAL_NAMES_SWA.length; i++) {
 
-            animal_names.set(i,animal_names.get(ANIMAL_NAMES_ENG.length-startingListLength-i));
+        ANIMAL_NAMES_SWA[i] = animal_names_swa.get(i);
 
-            animal_names.set(ANIMAL_NAMES_ENG.length-startingListLength-i,placeholder);
+        String tempName = animal_names_swa.get(i);
 
+        Pair<Integer, Integer> animalData = Common.ANIMALS_SWA.get(tempName);
+
+
+        if (animalData == null) {
+            //animalData = Common.ANIMALS_ENG.get(tempName);
         }
+        Common.ANIMAL_PATHS[i] = animalData.first;
+        Common.ANIMAL_SOUNDS[i] = animalData.second;
 
+    }
 
-        for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
-            String tempName = animal_names.get(i);
-            ANIMAL_NAMES_ENG[i] = animal_names.get(i);
+        //Common.reMap();
 
-
-
-            ;
-
-            Pair<Integer, Integer> animalData = ANIMALS_ENG.get(tempName);
-
-            ANIMAL_PATHS[i] = animalData.first;
-            ANIMAL_SOUNDS[i] = animalData.second;
-
-
-            ANIMAL_NAMES_SWA[i] = ANIMALS_Link.get(tempName);
-
-        }
 
 //
         String[] response = new String[animal_names.size()];
@@ -291,5 +346,6 @@ public class DataHelper {
 
 
     }
+
 
 }

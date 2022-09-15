@@ -35,17 +35,14 @@ fi
 
 
 
-
-git clone --quiet --branch=apk https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RTFace_Login apk > /dev/null
+git clone --quiet --branch=apk https://robotutor:$GH_TOKEN@github.com/RoboTutorLLC/RoboTutor_2020 apk > /dev/null
 cd apk
 
 echo `ls`
 find ../app/build/outputs/apk/debug -type f -name '*.apk' -exec mv -v {} temp.apk \;
 
 
-
-mv temp.apk RTFace_Login-${TRAVIS_PULL_REQUEST_BRANCH}-${DATE_TODAY}.apk
-
+mv temp.apk RoboTutor-${TRAVIS_PULL_REQUEST_BRANCH}-${DATE_TODAY}.apk
 
 ls
 echo `ls -al`
@@ -65,6 +62,5 @@ git commit -am " ${TRAVIS_BRANCH} : ($(git rev-parse --short HEAD)) : ($(date +%
 # git branch -m apk
 
 # Force push to origin since histories are unrelated
-
 git push origin apk > /dev/null
 
