@@ -17,7 +17,7 @@
         import android.os.Looper;
         import android.os.Message;
         import android.os.SystemClock;
-        import android.support.v7.app.AppCompatActivity;
+        import androidx.appcompat.app.AppCompatActivity;
         import android.os.Bundle;
         import android.util.Log;
         import android.util.Pair;
@@ -966,7 +966,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
             }
         };
-        mpAll.setOnCompletionListener(onCompletionListener);
+        if(mpAll != null) {
+            mpAll.setOnCompletionListener(onCompletionListener);
+        }
 
     }
 
@@ -1523,7 +1525,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             curUser = new UserInfo(); //incase press before prompt over
                         }
 
-                        mpAll.start();
+                        if(mpAll !=  null) {
+                            mpAll.start();
+                        }
 
                         break;
                 }

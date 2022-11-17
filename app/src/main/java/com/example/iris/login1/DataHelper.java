@@ -219,7 +219,7 @@ public class DataHelper {
     }
     public String[] getImageOrder() {
         Log.d("DataHelper","getImageOrder called");
-        
+
 
         Cursor values = db.rawQuery("SELECT Count(_id), profileIcon from users Group by profileicon order By Count(_id) ASC", null);
         Log.d("DataHelper" , "sql query: "+values.toString());
