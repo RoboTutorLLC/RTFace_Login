@@ -2943,8 +2943,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         mainHandler.removeCallbacks(playVideoOfGoodTappingRunnable);
     }
     private void pauseAllAudios() {
-        if (mpAll.isPlaying() || (thread != null && (thread.isRecording || thread.isPlaying)) ||
-                (videoThread != null && videoThread.isPlayingVideo())) mpAll.pause();
+        try {
+            if (mpAll.isPlaying() || (thread != null && (thread.isRecording || thread.isPlaying)) ||
+                    (videoThread != null && videoThread.isPlayingVideo())) mpAll.pause();
+        }
+        catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
     }
 
 }
