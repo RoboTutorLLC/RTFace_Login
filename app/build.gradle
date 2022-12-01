@@ -37,7 +37,7 @@ android {
         def LANGUAGE_FEATURE_ID = "LANGUAGE_FEATURE_ID"
 
         //change back to "\"LANG_ENG\""
-        def LANGUAGE_ENGLISH    = "\"LANG_ENG\""
+        def LANGUAGE_ENGLISH    = "\"LANG_EN\""
         def LANGUAGE_SWAHILI    = "\"LANG_SW\""
 
         debug {
