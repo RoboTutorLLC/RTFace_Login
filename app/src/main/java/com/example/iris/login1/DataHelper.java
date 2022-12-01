@@ -219,6 +219,7 @@ public class DataHelper {
     }
     public String[] getImageOrder() {
         Log.d("DataHelper","getImageOrder called");
+
         Cursor values = db.rawQuery("SELECT Count(_id), profileIcon from users Group by profileicon order By Count(_id) ASC", null);
         
  /* 
@@ -233,6 +234,7 @@ public class DataHelper {
         
 // Jack:  what portion if any of the following code do we still need?
         
+
         Log.d("DataHelper" , "sql query: "+values.toString());
         ArrayList<String> animal_names = new ArrayList<String>();
         ArrayList<String> animal_names_swa = new ArrayList<String>();
@@ -255,7 +257,6 @@ public class DataHelper {
             values.moveToNext();
         }
         if (animal_names.size() == 0){
-            Log.e("DataHelper", "animal_names.size() == 0");
             return null;
         }
         Log.e("DataHelper", String.valueOf(animal_names.size()));
@@ -284,7 +285,6 @@ public class DataHelper {
 
             for (int k = 0; k < animal_names_swa.size(); k++) {
                 Log.println(Log.ERROR,"DataHelper", String.valueOf(k));
-
                 String swa_name = animal_names_swa.get(k);
 
                 if (swa_name.equals(ANIMAL_NAMES_SWA[i])) {
@@ -305,7 +305,7 @@ public class DataHelper {
 //            animal_names.set(ANIMAL_NAMES_ENG.length-startingListLength-i,placeholder);
 //
 //        }
-        
+
 // Jack doesn't understand /2, so delete this loop and hope we don't need it: 
    /*
         for (int i = 0; i < (int)(ANIMAL_NAMES_SWA.length-startingListLength)/2; i++) {
@@ -317,6 +317,8 @@ public class DataHelper {
 
         }
     */
+
+
 
     for (int i = 0; i < ANIMAL_NAMES_SWA.length; i++) {
 
