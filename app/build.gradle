@@ -87,3 +87,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
 }
+
+task getVersionName() {
+    project.gradle.projectsEvaluated {
+        println "$project.android.defaultConfig.versionName"
+    }
+}
