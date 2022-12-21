@@ -30,7 +30,8 @@ jobs:
 
       - name: Get app version name
         id: get_version_name
-        run: echo "VERSION_NAME=$(./gradlew getVersionName)" >> $GITHUB_OUTPUT
+        run: ./gradlew getVersionName
+#        run: echo "VERSION_NAME=$(./gradlew getVersionName)" >> $GITHUB_OUTPUT
         #        steps.get_curr_branch.outputs.VERSION_NAME
 
 #      - name: Get apk info
