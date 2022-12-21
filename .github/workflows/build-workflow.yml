@@ -31,7 +31,7 @@ jobs:
       - name: Get app version name
         id: get_version_name
         run: echo "VERSION_NAME=$(./gradlew -q  getVersionName --warning-mode=none)" >> $GITHUB_OUTPUT
-        #        steps.get_curr_branch.outputs.VERSION_NAME
+        #        steps.get_version_name.outputs.VERSION_NAME
 
 #      - name: Get apk info
 #        id: apk-info
@@ -42,14 +42,14 @@ jobs:
 #
       - name: Get APK name
         id: get_apk_name
-        run: echo "APK_NAME=RTFacelogin-${{ steps.get_curr_branch.outputs.BRANCH_NAME }}-${{ steps.get_curr_date.outputs.DATE }}-${{ steps.get_curr_branch.outputs.VERSION_NAME }}" >> $GITHUB_OUTPUT
+        run: echo "APK_NAME=RTFacelogin-${{ steps.get_curr_branch.outputs.BRANCH_NAME }}-${{ steps.get_curr_date.outputs.DATE }}-${{ steps.get_version_name.outputs.VERSION_NAME }}" >> $GITHUB_OUTPUT
       #        steps.get_apk_name.outputs.APK_NAME
 
       - name: Rename APK
-        run: mv build/facelogin.debug.${{ steps.get_curr_branch.outputs.VERSION_NAME }}.apk app/build/outputs/apk/debug/${{ steps.get_apk_name.outputs.APK_NAME }}.apk
+        run: mv build/facelogin.debug.${{ steps.get_version_name.outputs.VERSION_NAME }}.apk build/${{ steps.get_apk_name.outputs.APK_NAME }}.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_apk_name.outputs.APK_NAME }}.apk
-          path: app/build/outputs/apk/debug/${{ steps.get_apk_name.outputs.APK_NAME }}.apk
+          path: build/${{ steps.get_apk_name.outputs.APK_NAME }}.apk
