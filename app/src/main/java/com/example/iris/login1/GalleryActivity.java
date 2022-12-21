@@ -2948,7 +2948,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                     (videoThread != null && videoThread.isPlayingVideo())) mpAll.pause();
         }
         catch (Exception e){
-            Log.d(TAG, e.toString());
+//            Log.d(TAG, e.toString());
         }
     }
 
