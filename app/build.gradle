@@ -52,12 +52,12 @@ android {
 
         en {
             buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_ENGLISH
-            signingConfig signingConfigs.android
+//            signingConfig signingConfigs.android
         }
 
         sw {
             buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_SWAHILI
-            signingConfig signingConfigs.android
+//            signingConfig signingConfigs.android
         }
     }
 
