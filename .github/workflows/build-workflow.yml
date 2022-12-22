@@ -1,0 +1,55 @@
+# Name of workflow
+name: Pre Merge Checks
+
+# Triggering this workflow
+on:
+  push:
+    branches:
+      - '*'
+
+# Jobs to be run in this workflow
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Build project
+        run: ./gradlew assembleDebug
+
+      - name: Get current date
+        id: get_curr_date
+        run: echo "DATE=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+      #        steps.get_curr_date.outputs.DATE
+
+      - name: Get current branch name
+        id: get_curr_branch
+        run: echo "BRANCH_NAME=${{ github.head_ref || github.ref_name }}" >> $GITHUB_OUTPUT
+        #        steps.get_curr_branch.outputs.BRANCH_NAME
+
+      - name: Get app version name
+        id: get_version_name
+        run: echo "VERSION_NAME=$(./gradlew -q  getVersionName --warning-mode=none)" >> $GITHUB_OUTPUT
+        #        steps.get_version_name.outputs.VERSION_NAME
+
+#      - name: Get apk info
+#        id: apk-info
+#        uses: hkusu/apk-info-action@v1
+#        with:
+#          apk-path: build/facelogin.debug.apk
+#      # steps.apk-info.outputs.version-name
+#
+      - name: Get APK name
+        id: get_apk_name
+        run: echo "APK_NAME=RTFacelogin-${{ steps.get_curr_branch.outputs.BRANCH_NAME }}-${{ steps.get_curr_date.outputs.DATE }}-${{ steps.get_version_name.outputs.VERSION_NAME }}" >> $GITHUB_OUTPUT
+      #        steps.get_apk_name.outputs.APK_NAME
+
+      - name: Rename APK
+        run: mv build/facelogin.debug.${{ steps.get_version_name.outputs.VERSION_NAME }}.apk build/${{ steps.get_apk_name.outputs.APK_NAME }}.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.get_apk_name.outputs.APK_NAME }}.apk
+          path: build/${{ steps.get_apk_name.outputs.APK_NAME }}.apk

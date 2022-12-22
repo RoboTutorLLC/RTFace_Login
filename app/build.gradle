@@ -14,18 +14,18 @@ android {
 
     }
 
-    def keystorePropertiesFile = rootProject.file("keystore.properties")
-    def keystoreProperties = new Properties()
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
-    signingConfigs {
-        android {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-        }
-    }
+//    def keystorePropertiesFile = rootProject.file("keystore.properties")
+//    def keystoreProperties = new Properties()
+//    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+//
+//    signingConfigs {
+//        android {
+//            keyAlias keystoreProperties['keyAlias']
+//            keyPassword keystoreProperties['keyPassword']
+//            storeFile file(keystoreProperties['storeFile'])
+//            storePassword keystoreProperties['storePassword']
+//        }
+//    }
 
     buildTypes {
 
@@ -52,12 +52,12 @@ android {
 
         en {
             buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_ENGLISH
-            signingConfig signingConfigs.android
+//            signingConfig signingConfigs.android
         }
 
         sw {
             buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_SWAHILI
-            signingConfig signingConfigs.android
+//            signingConfig signingConfigs.android
         }
     }
 
@@ -86,4 +86,10 @@ dependencies {
     //compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha4'
     testImplementation 'junit:junit:4.12'
 
+}
+
+task getVersionName() {
+    project.gradle.projectsEvaluated {
+        println "$project.android.defaultConfig.versionName"
+    }
 }
