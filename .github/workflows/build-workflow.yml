@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build project
-        run: ./gradlew assembleSw
+        run: ./gradlew assembleEn
 
       - name: Get current date
         id: get_curr_date
@@ -46,7 +46,7 @@ jobs:
       #        steps.get_apk_name.outputs.APK_NAME
 
       - name: Rename APK
-        run: mv build/facelogin.sw.${{ steps.get_version_name.outputs.VERSION_NAME }}.apk build/${{ steps.get_apk_name.outputs.APK_NAME }}.apk
+        run: mv build/facelogin.en.${{ steps.get_version_name.outputs.VERSION_NAME }}.apk build/${{ steps.get_apk_name.outputs.APK_NAME }}.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
