@@ -10,8 +10,9 @@ To quickly install the most recent version of FaceLogin without having to downlo
 
 1. Go to the [Actions tab](https://github.com/RoboTutorLLC/RTFace_Login/actions) of this repository
 2. Select the latest working (green check mark) workflow run under the development branch.<br>
-![]([1] pull request.png)
-3. Locate the apk to the bottom of the page.<br>![]([2] select apk.png)
+<img src="pull request.png" /> <br>
+3. Locate the apk to the bottom of the page.<br>
+<img src="select apk.png" /> <br>
 4. Download the apk and place them in the *Download* directory of your tablet.
 5. Install the FaceLogin APK on your tablet, and launch.
 
