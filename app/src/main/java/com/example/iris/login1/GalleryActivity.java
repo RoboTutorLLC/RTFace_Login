@@ -761,6 +761,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         // TODO test more fervently
                         removeOldVideos();
                         Intent launchIntent = getPackageManager().getLaunchIntentForPackage(ROBOTUTOR_PACKAGE_ADDRESS);
+                                
+                        if(launchIntent == null) {
+                            Toast.makeText(getApplicationContext(), "Please install RoboTutor", Toast.LENGTH_LONG).show();
+                            Log.d("ACTIVITY","Robotutor not installed");
+                            return;
+                        }
+                                
                         Bundle sessionBundle = new Bundle();
                         Log.w("BUNDLE", currentUser.getUserIcon());
                         //String uniqueUserID = generateUniqueIdFromFilename(currentUser.getUserIcon());
