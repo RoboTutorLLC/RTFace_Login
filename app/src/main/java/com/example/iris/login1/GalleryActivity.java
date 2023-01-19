@@ -359,6 +359,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     }
 
     private void initVarsOfViews() {
+        dbHelper = new DataHelper(this);
+
+        dbHelper.getImageOrder();
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -1152,7 +1155,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 genderlay.setVisibility(View.GONE);
 
                 //TODO pick less used
-                //dbHelper.getImageOrder();
                 String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
@@ -1461,14 +1463,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private void initUserInfo(){
         dbHelper = new DataHelper(this);
         userInfo = dbHelper.getUserList();
-        dbHelper.getImageOrder();
 
         final List <Integer> pathlist = new ArrayList<Integer>();
         for (int i = 0; i < userInfo.size(); i++) {
             String tempUrl = userInfo.get(i).getUserIcon();
             String profIconName = userInfo.get(i).getProfileIcon().toLowerCase();
-
-            //dbHelper.getImageOrder();
 
             Pair<Integer, Integer> tempUsrData = Common.ANIMALS_ENG.get(profIconName);
 
@@ -1836,7 +1835,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
-                        //dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
@@ -1883,7 +1881,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
-                        //dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
@@ -1986,7 +1983,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         stopFlash(FLASH_DISLIKE);
                         stopFlash(FLASH_LIKE);
                         //TODO pick less used
-                        //dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
