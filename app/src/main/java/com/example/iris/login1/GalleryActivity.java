@@ -793,7 +793,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             Log.e("ACTIVITY", "New Activity failed to start!");
                         }
                         // MARCH go to WELCOME
-                        // System.exit(0);
+                        finish();
+                        System.exit(0);
                         break;
 
 
