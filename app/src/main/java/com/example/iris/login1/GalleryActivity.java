@@ -1,49 +1,49 @@
 
-        package com.example.iris.login1;
+package com.example.iris.login1;
 
-        import android.animation.Animator;
-        import android.animation.AnimatorSet;
-        import android.animation.ObjectAnimator;
-        import android.annotation.SuppressLint;
-        import android.app.ActivityManager;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.graphics.Bitmap;
-        import android.graphics.BitmapFactory;
-        import android.graphics.Color;
-        import android.media.MediaPlayer;
-        import android.os.Build;
-        import android.os.Handler;
-        import android.os.Looper;
-        import android.os.Message;
-        import android.os.SystemClock;
-        import androidx.appcompat.app.AppCompatActivity;
-        import android.os.Bundle;
-        import android.util.Log;
-        import android.util.Pair;
-        import android.view.MotionEvent;
-        import android.view.SurfaceHolder;
-        import android.view.SurfaceView;
-        import android.view.View;
-        import android.view.ViewTreeObserver;
-        import android.view.Window;
-        import android.view.WindowManager;
-        import android.widget.ImageButton;
-        import android.widget.ImageView;
-        import android.widget.LinearLayout;
-        import android.widget.RelativeLayout;
-        import android.widget.TextView;
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.SystemClock;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.util.Pair;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-        import java.io.File;
-        import java.text.SimpleDateFormat;
-        import java.util.ArrayList;
-        import java.util.Date;
-        import java.util.List;
-        import java.util.Locale;
-        import java.util.Random;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
-        import static com.example.iris.login1.Common.*;
-        import static com.example.iris.login1.Common.STATE.*;
+import static com.example.iris.login1.Common.*;
+import static com.example.iris.login1.Common.STATE.*;
 
 public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -279,6 +279,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private STATE _audioPlaying;
     private String language = BuildConfig.LANGUAGE_FEATURE_ID;
 
+    private LogHandler logHandler;
+
 
     private MediaPlayer playMediaInAccept(MediaPlayer mp, int file) {
         mp = MediaPlayer.create(this, playListAccept[file]);
@@ -302,6 +304,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         mpAll.setOnCompletionListener(onCompletionListener);
         mpAll.seekTo(0);
         mpAll.start();
+        logHandler.logAudio(Pair.create(new Date(), getResources().getResourceEntryName(audioFile)));
     }
 
 
@@ -313,6 +316,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());
 
+        logHandler = new LogHandler();
         initVarsOfViews();
         initVarsOfMediaPlayer();
         setScrollViewListeners();
@@ -494,8 +498,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             public void onCompletion(MediaPlayer mediaPlayer) {
 
                 // MARCH DOTHIS check which of three cases (empty, previous user, regular user)
-
-                switch (_audioPlaying) {
+                Date ts = new Date();
+                logHandler.logTopOfSwitch(Pair.create(ts, _audioPlaying.toString()));
+                switch(_audioPlaying) {
 
                     // MARCH [WELCOME]
                     // formerly mpIntro
@@ -668,6 +673,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                         new MediaPlayer.OnCompletionListener() {
                                             @Override
                                             public void onCompletion(MediaPlayer mp) {
+                                                logHandler.logFinish(Pair.create(new Date(), icntext + " !iconRead"));
                                                 iconpic_enroll.setVisibility(View.VISIBLE);
                                                 _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
                                                 releaseAndPlayAudioFile(playListIcon[0]);
@@ -698,6 +704,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                         new MediaPlayer.OnCompletionListener() {
                                             @Override
                                             public void onCompletion(MediaPlayer mp) {
+                                                logHandler.logFinish(Pair.create(new Date(), icntext + " case: okay_lets_try_again"));
                                                 iconpic.setVisibility(View.VISIBLE);
                                                 _audioPlaying = PLEASE_TAP_HERE_TO_GO_ON;
                                                 releaseAndPlayAudioFile(playListLoginIcon[0]);
@@ -773,8 +780,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         sessionBundle.putString(Common.SESSION_ID_VAR, newSessId);
                         launchIntent.putExtras(sessionBundle);
                         launchIntent.setFlags(0);
-
-                        LogHandler logHandler = new LogHandler(currentUser);
+                        logHandler.logUser(currentUser);
                         logHandler.log(Pair.create("Student ID", uniqueUserID), Pair.create("Session ID", newSessId));
 
                         if (launchIntent != null) {
@@ -783,7 +789,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             Log.e("ACTIVITY", "New Activity failed to start!");
                         }
                         // MARCH go to WELCOME
-                        // System.exit(0);
+//                        System.exit(0);
                         break;
 
 
@@ -1387,6 +1393,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             @Override
                             public void onCompletion(MediaPlayer mp) {
                                 iconpic_enroll.setVisibility(View.VISIBLE);
+                                logHandler.logFinish(Pair.create(new Date(), icntext + " setOnItemClickListener"));
                                 _audioPlaying = IF_YOU_LIKE_THIS_PICTURE;
                                 releaseAndPlayAudioFile(playListIcon[0]);
                             }
@@ -1429,7 +1436,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 v = currentUser.getUserVideo();
                 p = currentUser.getUserIcon();
                 realStartTime = Integer.parseInt(userInfo.get(position).getRecordTime());
-
+                logHandler.logUser(currentUser);
                 //if it is recoding or replaying, now stop it
                 if (thread != null) {
                     thread.stopRecord();
@@ -1445,6 +1452,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 if (surfaceHolder != null) {
                     videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
                     videoThread.start();
+                    logHandler.logVideo(Pair.create(new Date(), v));
                 }
                 view.setBackgroundColor(Color.YELLOW);
             }
@@ -1527,6 +1535,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
                         if(mpAll !=  null) {
                             mpAll.start();
+                            logHandler.logAnim(Pair.create(new Date(), "Logo ACTION UP"));
                         }
 
                         break;
@@ -1600,6 +1609,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         }
                         thread = new RecordThread(RECORD_TIME, surfaceview, surfaceHolder, accountsNumber, dbHelper, mDatas, mHandler);
                         thread.start();
+                        logHandler.log(Pair.create(new Date(), "Record Thread Start"));
                         break;
                     default:
                         break;
@@ -1632,6 +1642,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         // create a new EnrollmentVideo thread
         videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, vid, p, startTimeWithSilence);
         videoThread.start();
+        logHandler.logVideo(Pair.create(new Date(), vid));
     }
 
     /**
@@ -1699,6 +1710,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                                         new MediaPlayer.OnCompletionListener() {
                                             @Override
                                             public void onCompletion(MediaPlayer mp) {
+                                                logHandler.logFinish(Pair.create(new Date(), icntext + " else of needConfirm"));
                                                 iconpic.setVisibility(View.VISIBLE);
                                                 setIconLikeOnClickListener();
                                                 setIconDislikeOnClickListener();
@@ -2085,9 +2097,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         if(mpAnimal != null) {
             mpAnimal.release();
         }
+
         mpAnimal = MediaPlayer.create(this, id);
         mpAnimal.setOnCompletionListener(next);
         mpAnimal.start();
+        logHandler.logAudio(Pair.create(new Date(), getResources().getResourceEntryName(id)));
     }
     private void deleteLastUserInfo() {
         //delete video
@@ -2318,6 +2332,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             });
 
             diagonalMovement.start();
+            logHandler.logAnim(Pair.create(new Date(), "Diagonal RoboFinger movement anim START"));
 
         }
     };
@@ -2503,9 +2518,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 splash.setVisibility(View.INVISIBLE);
                 videoThread = new PlayTappingVideo(surfaceviewFullScreen.getHolder(), mHandler, GalleryActivity.this);
                 videoThread.start();
+                logHandler.logVideo(Pair.create(new Date(), "tapping_instruction_video"));
             } else if (readyToStartTimer){
                 videoThread = new PlayTappingVideo(surfaceHolder, mHandler, GalleryActivity.this);
                 if (capture.getVisibility() == View.VISIBLE) videoThread.start();
+                logHandler.logVideo(Pair.create(new Date(), "tapping_instruction_video"));
             }
             readyToStartTimer = true;
         }
@@ -2793,6 +2810,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             });
 
             anim.start();
+            logHandler.logAnim(Pair.create(new Date(), "slide gallery animaton START"));
         }
     };
 
@@ -2829,6 +2847,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             });
 
             anim.start();
+            logHandler.logAnim(Pair.create(new Date(), "slide gallery animation icon START"));
         }
     };
 
