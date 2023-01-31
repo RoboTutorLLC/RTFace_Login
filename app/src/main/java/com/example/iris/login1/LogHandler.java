@@ -36,7 +36,7 @@ public class LogHandler {
         try {
             String deviceId = Build.SERIAL;
             currentTime = new Date();
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(currentTime);
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(currentTime);
             File logFileDir = new File(Common.RT_PATH + "/facelogin_logs");
             if(!logFileDir.exists()){
                 logFileDir.mkdirs(); // incase RoboTutor folder is nonexistent
@@ -75,112 +75,22 @@ public class LogHandler {
 
     public void log(Pair... extras){
         JSONObject newLog = new JSONObject();
+        Date timestamp = new Date();
+        long hiatusTime = timestamp.getTime() - currentTime.getTime();
+        currentTime = timestamp;
         for (Pair p: extras){
             try {
-                newLog.put("first", p.first);
-                newLog.put("second", p.second);
+                newLog.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(timestamp));
+                newLog.put("hiatus", hiatusTime);
+                newLog.put("eventType", p.first);
+                newLog.put("eventValue", p.second);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         appendToJSON(newLog);
     }
-    public void logAudio(Pair... extras){
-        JSONObject newAudio = new JSONObject();
-        for (Pair p: extras){
-            // Compute hiatus
-            Date time2 = (Date) p.first;
-            long hiatusTime = time2.getTime() - currentTime.getTime();
-            currentTime = (Date) p.first;
-            try {
-                newAudio.put("hiatus", hiatusTime);
-                newAudio.put("eventType", "audio_start");
-                newAudio.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(p.first));
-                newAudio.put("audioFilename", p.second);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        appendToJSON(newAudio);
-    }
-    public void logTopOfSwitch(Pair... extras){
-        JSONObject newSwitch = new JSONObject();
-        for (Pair p: extras){
-            // Compute hiatus
-            Date time2 = (Date) p.first;
-            long hiatusTime = time2.getTime() - currentTime.getTime();
-            currentTime = (Date) p.first;
-            try {
-                newSwitch.put("hiatus", hiatusTime);
-                newSwitch.put("eventType", "state_at_top_of_switch_statement");
-                newSwitch.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(p.first));
-                newSwitch.put("_audioPlaying", p.second);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        appendToJSON(newSwitch);
-    }
-
-
-
-    public void logVideo(Pair... extras){
-        JSONObject newVid = new JSONObject();
-        for (Pair p: extras){
-            Date time2 = (Date) p.first;
-            long hiatus = time2.getTime() - currentTime.getTime();
-            currentTime = (Date) p.first;
-            try {
-                newVid.put("hiatus", hiatus);
-                newVid.put("eventType", "video_start");
-                newVid.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(p.first));
-                newVid.put("videoFilename", p.second);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        appendToJSON(newVid);
-
-    }
-
-    public void logAnim(Pair... extras){
-        JSONObject newAnim = new JSONObject();
-        for (Pair p: extras){
-            Date time2 = (Date) p.first;
-            long hiatus = time2.getTime() - currentTime.getTime();
-            currentTime = (Date) p.first;
-            try {
-                newAnim.put("hiatus", hiatus);
-                newAnim.put("eventType", "animation_start");
-                newAnim.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(p.first));
-                newAnim.put("animationDescription", p.second);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        appendToJSON(newAnim);
-
-    }
-
-    public void logFinish(Pair... extras){
-        JSONObject newFinish = new JSONObject();
-        for (Pair p: extras){
-            Date time2 = (Date) p.first;
-            long hiatus = time2.getTime() - currentTime.getTime();
-            currentTime = (Date) p.first;
-            try {
-                newFinish.put("hiatus", hiatus);
-                newFinish.put("eventType", "finish");
-                newFinish.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(p.first));
-                newFinish.put("animationDescription",  p.second);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        appendToJSON(newFinish);
-
-    }
-
 
     public void appendToJSON(JSONObject jsonObject) {
         String prevJson = "";
