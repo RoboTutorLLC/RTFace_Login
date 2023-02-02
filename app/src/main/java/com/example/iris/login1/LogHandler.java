@@ -80,8 +80,8 @@ public class LogHandler {
         currentTime = timestamp;
         for (Pair p: extras){
             try {
+                newLog.put("hiatus_ms", hiatusTime);
                 newLog.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(timestamp));
-                newLog.put("hiatus", hiatusTime);
                 newLog.put("eventType", p.first);
                 newLog.put("eventValue", p.second);
 

@@ -498,7 +498,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
             public void onCompletion(MediaPlayer mediaPlayer) {
 
                 // MARCH DOTHIS check which of three cases (empty, previous user, regular user)
-                logHandler.log(Pair.create("value_on_top_of_switch", _audioPlaying.toString()));
+                logHandler.log(Pair.create("_audioPlaying_value_when_switch", _audioPlaying.toString()));
                 switch(_audioPlaying) {
 
                     // MARCH [WELCOME]
@@ -1469,7 +1469,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 if (surfaceHolder != null) {
                     videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, v, p, startTimeWithSilence);
                     videoThread.start();
-                    logHandler.log(Pair.create("video", v));
+                    logHandler.log(Pair.create("video_start", v));
                 }
                 view.setBackgroundColor(Color.YELLOW);
             }
@@ -1668,7 +1668,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         // create a new EnrollmentVideo thread
         videoThread = new PlayEnrollmentVideo(surfaceHolder, mHandler, GalleryActivity.this, vid, p, startTimeWithSilence);
         videoThread.start();
-        logHandler.log(Pair.create("video_start", vid));
+        logHandler.log(Pair.create("student_enrollment_video_start", vid));
     }
 
     /**
