@@ -1,4 +1,3 @@
-
 package com.example.iris.login1;
 
 import android.animation.Animator;
@@ -363,6 +362,9 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     }
 
     private void initVarsOfViews() {
+        dbHelper = new DataHelper(this);
+
+        dbHelper.getImageOrder();
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -769,6 +771,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         // TODO test more fervently
                         removeOldVideos();
                         Intent launchIntent = getPackageManager().getLaunchIntentForPackage(ROBOTUTOR_PACKAGE_ADDRESS);
+                                
+                        if(launchIntent == null) {
+                            Toast.makeText(getApplicationContext(), "Please install RoboTutor", Toast.LENGTH_LONG).show();
+                            Log.d("ACTIVITY","Robotutor not installed");
+                            return;
+                        }
+                                
                         Bundle sessionBundle = new Bundle();
                         Log.w("BUNDLE", currentUser.getUserIcon());
                         //String uniqueUserID = generateUniqueIdFromFilename(currentUser.getUserIcon());
@@ -1158,7 +1167,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 logHandler.log(Pair.create("visual_state_gone", "genderlay"));
 
                 //TODO pick less used
-                //dbHelper.getImageOrder();
                 String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
@@ -1479,14 +1487,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private void initUserInfo(){
         dbHelper = new DataHelper(this);
         userInfo = dbHelper.getUserList();
-        dbHelper.getImageOrder();
 
         final List <Integer> pathlist = new ArrayList<Integer>();
         for (int i = 0; i < userInfo.size(); i++) {
             String tempUrl = userInfo.get(i).getUserIcon();
             String profIconName = userInfo.get(i).getProfileIcon().toLowerCase();
-
-            //dbHelper.getImageOrder();
 
             Pair<Integer, Integer> tempUsrData = Common.ANIMALS_ENG.get(profIconName);
 
@@ -1889,7 +1894,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         logHandler.log(Pair.create("visual_state_gone", "genderlay"));
 
                         //TODO pick less used
-                        //dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
@@ -1940,7 +1944,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         genderlay.setVisibility(View.GONE);
 
                         //TODO pick less used
-                        //dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
@@ -2052,7 +2055,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         stopFlash(FLASH_DISLIKE);
                         stopFlash(FLASH_LIKE);
                         //TODO pick less used
-                        //dbHelper.getImageOrder();
                         String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
 
