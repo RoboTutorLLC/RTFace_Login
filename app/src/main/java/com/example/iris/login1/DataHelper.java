@@ -220,20 +220,31 @@ public class DataHelper {
     public String[] getImageOrder() {
         Log.d("DataHelper","getImageOrder called");
 
-        Cursor values = db.rawQuery("SELECT Count(_id), profileIcon from users Group by profileicon order By Count(_id) ASC", null);
-        
- /* 
- // replace with: order icons by # kids with that icon 
-    Cursor values = db.rawQuery(
-    SELECT icon from animal_names a ORDER BY
-        (SELECT Count(_id) from users u WHERE (u.profileIcon = a.icon)),
-        RAND()
-    , null);
+        //Cursor values = db.rawQuery("SELECT Count(_id), profileIcon from users Group by profileicon order By Count(_id) ASC", null);
 
- */
-        
-// Jack:  what portion if any of the following code do we still need?
-        
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS animal_names (" +
+                "icon varchar)");
+
+        Cursor temp = db.rawQuery("SELECT * from animal_names", null);
+
+        int tempnu = temp.getCount();
+
+
+        boolean tempTest = (tempnu < 40);
+        if(temp.getCount() < 40){
+            for (String animal:
+                    ANIMAL_NAMES_ENG) {
+                ContentValues values = new ContentValues();
+                values.put("icon", animal);
+                db.insert("animal_names", null, values);
+            }
+        }
+
+
+        //nested query
+        @SuppressLint("Recycle") Cursor values = db.rawQuery("SELECT icon from animal_names a ORDER BY (SELECT Count(_id) from users u WHERE (u.profileIcon = a.icon)) DESC", null);
+
 
         Log.d("DataHelper" , "sql query: "+values.toString());
         ArrayList<String> animal_names = new ArrayList<String>();
@@ -242,12 +253,22 @@ public class DataHelper {
         values.moveToFirst();
 
         while(!values.isAfterLast()){
-            @SuppressLint("Range") String val = values.getString(values.getColumnIndex("profileIcon"));
-            animal_names.add(val.toLowerCase(Locale.ROOT));
+            @SuppressLint("Range") String val = values.getString(values.getColumnIndex("icon"));
+
+            if(val.toLowerCase(Locale.ROOT).equals("mbuni")){
+                animal_names.add("ostrich");
+
+            }
+            else {
+                animal_names.add(val.toLowerCase(Locale.ROOT));
+            }
             try {
                 String swa_name = Common.build_conn().get(val.toLowerCase(Locale.ROOT));
                 if(swa_name != null) {
                     animal_names_swa.add(swa_name);
+                }
+                if(val.toLowerCase(Locale.ROOT).equals("mbuni")){
+                    animal_names_swa.add("mbuni");
                 }
             }
             catch (Exception e){
@@ -261,8 +282,7 @@ public class DataHelper {
         }
         Log.e("DataHelper", String.valueOf(animal_names.size()));
 
-        int startingListLength = animal_names.size();
-
+//
 //        for (int i = 0; i < ANIMAL_NAMES_ENG.length; i++) {
 //
 //            boolean is_in_list = true;
@@ -278,76 +298,48 @@ public class DataHelper {
 //                animal_names.add(0,ANIMAL_NAMES_ENG[i]);
 //            }
 //        }
+//
+//        for (int i = 0; i < ANIMAL_NAMES_SWA.length; i++) {
+//
+//            boolean is_in_list = true;
+//
+//            for (int k = 0; k < animal_names_swa.size(); k++) {
+//                Log.println(Log.ERROR,"DataHelper", String.valueOf(k));
+//                String swa_name = animal_names_swa.get(k);
+//
+//                if (swa_name.equals(ANIMAL_NAMES_SWA[i])) {
+//                    is_in_list = false;
+//                    break;
+//                }
+//            }
+//            if(is_in_list){
+//                animal_names_swa.add(0,ANIMAL_NAMES_SWA[i]);
+//            }
+//        }
 
         for (int i = 0; i < ANIMAL_NAMES_SWA.length; i++) {
 
-            boolean is_in_list = true;
+            ANIMAL_NAMES_SWA[i] = animal_names_swa.get(i);
+            ANIMAL_NAMES_ENG[i] = animal_names.get(i);
 
-            for (int k = 0; k < animal_names_swa.size(); k++) {
-                Log.println(Log.ERROR,"DataHelper", String.valueOf(k));
-                String swa_name = animal_names_swa.get(k);
+            String tempName = animal_names_swa.get(i);
 
-                if (swa_name.equals(ANIMAL_NAMES_SWA[i])) {
-                    is_in_list = false;
-                    break;
-                }
+            Pair<Integer, Integer> animalData = Common.ANIMALS_SWA.get(tempName);
+
+
+            if (animalData == null) {
+                //animalData = Common.ANIMALS_ENG.get(tempName);
             }
-            if(is_in_list){
-                animal_names_swa.add(0,ANIMAL_NAMES_SWA[i]);
-            }
-        }
-//
-//        for (int i = 0; i < (int)(ANIMAL_NAMES_ENG.length-startingListLength)/2; i++) {
-//            String placeholder = animal_names.get(i);
-//
-//            animal_names.set(i,animal_names.get(ANIMAL_NAMES_ENG.length-startingListLength-i));
-//
-//            animal_names.set(ANIMAL_NAMES_ENG.length-startingListLength-i,placeholder);
-//
-//        }
-
-// Jack doesn't understand /2, so delete this loop and hope we don't need it: 
-   /*
-        for (int i = 0; i < (int)(ANIMAL_NAMES_SWA.length-startingListLength)/2; i++) {
-            String placeholder = animal_names_swa.get(i);
-
-            animal_names_swa.set(i,animal_names_swa.get(ANIMAL_NAMES_SWA.length-startingListLength-i));
-
-            animal_names_swa.set(ANIMAL_NAMES_SWA.length-startingListLength-i,placeholder);
+            Common.ANIMAL_PATHS[i] = animalData.first;
+            Common.ANIMAL_SOUNDS[i] = animalData.second;
 
         }
-    */
 
-
-
-    for (int i = 0; i < ANIMAL_NAMES_SWA.length; i++) {
-
-        ANIMAL_NAMES_SWA[i] = animal_names_swa.get(i);
-
-        String tempName = animal_names_swa.get(i);
-
-        Pair<Integer, Integer> animalData = Common.ANIMALS_SWA.get(tempName);
-
-
-        if (animalData == null) {
-            //animalData = Common.ANIMALS_ENG.get(tempName);
-        }
-        Common.ANIMAL_PATHS[i] = animalData.first;
-        Common.ANIMAL_SOUNDS[i] = animalData.second;
-
-    }
-
-        //Common.reMap();
-
-
-//
         String[] response = new String[animal_names.size()];
         response = animal_names.toArray(response);
         return response;
-
-
-
     }
+    
 
 
 }
