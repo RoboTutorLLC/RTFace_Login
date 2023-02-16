@@ -34,6 +34,8 @@ android {
         def TRUE    = "true"
         def FALSE   = "false"
 
+        def ft_version = "1.8.2.1";
+
         def LANGUAGE_FEATURE_ID = "LANGUAGE_FEATURE_ID"
 
         def LANGUAGE_ENGLISH    = "\"LANG_EN\""
