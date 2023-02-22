@@ -3021,7 +3021,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         public void run() {
             slideRoboFingerIcon.setVisibility(View.INVISIBLE);
             logHandler.log("visual_state_invisible", "slideRoboFingerIcon");
-nt
         }
     };
 
