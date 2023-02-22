@@ -73,21 +73,19 @@ public class LogHandler {
         appendToJSON(newUser);
     }
 
-    public void log(Pair... extras){
+    public void log(String eventType, String eventValue){
         JSONObject newLog = new JSONObject();
         Date timestamp = new Date();
         long hiatusTime = timestamp.getTime() - currentTime.getTime();
         currentTime = timestamp;
-        for (Pair p: extras){
-            try {
-                newLog.put("hiatus_ms", hiatusTime);
-                newLog.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(timestamp));
-                newLog.put("eventType", p.first);
-                newLog.put("eventValue", p.second);
+        try {
+            newLog.put("hiatus_ms", hiatusTime);
+            newLog.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(timestamp));
+            newLog.put("eventType", eventType);
+            newLog.put("eventValue", eventValue);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         appendToJSON(newLog);
     }
