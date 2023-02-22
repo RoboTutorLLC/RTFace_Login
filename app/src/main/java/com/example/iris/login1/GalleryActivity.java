@@ -2024,7 +2024,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         stopFlash(FLASH_LIKE);
                         stopFlash(FLASH_DISLIKE);
                         icongall.setVisibility(View.GONE);
-                        logHandler.log("visual_state_gone", "icongall"); // Jack removed "<"
+                        logHandler.log("visual_state_gone", "icongall"); // Jack removed "<" //
                         iconpic_enroll.setVisibility(View.INVISIBLE);
                         logHandler.log("visual_state_invisible", "iconpic_enroll");
 
@@ -2032,7 +2032,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         iconRegd = true;
                         iconRepeat = false;
                         activity_gal.setVisibility(View.VISIBLE);
-                        logHandler.log("visual_state_visible", "activity_gal"); // Jack removed "<"
+                        logHandler.log("visual_state_visible", "activity_gal"); // Jack removed "<" //
                         capture.setVisibility(View.VISIBLE);
                         logHandler.log("visual_state_visible", "capture");
                         coverSurface.setVisibility(View.VISIBLE);
