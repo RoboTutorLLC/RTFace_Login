@@ -23,6 +23,11 @@ jobs:
         run: echo "DATE=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
       #        steps.get_curr_date.outputs.DATE
 
+      - name: Get current time
+        id: get_curr_time
+        run: echo "TIME=$(date +%T)" >> $GITHUB_OUTPUT
+      #       steps.get_curr_time.outputs.TIME
+
       - name: Get current branch name
         id: get_curr_branch
         run: echo "BRANCH_NAME=${{ github.head_ref || github.ref_name }}" >> $GITHUB_OUTPUT
@@ -42,7 +47,7 @@ jobs:
 #
       - name: Get APK name
         id: get_apk_name
-        run: echo "APK_NAME=RTFacelogin-${{ steps.get_curr_branch.outputs.BRANCH_NAME }}-${{ steps.get_curr_date.outputs.DATE }}-${{ steps.get_version_name.outputs.VERSION_NAME }}" >> $GITHUB_OUTPUT
+        run: echo "APK_NAME=RTFacelogin-${{ steps.get_curr_branch.outputs.BRANCH_NAME }}-${{ steps.get_curr_date.outputs.DATE }}-${{ steps.get_curr_time.outputs.TIME }}-${{ steps.get_version_name.outputs.VERSION_NAME }}" >> $GITHUB_OUTPUT
       #        steps.get_apk_name.outputs.APK_NAME
 
       - name: Rename APK
