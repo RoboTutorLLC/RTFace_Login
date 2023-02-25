@@ -279,6 +279,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private String language = BuildConfig.LANGUAGE_FEATURE_ID;
 
     private LogHandler logHandler;
+    public static ErrorHandler errorHandler;
 
 
     private MediaPlayer playMediaInAccept(MediaPlayer mp, int file) {
@@ -315,6 +316,11 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         super.onCreate(savedInstanceState);
 
         Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());
+
+        errorHandler = new ErrorHandler();
+        errorHandler.startLogging();
+        LogHandler.setErrorHandler(errorHandler);
+
 
         logHandler = new LogHandler();
         initVarsOfViews();
@@ -3101,6 +3107,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
         Log.i("RecordDemoActivity", "onDestroy()");
         pauseAllAudios();
+        errorHandler.stopLogging();
 
     }
     private void cancelThreads() {

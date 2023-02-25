@@ -49,8 +49,10 @@ public class PlayEnrollmentVideo extends PlayVideoThread {
             mPlayer.setDataSource(vPath);
             mPlayer.prepareAsync();
         } catch (IllegalStateException e) {
+            LogHandler.logError("PlayEnrollementVideo error",e);
             e.printStackTrace();
         } catch (IOException e) {
+            LogHandler.logError("PlayEnrollementVideo error",e);
             e.printStackTrace();
         }
 
