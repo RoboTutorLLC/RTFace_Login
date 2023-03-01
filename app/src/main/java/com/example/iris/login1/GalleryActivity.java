@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -45,6 +46,7 @@ import static com.example.iris.login1.Common.*;
 import static com.example.iris.login1.Common.STATE.*;
 
 public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+    private static final String LOG_SEQUENCE_ID = "LOG_SEQUENCE_ID";
 
     /* --------------------------------- */
     /* ---------- Audio files ---------- */
@@ -280,6 +282,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
     private LogHandler logHandler;
     public static ErrorHandler errorHandler;
+    private String SEQUENCE_ID_STRING;
 
 
     private MediaPlayer playMediaInAccept(MediaPlayer mp, int file) {
@@ -317,9 +320,17 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());
 
+        SEQUENCE_ID_STRING = String.format(Locale.US, "%06d", getNextLogSequenceId());
         errorHandler = new ErrorHandler();
-        errorHandler.startLogging();
+        errorHandler.startLogging(SEQUENCE_ID_STRING);
         LogHandler.setErrorHandler(errorHandler);
+
+        try{
+            int i = 1/0;
+        }
+        catch (Exception e){
+            LogHandler.logError("wrong division",e);
+        }
 
 
         logHandler = new LogHandler();
@@ -455,6 +466,21 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         logoShadow.setX(centerX - logoShadow.getWidth() / 2 + logoToShadow3dOffset);
         logoShadow.setY(centerY - logoShadow.getHeight() / 2 + logoToShadow3dOffset);
+    }
+
+    private int getNextLogSequenceId() {
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+
+        // grab the current sequence id (the one we should use for this current run
+        // of the app
+        final int logSequenceId = prefs.getInt(LOG_SEQUENCE_ID, 0);
+
+        // increase the log sequence id by 1 for the next usage
+        prefs.edit()
+                .putInt(LOG_SEQUENCE_ID, logSequenceId + 1)
+                .apply();
+
+        return logSequenceId;
     }
 
     private void initVarsOfMediaPlayer() {

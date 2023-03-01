@@ -8,8 +8,6 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +19,8 @@ public class ErrorHandler {
     private boolean   isLogging = false;
     private Handler logHandler;
     private boolean mDisabled = false;
+    protected static String sessionStartTime;
+    private String sequenceID;
 
     private void post(String msg, Exception e) {
         enQueue(new ErrorHandler.Queue(msg,e));
@@ -44,11 +44,13 @@ public class ErrorHandler {
     }
     
 
-    public void startLogging() {
+    public void startLogging(String SEQUENCE_ID_STRING) {
 
 
         // Restart the log if necessary
         //
+        sequenceID = SEQUENCE_ID_STRING;
+        sessionStartTime = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(new Date());
         stopLogging();
 
         isLogging = true;
@@ -153,7 +155,7 @@ public class ErrorHandler {
 //            Make sure this is accurate
 
             String deviceId = Build.SERIAL;
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(new Date());
             String _directory = Common.RT_PATH + "/facelogin_errors/";
             File logFileDir = new File(_directory);
             if(!logFileDir.exists()){
@@ -161,7 +163,7 @@ public class ErrorHandler {
             }
 
             //Add version how ?? BuildConfig.VERSION_NAME + "_" not working for this package need to get version from robotutor
-            File logFile = new File(Common.RT_PATH + "/facelogin_errors/ERROR_" + timestamp + "_" + deviceId + "_" + BuildConfig.BUILD_TYPE + "_" + BuildConfig.VERSION_NAME + ".txt");
+            File logFile = new File(Common.RT_PATH + "/facelogin_errors/ERROR_" + sessionStartTime + "_" + BuildConfig.BUILD_TYPE + "_" + sequenceID + "_" +  timestamp +  deviceId + "_" + BuildConfig.VERSION_NAME + ".txt");
             logFile.createNewFile();
             FileOutputStream trace = new FileOutputStream(logFile, false);
             trace.write(report.getBytes());
