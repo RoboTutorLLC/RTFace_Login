@@ -325,13 +325,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         errorHandler.startLogging(SEQUENCE_ID_STRING);
         LogHandler.setErrorHandler(errorHandler);
 
-        try{
-            int i = 1/0;
-        }
-        catch (Exception e){
-            LogHandler.logError("wrong division",e);
-        }
-
 
         logHandler = new LogHandler();
         initVarsOfViews();
