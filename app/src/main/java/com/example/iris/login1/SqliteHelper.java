@@ -65,7 +65,9 @@ public class SqliteHelper extends SQLiteOpenHelper {
                             oldColumn + " " + newColumn +
                             " " + typeColumn
             );
-        }catch(Exception e){
+        }
+        catch(Exception e){
+            LogHandler.logError("Column Update Error",e);
             e.printStackTrace();
         }
     }

@@ -87,6 +87,7 @@ public class RecordThread extends Thread{
                 try {
                     mCamera.setPreviewDisplay(surfaceHolder);
                 } catch (IOException e) {
+                    LogHandler.logError("Record Thread error",e);
                     e.printStackTrace();
                 }
                 break;
@@ -113,6 +114,7 @@ public class RecordThread extends Thread{
             c = Camera.open();
         } catch (Exception e) {
             // Wrong occurs when open the camera
+            LogHandler.logError("Record Thread camera error",e);
             Log.i("info", "打开摄像头错误");
         }
         return c;
@@ -138,8 +140,10 @@ public class RecordThread extends Thread{
             long after = System.currentTimeMillis();
             Log.i("DEBUG", "prepare:" + (after - before));
         } catch (IllegalStateException e) {
+            LogHandler.logError("_start record error",e);
             e.printStackTrace();
         } catch (IOException e) {
+            LogHandler.logError("_start record error",e);
             e.printStackTrace();
         }
 
@@ -227,8 +231,10 @@ public class RecordThread extends Thread{
                     fos.flush();
                     fos.close();
                 } catch (FileNotFoundException e) {
+                    LogHandler.logError("save frame error",e);
                     e.printStackTrace();
                 } catch (IOException e) {
+                    LogHandler.logError("save frame error",e);
                     e.printStackTrace();
                 }
             }
@@ -256,8 +262,10 @@ public class RecordThread extends Thread{
             mPlayer.setDataSource(vp);
             mPlayer.prepare();
         } catch (IllegalStateException e) {
+            LogHandler.logError("newReplay Error",e);
             e.printStackTrace();
         } catch (IOException e) {
+            LogHandler.logError("newReplay Error",e);
             e.printStackTrace();
         }
 
