@@ -13,18 +13,7 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
-//    def keystorePropertiesFile = rootProject.file("keystore.properties")
-//    def keystoreProperties = new Properties()
-//    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-//
-//    signingConfigs {
-//        android {
-//            keyAlias keystoreProperties['keyAlias']
-//            keyPassword keystoreProperties['keyPassword']
-//            storeFile file(keystoreProperties['storeFile'])
-//            storePassword keystoreProperties['storePassword']
-//        }
-//    }
+
 
     buildTypes {
 
@@ -33,13 +22,15 @@ android {
         def TRUE    = "true"
         def FALSE   = "false"
 
-        def display_version = "1.8.2.1";
 
         def LANGUAGE_FEATURE_ID = "LANGUAGE_FEATURE_ID"
 
         def LANGUAGE_ENGLISH    = "\"LANG_EN\""
 
         def LANGUAGE_SWAHILI    = "\"LANG_SW\""
+
+        def display_version =   "version-" + (new Date().format("yyyyMMdd_HHmmss.SSS"))
+
 
         debug {
             buildConfigField STRING, LANGUAGE_FEATURE_ID, LANGUAGE_SWAHILI
