@@ -25,7 +25,7 @@ jobs:
 
       - name: Get current time
         id: get_curr_time
-        run: echo "TIME=$(date +%T)" >> $GITHUB_OUTPUT
+        run: echo "TIME=$(date +%Y%m%d_%H%M%S.%s)" >> $GITHUB_OUTPUT
       #       steps.get_curr_time.outputs.TIME
 
       - name: Get current branch name
