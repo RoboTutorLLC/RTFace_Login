@@ -41,8 +41,6 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public static final String TB_NAME = "users";
     public static final String REC_NAME = "last_login";
 
-    private Date currentTime = new Date();
-    private String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(currentTime);
     public String deviceId = Build.SERIAL;
 
     public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -91,11 +89,11 @@ public class SqliteHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     private void dumpUserProfiles() {
         try {
-            File dumpFileDir = new File(Common.RT_PATH + "/facelogin_userProfiles_" + BuildConfig.VERSION_NAME);
+            File dumpFileDir = new File(Common.RT_PATH + "/facelogin_userProfiles");
             if(!dumpFileDir.exists()){
                 dumpFileDir.mkdirs();
             }
-            File userProfileFile = new File(Common.RT_PATH + "/facelogin_userProfiles_" + BuildConfig.VERSION_NAME + "/userProfile_" + timestamp + "_" + deviceId + "_" + BuildConfig.VERSION_NAME + ".json");
+            File userProfileFile = new File(Common.RT_PATH + "/facelogin_userProfiles" + "/userProfile_" + deviceId + ".json");
             userProfileFile.createNewFile();
             FileOutputStream outputStream = new FileOutputStream(userProfileFile);
 
@@ -125,13 +123,14 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     private void restoreUserProfiles() {
         try {
-            File restoreFile = new File(Common.RT_PATH + "/facelogin_userProfiles_" + BuildConfig.VERSION_NAME + "/userProfile_" + timestamp + "_" + deviceId + "_" + BuildConfig.VERSION_NAME + ".json");
+            File restoreFile = new File(Common.RT_PATH + "/facelogin_userProfiles" + "/userProfile_" + deviceId + ".json");
             FileInputStream inputStream = new FileInputStream(restoreFile);
             byte[] data = new byte[(int) restoreFile.length()];
             inputStream.read(data);
             inputStream.close();
             String jsonString = new String(data);
             insertUserProfiles(jsonString);
+            restoreFile.delete();
         }
         catch (Exception e){
             e.printStackTrace();
