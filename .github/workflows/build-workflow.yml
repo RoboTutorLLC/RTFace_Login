@@ -18,14 +18,14 @@ jobs:
       - name: Build project
         run: ./gradlew assembleDebug
 
-      - name: Get current date
-        id: get_curr_date
-        run: echo "DATE=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
-      #        steps.get_curr_date.outputs.DATE
+#      - name: Get current date
+#        id: get_curr_date
+#        run: echo "DATE=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+#      #        steps.get_curr_date.outputs.DATE
 
       - name: Get current time
         id: get_curr_time
-        run: echo "TIME=$(date +%Y%m%d_%H%M%S.%s)" >> $GITHUB_OUTPUT
+        run: echo "TIME=$(date +%Y%m%d_%H%M%S.%N | cut -b1-19)" >> $GITHUB_OUTPUT
       #       steps.get_curr_time.outputs.TIME
 
       - name: Get current branch name
@@ -47,7 +47,7 @@ jobs:
 #
       - name: Get APK name
         id: get_apk_name
-        run: echo "APK_NAME=RTFacelogin-${{ steps.get_curr_branch.outputs.BRANCH_NAME }}-${{ steps.get_curr_date.outputs.DATE }}-${{ steps.get_curr_time.outputs.TIME }}-${{ steps.get_version_name.outputs.VERSION_NAME }}" >> $GITHUB_OUTPUT
+        run: echo "APK_NAME=RTFacelogin-${{ steps.get_curr_branch.outputs.BRANCH_NAME }}-${{ steps.get_version_name.outputs.VERSION_NAME }}-${{ steps.get_curr_time.outputs.TIME }}" >> $GITHUB_OUTPUT
       #        steps.get_apk_name.outputs.APK_NAME
 
       - name: Rename APK
