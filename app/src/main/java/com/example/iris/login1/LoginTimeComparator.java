@@ -23,6 +23,7 @@ public class LoginTimeComparator implements Comparator<UserInfo>{
         try {
             return dateFormat.parse(rhs.getLastLoginTime()).compareTo(dateFormat.parse(lhs.getLastLoginTime()));
         } catch (ParseException e) {
+            LogHandler.logError(TAG,e);
             Log.e(TAG, e.getMessage());
             return 0;
         }

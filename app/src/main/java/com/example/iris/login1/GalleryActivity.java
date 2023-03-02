@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -45,6 +46,7 @@ import static com.example.iris.login1.Common.*;
 import static com.example.iris.login1.Common.STATE.*;
 
 public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+    private static final String LOG_SEQUENCE_ID = "LOG_SEQUENCE_ID";
 
     /* --------------------------------- */
     /* ---------- Audio files ---------- */
@@ -279,6 +281,8 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
     private String language = BuildConfig.LANGUAGE_FEATURE_ID;
 
     private LogHandler logHandler;
+    public static ErrorHandler errorHandler;
+    private String SEQUENCE_ID_STRING;
 
 
     private MediaPlayer playMediaInAccept(MediaPlayer mp, int file) {
@@ -314,6 +318,12 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         super.onCreate(savedInstanceState);
 
         Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());
+
+        SEQUENCE_ID_STRING = String.format(Locale.US, "%06d", getNextLogSequenceId());
+        errorHandler = new ErrorHandler();
+        errorHandler.startLogging(SEQUENCE_ID_STRING);
+        LogHandler.setErrorHandler(errorHandler);
+
 
         logHandler = new LogHandler();
         initVarsOfViews();
@@ -448,6 +458,21 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
         logoShadow.setX(centerX - logoShadow.getWidth() / 2 + logoToShadow3dOffset);
         logoShadow.setY(centerY - logoShadow.getHeight() / 2 + logoToShadow3dOffset);
+    }
+
+    private int getNextLogSequenceId() {
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+
+        // grab the current sequence id (the one we should use for this current run
+        // of the app
+        final int logSequenceId = prefs.getInt(LOG_SEQUENCE_ID, 0);
+
+        // increase the log sequence id by 1 for the next usage
+        prefs.edit()
+                .putInt(LOG_SEQUENCE_ID, logSequenceId + 1)
+                .apply();
+
+        return logSequenceId;
     }
 
     private void initVarsOfMediaPlayer() {
@@ -1166,7 +1191,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 stopFlash(FLASH_BOY);
                 genderlay.setVisibility(View.GONE);
                 logHandler.log("visual_state_gone", "genderlay");
-
                 //TODO pick less used
                 String[] ANIMAL_NAMES = (language.equals(LANG_EN) ? ANIMAL_NAMES_ENG : ANIMAL_NAMES_SWA);
 
@@ -1184,7 +1208,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 logHandler.log("visual_state_visible", "icongall");
                 included_icons.setVisibility(View.VISIBLE);
                 logHandler.log("visual_state_visible", "included_icons");
-
                 genderRegd = true;
                 _audioPlaying = GOOD;
                 pauseAllAudios();
@@ -1446,7 +1469,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                 logHandler.log("visual_state_gone", "like");
                 dislike.setVisibility(View.GONE);
                 logHandler.log("visual_state_gone", "dislike");
-
                 String v,p;
                 int realStartTime;
                 //if waiting for confirm to save new record
@@ -1803,7 +1825,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                             logHandler.log("visual_state_visible", "capture");
                             coverSurface.setVisibility(View.VISIBLE);
                             logHandler.log("visual_state_visible", "coverSurface");
-
                             pauseAllAudios();
                             //mHandler.removeCallbacksAndMessages(null);
                             if (needConfirm) {
@@ -1904,13 +1925,13 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         iconpic_enroll.setImageDrawable(getResources().getDrawable(icnpic));
                         iconpic_enroll.setVisibility(View.INVISIBLE);
                         logHandler.log("visual_state_invisible", "iconpic_enroll");
+
                         icondislike_enroll.setVisibility(View.GONE);
                         logHandler.log("visual_state_gone", "icondislike_enroll");
                         icongall.setVisibility(View.VISIBLE);
                         logHandler.log("visual_state_visible", "icongall");
                         included_icons.setVisibility(View.VISIBLE);
                         logHandler.log("visual_state_visible", "included_icons");
-
                         genderRegd = true;
                         _audioPlaying = GOOD;
                         pauseAllAudios();
@@ -1960,7 +1981,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         logHandler.log("visual_state_visible", "icongall");
                         included_icons.setVisibility(View.VISIBLE);
                         logHandler.log("visual_state_visible", "included_icons");
-
                         genderRegd = true;
                         _audioPlaying = GOOD;
                         pauseAllAudios();
@@ -2111,7 +2131,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         logHandler.log("visual_state_gone", "capture");
                         coverSurface.setVisibility(View.VISIBLE);
                         logHandler.log("visual_state_visible", "coverSurface");
-
                         //TODO go to "if you see your picture"
                         _audioPlaying = IF_YOU_SEE_YOUR_PICTURE;
                         pauseAllAudios();
@@ -2293,7 +2312,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
                         logHandler.log("visual_state_visible", "like");
                         dislike.setVisibility(View.VISIBLE);
                         logHandler.log("visual_state_visible", "dislike");
-
                         mHandler.post(toACCEPT);
                         needConfirm = true;
                     } else {
@@ -2421,7 +2439,6 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
 
             diagonalMovement.start();
             logHandler.log("animation_start", "Diagonal RoboFinger movement");
-
         }
     };
 
@@ -3050,6 +3067,7 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         }
         Log.i("RecordDemoActivity", "onDestroy()");
         pauseAllAudios();
+        errorHandler.stopLogging();
 
     }
     private void cancelThreads() {
