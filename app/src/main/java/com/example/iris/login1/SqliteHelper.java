@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.util.Arrays;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -42,6 +44,8 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public static final String REC_NAME = "last_login";
 
     public String deviceId = Build.SERIAL;
+    private Date currentTime = new Date();
+    String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(currentTime);
 
     public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -93,7 +97,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
             if(!dumpFileDir.exists()){
                 dumpFileDir.mkdirs();
             }
-            File userProfileFile = new File(Common.RT_PATH + "/facelogin_userProfiles" + "/userProfile_" + deviceId + ".json");
+            File userProfileFile = new File(Common.RT_PATH + "/facelogin_userProfiles" + "/userProfile_" + deviceId + "_" + BuildConfig.VERSION_NAME + "_" + timestamp + ".json");
             userProfileFile.createNewFile();
             FileOutputStream outputStream = new FileOutputStream(userProfileFile);
 
@@ -123,7 +127,10 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     private void restoreUserProfiles() {
         try {
-            File restoreFile = new File(Common.RT_PATH + "/facelogin_userProfiles" + "/userProfile_" + deviceId + ".json");
+            File dir = new File(Common.RT_PATH + "/facelogin_userProfiles");
+            File[] files = dir.listFiles();
+            Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
+            File restoreFile = files[0];
             FileInputStream inputStream = new FileInputStream(restoreFile);
             byte[] data = new byte[(int) restoreFile.length()];
             inputStream.read(data);
