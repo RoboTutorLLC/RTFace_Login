@@ -272,6 +272,7 @@ public class DataHelper {
                 }
             }
             catch (Exception e){
+                LogHandler.logError("DataHelper",e);
                 Log.e("DataHelper", e.toString());
                 //animal_names_swa.add(val.toLowerCase(Locale.ROOT));
             }
@@ -340,6 +341,7 @@ public class DataHelper {
         return response;
     }
     
+
 
 
 }

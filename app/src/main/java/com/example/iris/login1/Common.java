@@ -136,4 +136,5 @@ public class Common {
 
     public static final String IMAGE_FILE_PREFIX = "IMAGE_";
     public static final String IMAGE_FILE_SUFFIX = ".jpg";
+
 }

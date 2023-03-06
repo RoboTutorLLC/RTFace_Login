@@ -52,6 +52,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             trace.write(report.getBytes());
             trace.close();
         } catch(IOException ioe) {
+            LogHandler.logError("Log Write Error",ioe);
             ioe.printStackTrace();
         }
 

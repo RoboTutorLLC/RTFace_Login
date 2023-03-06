@@ -31,6 +31,8 @@ public class LogHandler {
     private UserInfo user;
     private File logFile;
     private Date currentTime;
+    public static ErrorHandler errorHandler;
+
 
     public LogHandler() {
         try {
@@ -50,11 +52,20 @@ public class LogHandler {
             trace.close();
 
         } catch(IOException ioe) {
+            LogHandler.logError("LogHandler Error",ioe);
             ioe.printStackTrace();
         } catch (JSONException e) {
+            LogHandler.logError("Log Handler Error",e);
             e.printStackTrace();
         }
 
+    }
+
+    public static void setErrorHandler(ErrorHandler errorHandler){
+        LogHandler.errorHandler = errorHandler;
+    }
+    public static void logError(String Msg,Exception e){
+        errorHandler.postError(Msg,e);
     }
 
     public void logUser(UserInfo user) {
@@ -68,26 +79,26 @@ public class LogHandler {
             newUser.put("birth_device", user.getBirthDevice());
 
         } catch (JSONException e) {
+            LogHandler.logError("Log User",e);
             e.printStackTrace();
         }
         appendToJSON(newUser);
     }
 
-    public void log(Pair... extras){
+    public void log(String eventType, String eventValue){
         JSONObject newLog = new JSONObject();
         Date timestamp = new Date();
         long hiatusTime = timestamp.getTime() - currentTime.getTime();
         currentTime = timestamp;
-        for (Pair p: extras){
-            try {
-                newLog.put("hiatus_ms", hiatusTime);
-                newLog.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(timestamp));
-                newLog.put("eventType", p.first);
-                newLog.put("eventValue", p.second);
+        try {
+            newLog.put("hiatus_ms", hiatusTime);
+            newLog.put("timestamp", new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(timestamp));
+            newLog.put("eventType", eventType);
+            newLog.put("eventValue", eventValue);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        } catch (JSONException e) {
+            LogHandler.logError("JSON error logHandler",e);
+            e.printStackTrace();
         }
         appendToJSON(newLog);
     }
@@ -107,6 +118,7 @@ public class LogHandler {
             prevJson = stringBuilder.toString();
 
         } catch(Exception e) {
+            LogHandler.logError("Error in appending to Json",e);
             e.printStackTrace();
         }
 
@@ -121,6 +133,7 @@ public class LogHandler {
             trace.write(currentJsonObject.toString().getBytes());
             trace.close();
         } catch(Exception ioe) {
+            LogHandler.logError("Error in appending to Json",ioe);
             ioe.printStackTrace();
         }
     }
