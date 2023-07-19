@@ -3003,15 +3003,26 @@ public class GalleryActivity extends AppCompatActivity implements SurfaceHolder.
         // the "holder" is get in oncreat() at the beginning
         surfaceHolder = holder;
         // 录像线程，当然也可以在别的地方启动，但是一定要在onCreate方法执行完成以及surfaceHolder被赋值以后启动
+
+        if (thread != null && thread.mPlayer != null) {
+            thread.mPlayer.setDisplay(surfaceHolder);
+        }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder arg0) {
         // TODO Auto-generated method stub
         Log.i("SurfaceHolder", "surfaceDestroyed()");
+
+        if (thread != null && thread.mPlayer != null) {
+            thread.mPlayer.stop();
+            thread.mPlayer.release();
+            thread.mPlayer = null;
+        }
         //release the resources
-/*        surfaceview = null;
-        surfaceHolder = null;*/
+        // surfaceview = null;
+        surfaceHolder = null;
+        
         /* mediarecorder mCamera */
         if (thread!=null) {
             thread.stopRecord();
