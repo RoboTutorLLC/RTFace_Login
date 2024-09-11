@@ -243,7 +243,8 @@ public class DataHelper {
 
 
         //nested query
-        @SuppressLint("Recycle") Cursor values = db.rawQuery("SELECT icon from animal_names a ORDER BY (SELECT Count(_id) from users u WHERE (u.profileIcon = a.icon)) DESC", null);
+        @SuppressLint("Recycle") Cursor values = db.rawQuery("SELECT icon from animal_names a ORDER BY (SELECT Count(_id) from users u WHERE (u.profileIcon = a.icon)) DESC, RANDOM()", null);
+
 
 
         Log.d("DataHelper" , "sql query: "+values.toString());
